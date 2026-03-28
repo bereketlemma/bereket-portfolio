@@ -38,7 +38,7 @@ export default function RootLayout({
         className={`${jetbrainsMono.variable} ${syne.variable} font-mono bg-background text-foreground antialiased`}
       >
         <Navbar />
-        <main className="mx-auto max-w-5xl px-6 pt-20">
+        <main className="mx-auto max-w-3xl px-6 pt-20">
           {children}
         </main>
       </body>

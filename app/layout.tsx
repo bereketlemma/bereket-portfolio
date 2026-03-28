@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { JetBrains_Mono, Syne } from "next/font/google"
 import "./globals.css"
+import Navbar from "./home/_components/navbar"
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -36,7 +37,10 @@ export default function RootLayout({
       <body
         className={`${jetbrainsMono.variable} ${syne.variable} font-mono bg-background text-foreground antialiased`}
       >
-        {children}
+        <Navbar />
+        <main className="mx-auto max-w-5xl px-6 pt-20">
+          {children}
+        </main>
       </body>
     </html>
   )

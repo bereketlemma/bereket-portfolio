@@ -176,7 +176,7 @@ export default function Skills() {
           headerInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
         }`}
       >
-        <span className="font-mono text-sm text-accent">04.</span>
+        <span className="font-mono text-sm text-accent">03.</span>
         <h2 className="font-syne text-2xl font-bold text-foreground">Skills</h2>
         <div className="h-px flex-1 bg-border" />
       </div>

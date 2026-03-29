@@ -120,10 +120,19 @@ export default function Hero() {
         )}
       </div>
 
-      {/* About me text */}
-      <div className={`mb-6 max-w-xl space-y-1 text-sm leading-relaxed text-muted-foreground transition-all duration-700 ${showAbout ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
-        <p>B.S. in <span className="text-accent">Computer Science & Mathematics</span> from <span className="text-accent">Whitworth University</span>.</p>
-        <p>Focused on backend development, cloud infrastructure, and security engineering. Building systems with dependable infrastructure and zero-trust architecture.</p>
+     {/* 01. About header */}
+      <div className={`mb-6 transition-all duration-700 ${showAbout ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+        <div className="flex items-center gap-4 mb-6">
+          <span className="font-mono text-sm text-accent">01.</span>
+          <h2 className="font-syne text-2xl font-bold text-foreground">About</h2>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        {/* About me text */}
+        <div className="max-w-xl space-y-1 text-sm leading-relaxed text-muted-foreground">
+          <p>B.S. in <span className="text-accent">Computer Science & Mathematics</span> from <span className="text-accent">Whitworth University</span>.</p>
+          <p>Focused on backend development, cloud infrastructure, and security engineering. Building systems with dependable infrastructure and zero-trust architecture.</p>
+        </div>
       </div>
 
       {/* Terminal block */}

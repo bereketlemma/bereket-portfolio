@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
+import { TerminalHeader } from "@/components/terminal-header"
 
 const skills = {
   Languages: {
@@ -135,12 +136,7 @@ function TerminalBar() {
       }`}
     >
       {/* Terminal header */}
-      <div className="flex items-center gap-2 border-b border-border/30 px-4 py-2">
-        <span className="h-2 w-2 rounded-full bg-red-500/70" />
-        <span className="h-2 w-2 rounded-full bg-yellow-500/70" />
-        <span className="h-2 w-2 rounded-full bg-green-500/70" />
-        <span className="ml-2 font-mono text-[10px] text-muted-foreground/50">~/learning</span>
-      </div>
+      <TerminalHeader filename="~/learning" />
 
       {/* Terminal body */}
       <div className="px-4 py-3 flex flex-col gap-1.5">
@@ -158,7 +154,7 @@ function TerminalBar() {
               {line.text}
             </span>
             {i === visibleCount - 1 && i === terminalLines.length - 1 && (
-              <span className={`ml-0.5 inline-block w-1.5 h-3.5 bg-accent align-middle ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
+              <span aria-hidden="true" className={`ml-0.5 inline-block w-1.5 h-3.5 bg-accent align-middle ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
             )}
           </div>
         ))}
@@ -171,13 +167,7 @@ export default function Skills() {
   const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.5 })
 
   return (
-    <section id="skills" className="py-20">
-      <style>{`
-        @keyframes fadeSlideIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+    <section id="skills" className="py-24">
 
       {/* Section header */}
       <div

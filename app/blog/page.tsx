@@ -1,15 +1,21 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+
+export const metadata: Metadata = {
+  title: "Blog — Bereket Lemma",
+  description: "Thoughts on software engineering, security, and building things.",
+}
 
 const posts = [
   {
     slug: "introduction",
-    title: "Introduction — Who is Bereket?",
-    date: "March 28, 2026",
+    title: "Why I'm Starting This Blog",
+    date: "March 29, 2026",
     readTime: "3 min read",
-    tags: ["Personal", "Career"],
+    tags: ["Personal", "Writing"],
     excerpt:
-      "A quick introduction to who I am, what I build, and where I'm headed. From competitive programming in Spokane to building legal-tech infrastructure and training LLMs.",
+      "Why I'm starting a blog, what I plan to write about — from technical deep dives and AI/ML to startup life and career reflections — and what you can expect in future posts.",
   },
 ]
 
@@ -51,7 +57,7 @@ export default function BlogPage() {
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               {post.excerpt}
             </p>
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex gap-2">
                 {post.tags.map((tag) => (
                   <span

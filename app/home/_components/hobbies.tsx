@@ -108,6 +108,7 @@ function HobbyCard({ hobby, index }: { hobby: typeof hobbies[0]; index: number }
         <Link
           href={hobby.link}
           target="_blank"
+          rel="noopener noreferrer"
           className="relative mt-3 inline-block font-mono text-xs text-accent hover:underline transition-all duration-300 group-hover:translate-x-1"
         >
           {hobby.linkLabel}
@@ -124,7 +125,7 @@ export default function Hobbies() {
   const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.5 })
 
   return (
-    <section id="hobbies" className="py-20">
+    <section id="hobbies" className="py-24">
 
       {/* Section header */}
       <div
@@ -139,7 +140,7 @@ export default function Hobbies() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {hobbies.map((hobby, i) => (
           <HobbyCard key={i} hobby={hobby} index={i} />
         ))}

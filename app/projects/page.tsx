@@ -1,47 +1,19 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { Github, ExternalLink, ArrowLeft } from "lucide-react"
+import { allProjects } from "@/lib/projects"
 
-const projects = [
-  {
-    title: "DevScope",
-    description:
-      "GCP-native engineering analytics platform. GitHub API → Pub/Sub → Dataflow → BigQuery → Vertex AI anomaly detection → FastAPI → React dashboard. Full CI/CD pipeline on Cloud Run.",
-    tags: ["GCP", "BigQuery", "Vertex AI", "FastAPI", "React", "Pub/Sub"],
-    github: "https://github.com/bereketlemma/devscope",
-    live: "https://devscope.bereketlemma.com",
-  },
-  {
-    title: "NIDS — Network Intrusion Detection",
-    description:
-      "ML-based network intrusion detection system trained on CICIDS2017 dataset (2.5M rows). Random Forest classifier achieving 97.47% accuracy with a Streamlit dashboard for real-time monitoring.",
-    tags: ["Python", "Scikit-learn", "Random Forest", "Streamlit", "Pandas"],
-    github: "https://github.com/bereketlemma/nids",
-    live: null,
-  },
-  {
-    title: "CPU Scheduler Simulator",
-    description:
-      "Simulation of core CPU scheduling algorithms — FCFS, SJF, Round Robin, and Priority Scheduling. Visualizes process execution, wait times, and turnaround times.",
-    tags: ["C++", "Systems", "OS Concepts"],
-    github: "https://github.com/bereketlemma/cpu-scheduler",
-    live: null,
-  },
-  {
-    title: "Voice Interview Assistant",
-    description:
-      "Browser-based voice interview assistant built with the Web Speech API and Claude's API. Helps practice technical and behavioral interviews with real-time AI feedback.",
-    tags: ["TypeScript", "Web Speech API", "Claude API", "React"],
-    github: "https://github.com/bereketlemma/voice-interview-assistant",
-    live: null,
-  },
-]
+export const metadata: Metadata = {
+  title: "Projects — Bereket Lemma",
+  description: "A collection of projects I've built — from trading engines to network intrusion detection.",
+}
 
 export default function ProjectsPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-24">
       <Link
         href="/"
-        className="mb-10 flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-accent transition-colors"
+        className="mb-10 inline-flex items-center gap-2 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
       >
         <ArrowLeft size={14} />
         back to home
@@ -53,31 +25,38 @@ export default function ProjectsPage() {
       </div>
 
       <div className="flex flex-col gap-6">
-        {projects.map((project, i) => (
+        {allProjects.map((project, i) => (
           <div
             key={i}
             className="group rounded border border-border/40 p-6 transition-all hover:border-accent/30 hover:bg-surface/50"
           >
             <div className="flex items-start justify-between">
-              <h2 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-colors">
-                {project.title}
-              </h2>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <h2 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-colors">
+                  {project.shortTitle}
+                </h2>
+                {"wip" in project && project.wip && (
+                  <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
+                    WIP
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-3 ml-3 shrink-0">
                 {project.live && (
-                  <Link href={project.live} target="_blank" className="text-muted-foreground hover:text-accent transition-colors">
+                  <Link href={project.live} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
                     <ExternalLink size={16} />
                   </Link>
                 )}
-                <Link href={project.github} target="_blank" className="text-muted-foreground hover:text-accent transition-colors">
+                <Link href={project.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
                   <Github size={16} />
                 </Link>
               </div>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              {project.description}
+              {project.shortDescription}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
+              {project.shortTags.map((tag) => (
                 <span
                   key={tag}
                   className="rounded border border-border/60 px-2 py-0.5 font-mono text-xs text-muted-foreground"

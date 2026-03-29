@@ -1,21 +1,50 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Github, Linkedin, Mail, ArrowDown } from "lucide-react"
 
-const titles = [
-  "Software Engineer",
-  "Security Engineer",
-  "Cloud Engineer",
-  "Competitive Programmer",
+const lines = [
+  { comment: "// software engineer & security researcher", delay: 0 },
+  { code: 'const location', value: '"Seattle, WA"', delay: 1 },
+  { code: 'const education', value: '"B.S. CS & Mathematics, Whitworth University"', delay: 2 },
+  { code: 'const focus', value: '["full-stack", "security", "cloud"]', delay: 3 },
+  { code: 'const startup', value: '"Celeri.io — $50K seed funding"', delay: 4 },
+  { code: 'const achievement', value: '"3rd Place ICPC PNW Regional 2025"', delay: 5 },
+  { code: 'const currently', value: '"OpenAI Parameter Golf Challenge"', delay: 6 },
 ]
 
+function CodeLine({ line, startDelay }: { line: typeof lines[0], startDelay: number }) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), startDelay)
+    return () => clearTimeout(timer)
+  }, [startDelay])
+
+  if (!visible) return <div className="h-6" />
+
+  if (line.comment) {
+    return (
+      <div className="font-mono text-sm text-muted-foreground/50">
+        {line.comment}
+      </div>
+    )
+  }
+
+  return (
+    <div className="font-mono text-sm">
+      <span className="text-accent/70">const </span>
+      <span className="text-foreground">{line.code?.replace('const ', '')}</span>
+      <span className="text-muted-foreground"> = </span>
+      <span className="text-accent">{line.value}</span>
+      <span className="text-muted-foreground">;</span>
+    </div>
+  )
+}
+
 export default function Hero() {
-  const [titleIndex, setTitleIndex] = useState(0)
-  const [displayed, setDisplayed] = useState("")
-  const [deleting, setDeleting] = useState(false)
   const [showCursor, setShowCursor] = useState(true)
+  const [nameIndex, setNameIndex] = useState(0)
+  const fullName = "Hi, I'm Bereket ..."
 
   // Cursor blink
   useEffect(() => {
@@ -25,95 +54,59 @@ export default function Hero() {
     return () => clearInterval(interval)
   }, [])
 
-  // Typewriter effect
+  // Typewriter for name
   useEffect(() => {
-    const current = titles[titleIndex]
-
-    if (!deleting && displayed === current) {
-      const timeout = setTimeout(() => setDeleting(true), 2000)
-      return () => clearTimeout(timeout)
-    }
-
-    if (deleting && displayed === "") {
-      setDeleting(false)
-      setTitleIndex((prev) => (prev + 1) % titles.length)
-      return
-    }
-
-    const timeout = setTimeout(() => {
-      setDisplayed((prev) =>
-        deleting ? prev.slice(0, -1) : current.slice(0, prev.length + 1)
-      )
-    }, deleting ? 40 : 80)
-
-    return () => clearTimeout(timeout)
-  }, [displayed, deleting, titleIndex])
+    if (nameIndex >= fullName.length) return
+    const timer = setTimeout(() => {
+      setNameIndex((prev) => prev + 1)
+    }, 80)
+    return () => clearTimeout(timer)
+  }, [nameIndex])
 
   return (
-    <section className="flex min-h-[90vh] flex-col justify-center py-20">
-      
-      {/* Greeting */}
-      <p className="mb-4 font-mono text-sm text-accent">
-        Hi, my name is
+    <section className="py-20">
+
+      {/* Typewriter name */}
+      <div className="mb-2 font-syne text-4xl font-bold text-foreground md:text-6xl">
+        {fullName.slice(0, nameIndex)}
+        <span className={`inline-block w-0.5 h-10 md:h-14 bg-accent ml-1 align-middle ${showCursor && nameIndex < fullName.length ? "opacity-100" : "opacity-0"}`} />
+      </div>
+
+      <p className="font-mono text-sm text-muted-foreground mb-8">
+        Software Engineer · Seattle, WA
       </p>
 
-      {/* Name */}
-      <h1 className="font-syne text-5xl font-bold text-foreground md:text-7xl">
-        Bereket Lemma
-      </h1>
+      {/* Divider */}
+      <div className="mb-8 h-px w-full bg-border/40" />
 
-      {/* Animated title */}
-      <div className="mt-3 flex items-center gap-1 font-mono text-xl text-muted-foreground md:text-2xl">
-        <span className="text-accent">&gt;</span>
-        <span className="ml-2">{displayed}</span>
-        <span className={`ml-0.5 inline-block h-5 w-0.5 bg-accent ${showCursor ? "opacity-100" : "opacity-0"}`} />
+      {/* Code block */}
+      <div className="rounded border border-border/40 bg-surface/30 p-6">
+
+        {/* Terminal header */}
+        <div className="mb-5 flex items-center gap-2 border-b border-border/40 pb-3">
+          <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
+          <span className="ml-2 font-mono text-xs text-muted-foreground">bereket.ts</span>
+        </div>
+
+        {/* Code lines */}
+        <div className="flex flex-col gap-2">
+          {lines.map((line, i) => (
+            <CodeLine
+              key={i}
+              line={line}
+              startDelay={1800 + i * 300}
+            />
+          ))}
+        </div>
+
+        {/* Blinking cursor at end */}
+        <div className="mt-3 font-mono text-sm text-accent">
+          <span className={`inline-block h-4 w-2 bg-accent ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
+        </div>
+
       </div>
-
-      {/* Bio */}
-      <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-        CS + Applied Math grad from Whitworth University. Founding Engineer at{" "}
-        <span className="text-accent">Celeri.io</span>. I build secure, scalable systems
-        across cloud infrastructure, security engineering, and full-stack development.
-        ICPC 3rd Place — Pacific Northwest Regional 2025.
-      </p>
-
-      {/* CTA Buttons */}
-      <div className="mt-8 flex flex-wrap items-center gap-4">
-        <Link
-          href="#projects"
-          className="rounded border border-accent bg-accent px-5 py-2 text-sm font-mono text-background transition-all hover:bg-transparent hover:text-accent"
-        >
-          view projects
-        </Link>
-        <Link
-          href="#experience"
-          className="rounded border border-border px-5 py-2 text-sm font-mono text-muted-foreground transition-all hover:border-accent hover:text-accent"
-        >
-          my experience
-        </Link>
-      </div>
-
-      {/* Social Links */}
-      <div className="mt-10 flex items-center gap-5">
-        <Link href="https://github.com/bereketlemma" target="_blank" className="text-muted-foreground hover:text-accent transition-colors">
-          <Github size={20} />
-        </Link>
-        <Link href="https://linkedin.com/in/bereketlemma" target="_blank" className="text-muted-foreground hover:text-accent transition-colors">
-          <Linkedin size={20} />
-        </Link>
-        <Link href="mailto:bereket@bereketlemma.com" className="text-muted-foreground hover:text-accent transition-colors">
-          <Mail size={20} />
-        </Link>
-        <div className="h-px w-12 bg-border" />
-        <span className="font-mono text-xs text-muted-foreground">bereketlemma.com</span>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="mt-16 flex items-center gap-2 text-muted-foreground">
-        <ArrowDown size={14} className="animate-bounce" />
-        <span className="font-mono text-xs">scroll to explore</span>
-      </div>
-
     </section>
   )
 }

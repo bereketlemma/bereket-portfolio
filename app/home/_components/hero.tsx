@@ -2,111 +2,154 @@
 
 import { useEffect, useState } from "react"
 
-const lines = [
-  { comment: "// software engineer & security researcher", delay: 0 },
-  { code: 'const location', value: '"Seattle, WA"', delay: 1 },
-  { code: 'const education', value: '"B.S. CS & Mathematics, Whitworth University"', delay: 2 },
-  { code: 'const focus', value: '["full-stack", "security", "cloud"]', delay: 3 },
-  { code: 'const startup', value: '"Celeri.io — $50K seed funding"', delay: 4 },
-  { code: 'const achievement', value: '"3rd Place ICPC PNW Regional 2025"', delay: 5 },
-  { code: 'const currently', value: '"OpenAI Parameter Golf Challenge"', delay: 6 },
+const terminalSections = [
+  {
+    heading: '📍 Location',
+    lines: ['Software Engineer based in Seattle, WA.'],
+  },
+  {
+    heading: '🤖 Currently',
+    lines: [
+      'Competing in the OpenAI Parameter Golf Challenge — training a language',
+      'model to fit within 16MB, under 10 min on 8x H100 GPUs, optimized for',
+      'compression on FineWeb.',
+    ],
+  },
+  {
+    heading: '🏆 Achievements',
+    lines: [
+      'Celeri.io — won $50K at Sparks Weekend to build communication software',
+      'for criminal courts, reducing pretrial detention times.',
+      '',
+      '3rd Place — ICPC Pacific Northwest Regional 2025.',
+    ],
+  },
+  {
+    heading: '💼 Experience',
+    lines: [
+      'Security Engineer Intern @ Washington Trust Bank.',
+      'Full-Stack SWE Intern @ Hewitt Learning.',
+    ],
+  },
 ]
 
-function CodeLine({ line, startDelay }: { line: typeof lines[0], startDelay: number }) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), startDelay)
-    return () => clearTimeout(timer)
-  }, [startDelay])
-
-  if (!visible) return <div className="h-6" />
-
-  if (line.comment) {
-    return (
-      <div className="font-mono text-sm text-muted-foreground/50">
-        {line.comment}
-      </div>
-    )
-  }
-
+function TerminalSection({ section, visible }: { section: typeof terminalSections[0]; visible: boolean }) {
   return (
-    <div className="font-mono text-sm">
-      <span className="text-accent/70">const </span>
-      <span className="text-foreground">{line.code?.replace('const ', '')}</span>
-      <span className="text-muted-foreground"> = </span>
-      <span className="text-accent">{line.value}</span>
-      <span className="text-muted-foreground">;</span>
+    <div className={`font-mono text-sm transition-all duration-500 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"}`}>
+      <div className="text-accent font-medium mb-1">{section.heading}</div>
+      {section.lines.map((line, i) => (
+        <div key={i} className={`text-muted-foreground ${line === '' ? 'h-2' : ''}`}>
+          {line && <span className="text-muted-foreground/40 mr-2">{'>'}</span>}
+          {line}
+        </div>
+      ))}
     </div>
   )
 }
 
 export default function Hero() {
   const [showCursor, setShowCursor] = useState(true)
+  const [greetIndex, setGreetIndex] = useState(0)
   const [nameIndex, setNameIndex] = useState(0)
-  const fullName = "Hi, I'm Bereket ..."
+  const [greetDone, setGreetDone] = useState(false)
+  const [nameDone, setNameDone] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
+  const [showDivider, setShowDivider] = useState(false)
+  const [showTerminal, setShowTerminal] = useState(false)
+  const [visibleLines, setVisibleLines] = useState(0)
+  const greeting = "Hey! I'm"
+  const fullName = "Bereket Lemma"
 
   // Cursor blink
   useEffect(() => {
-    const interval = setInterval(() => {
-      setShowCursor((prev) => !prev)
-    }, 500)
+    const interval = setInterval(() => setShowCursor((prev) => !prev), 500)
     return () => clearInterval(interval)
   }, [])
 
-  // Typewriter for name
+  // Typewriter: greeting → name
   useEffect(() => {
-    if (nameIndex >= fullName.length) return
-    const timer = setTimeout(() => {
-      setNameIndex((prev) => prev + 1)
-    }, 80)
+    if (greetIndex < greeting.length) {
+      const timer = setTimeout(() => setGreetIndex((prev) => prev + 1), 80)
+      return () => clearTimeout(timer)
+    }
+    if (!greetDone) setGreetDone(true)
+  }, [greetIndex, greetDone])
+
+  useEffect(() => {
+    if (!greetDone) return
+    if (nameIndex >= fullName.length) {
+      if (!nameDone) setNameDone(true)
+      return
+    }
+    const timer = setTimeout(() => setNameIndex((prev) => prev + 1), 80)
     return () => clearTimeout(timer)
-  }, [nameIndex])
+  }, [greetDone, nameIndex, nameDone])
+
+  // Sequence: about text → divider → terminal
+  useEffect(() => {
+    if (!nameDone) return
+    const t1 = setTimeout(() => setShowAbout(true), 400)
+    const t2 = setTimeout(() => setShowDivider(true), 1000)
+    const t3 = setTimeout(() => setShowTerminal(true), 1500)
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+  }, [nameDone])
+
+  // Terminal sections appear one by one
+  useEffect(() => {
+    if (!showTerminal) return
+    if (visibleLines >= terminalSections.length) return
+    const timer = setTimeout(() => setVisibleLines((prev) => prev + 1), 400)
+    return () => clearTimeout(timer)
+  }, [showTerminal, visibleLines])
 
   return (
     <section className="py-20">
 
-      {/* Typewriter name */}
-      <div className="mb-2 font-syne text-4xl font-bold text-foreground md:text-6xl">
-        {fullName.slice(0, nameIndex)}
-        <span className={`inline-block w-0.5 h-10 md:h-14 bg-accent ml-1 align-middle ${showCursor && nameIndex < fullName.length ? "opacity-100" : "opacity-0"}`} />
+      {/* Greeting */}
+      <div className="mb-1 font-mono text-lg text-muted-foreground md:text-xl">
+        {greeting.slice(0, greetIndex)}
+        {!greetDone && (
+          <span className={`inline-block w-0.5 h-5 bg-accent ml-0.5 align-middle transition-opacity ${showCursor ? "opacity-100" : "opacity-0"}`} />
+        )}
       </div>
 
-      <p className="font-mono text-sm text-muted-foreground mb-8">
-        Software Engineer · Seattle, WA
-      </p>
+      {/* Name */}
+      <div className="mb-6 font-syne text-4xl font-bold text-foreground md:text-6xl">
+        {fullName.slice(0, nameIndex)}
+        {greetDone && (
+          <span className={`inline-block w-0.5 h-10 md:h-14 bg-accent ml-1 align-middle transition-opacity ${showCursor ? "opacity-100" : "opacity-0"}`} />
+        )}
+      </div>
 
-      {/* Divider */}
-      <div className="mb-8 h-px w-full bg-border/40" />
+      {/* About me text */}
+      <div className={`mb-6 max-w-xl space-y-1 text-sm leading-relaxed text-muted-foreground transition-all duration-700 ${showAbout ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
+        <p>B.S. in <span className="text-accent">Computer Science & Mathematics</span> from <span className="text-accent">Whitworth University</span>.</p>
+        <p>Focused on full-stack web development and security engineering to build systems with dependable infrastructure, reliability, and zero-trust architecture.</p>
+      </div>
 
-      {/* Code block */}
-      <div className="rounded border border-border/40 bg-surface/30 p-6">
-
+      {/* Terminal block */}
+      <div className={`rounded border border-border/40 bg-surface/30 p-5 transition-all duration-700 ${showTerminal ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
         {/* Terminal header */}
-        <div className="mb-5 flex items-center gap-2 border-b border-border/40 pb-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
-          <span className="ml-2 font-mono text-xs text-muted-foreground">bereket.ts</span>
+        <div className="mb-4 flex items-center gap-2 border-b border-border/40 pb-3">
+          <span className="h-2 w-2 rounded-full bg-red-500/70" />
+          <span className="h-2 w-2 rounded-full bg-yellow-500/70" />
+          <span className="h-2 w-2 rounded-full bg-green-500/70" />
+          <span className="ml-2 font-mono text-[10px] text-muted-foreground/50">bereket.ts</span>
         </div>
 
-        {/* Code lines */}
-        <div className="flex flex-col gap-2">
-          {lines.map((line, i) => (
-            <CodeLine
-              key={i}
-              line={line}
-              startDelay={1800 + i * 300}
-            />
+        {/* Sections */}
+        <div className="flex flex-col gap-4">
+          {terminalSections.map((section, i) => (
+            <TerminalSection key={i} section={section} visible={i < visibleLines} />
           ))}
         </div>
 
-        {/* Blinking cursor at end */}
-        <div className="mt-3 font-mono text-sm text-accent">
-          <span className={`inline-block h-4 w-2 bg-accent ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
+        {/* Blinking cursor */}
+        <div className="mt-3">
+          <span className={`inline-block h-4 w-1.5 bg-accent ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
         </div>
-
       </div>
+
     </section>
   )
 }

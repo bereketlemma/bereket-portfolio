@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { ChevronUp } from "lucide-react"
 
 export default function Footer() {
@@ -14,6 +15,19 @@ export default function Footer() {
           <ChevronUp size={14} className="transition-transform group-hover:-translate-y-0.5" />
           back to top
         </button>
+
+        <div className="flex items-center gap-6 font-mono text-xs text-muted-foreground">
+          <Link href="/blog" className="hover:text-accent transition-colors">
+            blog
+          </Link>
+          <Link href="/projects" className="hover:text-accent transition-colors">
+            projects
+          </Link>
+          <Link href="mailto:bereket.lemma10@gmail.com" className="hover:text-accent transition-colors">
+            contact
+          </Link>
+        </div>
+
         <p className="font-mono text-xs text-muted-foreground">
           <span className="text-accent">bereket@lemma:~$</span> built with Next.js · TypeScript · Tailwind
         </p>

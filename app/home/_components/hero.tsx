@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { TerminalHeader } from "@/components/terminal-header"
 
 const terminalSections = [
   {
@@ -54,7 +55,6 @@ export default function Hero() {
   const [greetDone, setGreetDone] = useState(false)
   const [nameDone, setNameDone] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
-  const [showDivider, setShowDivider] = useState(false)
   const [showTerminal, setShowTerminal] = useState(false)
   const [visibleLines, setVisibleLines] = useState(0)
   const greeting = "Hey! I'm"
@@ -89,9 +89,8 @@ export default function Hero() {
   useEffect(() => {
     if (!nameDone) return
     const t1 = setTimeout(() => setShowAbout(true), 400)
-    const t2 = setTimeout(() => setShowDivider(true), 1000)
-    const t3 = setTimeout(() => setShowTerminal(true), 1500)
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+    const t2 = setTimeout(() => setShowTerminal(true), 1000)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [nameDone])
 
   // Terminal sections appear one by one
@@ -103,13 +102,13 @@ export default function Hero() {
   }, [showTerminal, visibleLines])
 
   return (
-    <section className="py-20">
+    <section className="py-24">
 
       {/* Greeting */}
       <div className="mb-1 font-mono text-lg text-muted-foreground md:text-xl">
         {greeting.slice(0, greetIndex)}
         {!greetDone && (
-          <span className={`inline-block w-0.5 h-5 bg-accent ml-0.5 align-middle transition-opacity ${showCursor ? "opacity-100" : "opacity-0"}`} />
+          <span aria-hidden="true" className={`inline-block w-0.5 h-5 bg-accent ml-0.5 align-middle transition-opacity ${showCursor ? "opacity-100" : "opacity-0"}`} />
         )}
       </div>
 
@@ -117,24 +116,21 @@ export default function Hero() {
       <div className="mb-6 font-syne text-4xl font-bold text-foreground md:text-6xl">
         {fullName.slice(0, nameIndex)}
         {greetDone && (
-          <span className={`inline-block w-0.5 h-10 md:h-14 bg-accent ml-1 align-middle transition-opacity ${showCursor ? "opacity-100" : "opacity-0"}`} />
+          <span aria-hidden="true" className={`inline-block w-0.5 h-10 md:h-14 bg-accent ml-1 align-middle transition-opacity ${showCursor ? "opacity-100" : "opacity-0"}`} />
         )}
       </div>
 
       {/* About me text */}
       <div className={`mb-6 max-w-xl space-y-1 text-sm leading-relaxed text-muted-foreground transition-all duration-700 ${showAbout ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
         <p>B.S. in <span className="text-accent">Computer Science & Mathematics</span> from <span className="text-accent">Whitworth University</span>.</p>
-        <p>Focused on full-stack web development and security engineering to build systems with dependable infrastructure, reliability, and zero-trust architecture.</p>
+        <p>Focused on backend development, cloud infrastructure, and security engineering. Building systems with dependable infrastructure and zero-trust architecture.</p>
       </div>
 
       {/* Terminal block */}
       <div className={`rounded border border-border/40 bg-surface/30 p-5 transition-all duration-700 ${showTerminal ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
         {/* Terminal header */}
-        <div className="mb-4 flex items-center gap-2 border-b border-border/40 pb-3">
-          <span className="h-2 w-2 rounded-full bg-red-500/70" />
-          <span className="h-2 w-2 rounded-full bg-yellow-500/70" />
-          <span className="h-2 w-2 rounded-full bg-green-500/70" />
-          <span className="ml-2 font-mono text-[10px] text-muted-foreground/50">bereket.ts</span>
+        <div className="mb-4 pb-3">
+          <TerminalHeader filename="bereket.ts" />
         </div>
 
         {/* Sections */}
@@ -146,7 +142,7 @@ export default function Hero() {
 
         {/* Blinking cursor */}
         <div className="mt-3">
-          <span className={`inline-block h-4 w-1.5 bg-accent ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
+          <span aria-hidden="true" className={`inline-block h-4 w-1.5 bg-accent ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
         </div>
       </div>
 

@@ -62,6 +62,19 @@ export const allProjects = [
     wip: true,
   },
   {
+    title: "Personal Portfolio — bereketlemma.com",
+    shortTitle: "Personal Portfolio",
+    description:
+      "This portfolio — built from scratch with Next.js 14, TypeScript, Tailwind CSS, and Firebase. Features a terminal-style hero with typewriter animation, scroll-reveal animations, blog, and admin CMS. Deployed to a custom domain via Vercel and Cloudflare.",
+    shortDescription:
+      "Built from scratch with Next.js 14, TypeScript, Tailwind CSS, and Firebase. Terminal-style hero, scroll-reveal animations, blog, and custom domain via Vercel and Cloudflare.",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Firebase", "Vercel", "Framer Motion"],
+    shortTags: ["Next.js", "TypeScript", "Tailwind CSS", "Firebase", "Vercel"],
+    github: "https://github.com/bereketlemma/bereket-portfolio",
+    live: "https://bereketlemma.com",
+    wip: false,
+  },
+  {
     title: "NavigateCity",
     shortTitle: "NavigateCity",
     description:
@@ -72,6 +85,6 @@ export const allProjects = [
     shortTags: ["Python", "Flask", "MySQL", "OpenAI API", "HTML/CSS"],
     github: "https://github.com/bereketlemma/Navigate-City",
     live: "https://mmielle.com/navigatecity",
-    wip: true,
+    wip: false,
   },
 ]

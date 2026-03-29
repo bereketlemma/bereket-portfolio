@@ -1,14 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import { Github, Linkedin, Mail, BookOpen, Music } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { Github, Linkedin, Mail, BookOpen, Music, FileText } from "lucide-react"
 
 export default function Navbar() {
+  const pathname = usePathname()
+  const isBlog = pathname.startsWith("/blog")
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-6">
 
-        {/* Left: B logo + Resume */}
+        {/* Left: B logo + icons */}
         <div className="flex items-center gap-4">
           <div className="group relative">
             <Link href="/" className="flex h-8 w-8 items-center justify-center rounded border border-accent font-syne text-sm font-bold text-accent hover:bg-accent hover:text-background transition-all">
@@ -20,25 +24,12 @@ export default function Navbar() {
           </div>
 
           <div className="group relative">
-            <Link
-              href="/assets/Bereket_Lemma_Resume.pdf"
-              target="_blank"
-              className="rounded border border-border px-3 py-1.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all"
-            >
-              Resume
-            </Link>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40">
-              view resume
-            </span>
-          </div>
-        </div>
-
-        {/* Right: social icons + blog */}
-        <div className="flex items-center gap-4">
-          <div className="group relative">
-            <Link href="/blog" className="text-muted-foreground hover:text-accent transition-colors">
+            <Link href="/blog" className={`transition-colors ${isBlog ? "text-accent" : "text-muted-foreground hover:text-accent"}`}>
               <BookOpen size={18} />
             </Link>
+            {isBlog && (
+              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-green-400" />
+            )}
             <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40">
               Blog
             </span>
@@ -77,6 +68,35 @@ export default function Navbar() {
             </Link>
             <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40">
               Email
+            </span>
+          </div>
+        </div>
+
+        {/* Right: section links + Resume */}
+        <div className="flex items-center gap-4">
+          <Link href="#experience" className="hidden md:block font-mono text-xs text-muted-foreground hover:text-accent transition-colors">
+            Experience
+          </Link>
+          <Link href="#projects" className="hidden md:block font-mono text-xs text-muted-foreground hover:text-accent transition-colors">
+            Projects
+          </Link>
+          <Link href="#skills" className="hidden md:block font-mono text-xs text-muted-foreground hover:text-accent transition-colors">
+            Skills
+          </Link>
+          <Link href="#hobbies" className="hidden md:block font-mono text-xs text-muted-foreground hover:text-accent transition-colors">
+            Hobbies
+          </Link>
+
+          <div className="group relative">
+            <Link
+              href="/assets/Bereket_Lemma_Resume.pdf"
+              target="_blank"
+              className="rounded border border-border px-3 py-1.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all"
+            >
+              Resume
+            </Link>
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40">
+              view resume
             </span>
           </div>
         </div>

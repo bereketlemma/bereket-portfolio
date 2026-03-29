@@ -3,8 +3,8 @@ import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Why I'm Starting This Blog | Bereket Lemma",
-  description: "Why I'm starting a blog, what I plan to write about, and what you can expect in future posts.",
+  title: "Why I&apos;m Starting This Blog | Bereket Lemma",
+  description: "Why I&apos;m starting a blog, what I plan to write about, and what you can expect in future posts.",
 }
 
 export default function IntroductionPost() {
@@ -100,7 +100,7 @@ export default function IntroductionPost() {
         </p>
 
         <p className="font-mono text-xs text-muted-foreground/60 mt-4">
-            P.S. I can't promise regular updates, but I can promise that when I do write, it will be something I care about and want to share. Thanks for reading this far!  
+            P.S. I can&apos;t promise regular updates, but I can promise that when I do write, it will be something I care about and want to share. Thanks for reading this far!  
         </p>
         <p className="mt-1 text-base text-foreground/70">
           𝒷𝑒𝓇𝑒𝓀𝑒𝓉 𝓁𝑒𝓂𝓂𝒶

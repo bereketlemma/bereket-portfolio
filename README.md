@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# bereketlemma.com
 
-## Getting Started
+Personal portfolio of Bereket Lemma: Built with Next.js 14, TypeScript, and Tailwind CSS.
 
-First, run the development server:
+Live at [bereketlemma.com](https://bereketlemma.com).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS + shadcn/ui |
+| Animations | Framer Motion + react-intersection-observer |
+| Backend | Firebase (Firestore, Auth) |
+| Fonts | JetBrains Mono + Syne |
+| Analytics | Vercel Analytics + Speed Insights |
+| Deployment | Vercel + Cloudflare DNS |
+
+## Features
+
+- Terminal-style hero with typewriter animation
+- Scroll-reveal animations on all sections
+- Blog with markdown-style posts
+- Resume PDF download
+- Admin-ready Firebase backend
+- Mobile responsive
+- Deployed to custom domain via Vercel + Cloudflare
+
+## Project Structure
+```
+app/
+├── home/_components/     # Hero, Experience, Projects, Skills, Hobbies, Footer
+├── blog/                 # Blog index + posts
+├── projects/             # All projects page
+├── layout.tsx            # Root layout + fonts + metadata
+└── page.tsx              # Home page
+components/               # Shared UI components
+lib/                      # Utilities + project data
+public/assets/            # Resume PDF + static files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Getting Started
+```bash
+git clone https://github.com/bereketlemma/bereket-portfolio.git
+cd bereket-portfolio
+npm install
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
 
-## Learn More
+Create a `.env.local` file in the root:
+```bash
+NEXT_PUBLIC_API_KEY=
+NEXT_PUBLIC_AUTH_DOMAIN=
+NEXT_PUBLIC_PROJECT_ID=
+NEXT_PUBLIC_STORAGE_BUCKET=
+NEXT_PUBLIC_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_APP_ID=
+NEXT_PUBLIC_MEASUREMENT_ID=
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Deployed to Vercel with automatic deploys on every push to `main`. Custom domain connected via Cloudflare DNS.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

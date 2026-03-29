@@ -75,6 +75,7 @@ function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: num
           <a
             href={exp.link}
             target="_blank"
+            rel="noopener noreferrer"
             className="relative mt-2 inline-block font-mono text-xs text-accent hover:underline transition-all duration-300 group-hover:translate-x-1"
           >
             {exp.linkLabel}
@@ -102,7 +103,7 @@ export default function Experience() {
   const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.5 })
 
   return (
-    <section id="experience" className="py-20">
+    <section id="experience" className="py-24">
       <div
         ref={headerRef}
         className={`mb-12 flex items-center gap-4 transition-all duration-700 ${

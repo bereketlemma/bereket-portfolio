@@ -8,7 +8,7 @@ export default function IntroductionPost() {
       {/* Back */}
       <Link
         href="/blog"
-        className="mb-10 flex items-center gap-2 font-mono text-xs text-muted-foreground hover:text-accent transition-colors"
+        className="mb-10 inline-flex items-center gap-2 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
       >
         <ArrowLeft size={14} />
         back to blog

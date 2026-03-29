@@ -1,6 +1,5 @@
 "use client"
 
-import { useRef, useState } from "react"
 import Link from "next/link"
 import { Github, ExternalLink } from "lucide-react"
 import { useInView } from "react-intersection-observer"
@@ -9,11 +8,9 @@ import { allProjects } from "@/lib/projects"
 function ProjectCard({
   project,
   index,
-  show,
 }: {
   project: typeof allProjects[0]
   index: number
-  show: boolean
 }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
 
@@ -22,7 +19,7 @@ function ProjectCard({
       ref={ref}
       className={`group relative overflow-hidden rounded border border-border/40 p-6 transition-all duration-700 ease-out
         hover:border-accent/50 hover:shadow-[0_0_20px_rgba(var(--accent-rgb,100,200,255),0.08)]
-        ${inView && show ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"}
+        ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"}
       `}
       style={{ transitionDelay: `${index * 80}ms` }}
     >
@@ -64,9 +61,11 @@ function ProjectCard({
           </Link>
         </div>
       </div>
+
       <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">
         {project.description}
       </p>
+
       <div className="relative mt-4 flex flex-wrap gap-2">
         {project.tags.map((tag) => (
           <span
@@ -85,15 +84,8 @@ function ProjectCard({
 }
 
 export default function Projects() {
-  const [showMore, setShowMore] = useState(false)
-  const moreRef = useRef<HTMLDivElement>(null)
-
   const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.5 })
-
-  const { ref: viewMoreRef, inView: viewMoreInView } = useInView({
-    triggerOnce: true,
-    threshold: 0.5,
-  })
+  const { ref: viewMoreRef, inView: viewMoreInView } = useInView({ triggerOnce: true, threshold: 0.5 })
 
   return (
     <section id="projects" className="py-24">
@@ -105,7 +97,7 @@ export default function Projects() {
           headerInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
         }`}
       >
-        <span className="font-mono text-sm text-accent">03.</span>
+        <span className="font-mono text-sm text-accent">05.</span>
         <h2 className="font-syne text-2xl font-bold text-foreground">Projects</h2>
         <div className="h-px flex-1 bg-border" />
       </div>
@@ -113,51 +105,24 @@ export default function Projects() {
       {/* First 3 projects */}
       <div className="flex flex-col gap-6">
         {allProjects.slice(0, 3).map((project, i) => (
-          <ProjectCard key={project.title} project={project} index={i} show={true} />
+          <ProjectCard key={project.title} project={project} index={i} />
         ))}
       </div>
 
-      {/* View more trigger */}
+      {/* View all projects link */}
       <div
         ref={viewMoreRef}
         className={`my-8 flex items-center justify-center transition-all duration-700 ${
           viewMoreInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
-        <button
-          onClick={() => {
-            const next = !showMore
-            setShowMore(next)
-            if (next) {
-              setTimeout(() => moreRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100)
-            }
-          }}
-          className="group rounded border border-border/60 px-6 py-2.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all duration-300"
+        <Link
+          href="/projects"
+          className="group rounded border border-border/60 px-6 py-2.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2"
         >
-          {showMore ? (
-            <span className="flex items-center gap-2">
-              <span>↑</span>
-              <span>hide projects</span>
-            </span>
-          ) : (
-            <span className="flex items-center gap-2 animate-pulse group-hover:animate-none">
-              <span>↓</span>
-              <span>view more projects</span>
-            </span>
-          )}
-        </button>
-      </div>
-
-      {/* Remaining projects — animate in on click */}
-      <div ref={moreRef} className="flex flex-col gap-6">
-        {allProjects.slice(3).map((project, i) => (
-          <ProjectCard
-            key={project.title}
-            project={project}
-            index={i}
-            show={showMore}
-          />
-        ))}
+          <span className="animate-pulse group-hover:animate-none">view all projects</span>
+          <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+        </Link>
       </div>
 
     </section>

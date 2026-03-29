@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Github, Linkedin, Mail } from "lucide-react"
+import { Github, Linkedin, Mail, BookOpen } from "lucide-react"
 
 export default function Navbar() {
   return (
@@ -33,8 +33,17 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Right: social icons with tooltips */}
+        {/* Right: social icons + blog */}
         <div className="flex items-center gap-4">
+          <div className="group relative">
+            <Link href="/blog" className="text-muted-foreground hover:text-accent transition-colors">
+              <BookOpen size={18} />
+            </Link>
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40">
+              Blog
+            </span>
+          </div>
+
           <div className="group relative">
             <Link href="https://github.com/bereketlemma" target="_blank" className="text-muted-foreground hover:text-accent transition-colors">
               <Github size={18} />
@@ -45,7 +54,7 @@ export default function Navbar() {
           </div>
 
           <div className="group relative">
-            <Link href="https://linkedin.com/in/bereketlemma" target="_blank" className="text-muted-foreground hover:text-accent transition-colors">
+            <Link href="https://linkedin.com/in/bereketl" target="_blank" className="text-muted-foreground hover:text-accent transition-colors">
               <Linkedin size={18} />
             </Link>
             <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40">

@@ -13,7 +13,7 @@ const experiences = [
     tags: ["Python", "PyTorch", "LLM", "Quantization", "H100"],
   },
   {
-    date: "Jan 2024 — Present",
+    date: "Nov 2024 — Jan 2025",
     role: "Startup Engineer (Founding Team)",
     company: "Celeri.io",
     location: "Spokane, WA",

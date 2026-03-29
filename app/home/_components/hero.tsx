@@ -6,7 +6,7 @@ import { TerminalHeader } from "@/components/terminal-header"
 const terminalSections = [
   {
     heading: '📍 Location',
-    lines: ['Software Engineer based in Seattle, WA.'],
+    lines: ['Software Engineer based in Spokane, WA.'],
   },
   {
     heading: '🤖 Currently',

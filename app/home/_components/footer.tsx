@@ -23,7 +23,7 @@ export default function Footer() {
           <Link href="/projects" className="hover:text-accent transition-colors">
             projects
           </Link>
-          <Link href="mailto:bereket.lemma10@gmail.com" className="hover:text-accent transition-colors">
+          <Link href="/contact" className="hover:text-accent transition-colors">
             contact
           </Link>
         </div>

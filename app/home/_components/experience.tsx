@@ -41,6 +41,17 @@ const experiences = [
       "Automated IT and vulnerability monitoring workflows using PowerShell and Python REST APIs, eliminating 80+ engineering hours/week. Deployed 5+ automated security compliance checks integrated with Azure and GitHub Actions CI/CD.",
     tags: ["Python", "PowerShell", "Azure", "GitHub Actions", "Security"],
   },
+  {
+    date: "Jan 2023 — May 2023",
+    role: "Volunteer Software Engineer",
+    company: "West Central Community Center",
+    location: "Spokane, WA",
+    description:
+      "Built a full-stack database management system for a nonprofit, migrating 1000+ user records from manual Excel spreadsheets to a relational MySQL database. Led a 4-member team delivering role-based authentication, full CRUD operations, and sortable views.",
+    tags: ["React", "Node.js", "MySQL", "Express.js", "Heroku", "Netlify"],
+    link: null,
+    linkLabel: null,
+  },
 ]
 
 function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: number }) {

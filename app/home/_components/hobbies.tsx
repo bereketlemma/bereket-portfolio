@@ -26,7 +26,7 @@ const hobbies: {
     icon: Dumbbell,
     title: "Lifting & Soccer",
     description:
-      "Lifting is my main fitness focus. I enjoy the process of getting stronger and the mental clarity it brings. Soccer is my favorite sport to play and watch. I grew up playing and am a lifelong fan of the game.",
+      "Lifting is my main fitness focus. Tracking my progress on Hevy and follow my journey there! I also enjoy playing and watching soccer.",
     link: "https://hevy.com/user/bereket10",
     linkLabel: "Follow me on Hevy →",
   },
@@ -34,7 +34,7 @@ const hobbies: {
     icon: Gamepad2,
     title: "Gaming & Anime",
     description:
-      "I am a casual gamer but enjoy immersing myself in a good story game or anime. Games like resident evil and uncharted 4 are some of my favorites. I also enjoy anime like attack on titan and vinland saga. Any recommendations are welcome!",
+      "I am a casual gamer but enjoy immersing myself in a good story game or anime. Games like Far cry 3 and uncharted are some of my favorites. Enjoyed watching anime like Attack on Titan and Vinland Saga.",
     link: null,
     linkLabel: null,
   },

@@ -11,11 +11,20 @@ const posts = [
   {
     slug: "introduction",
     title: "Why I'm Starting This Blog",
-    date: "March 29, 2026",
+    date: "March 28, 2026",
     readTime: "3 min read",
     tags: ["Personal", "Writing"],
     excerpt:
       "Why I'm starting a blog, what I plan to write about and what you can expect in future posts.",
+  },
+  {
+    slug: "openai-parameter-golf",
+    title: "What I'm Learning in the OpenAI Parameter Golf Challenge",
+    date: "March 29, 2026",
+    readTime: "5 min read",
+    tags: ["AI", "Learning"],
+    excerpt:
+      "Sharing insights and lessons learned from participating in the OpenAI Parameter Golf Challenge.",
   },
 ]
 

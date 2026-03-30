@@ -15,7 +15,7 @@ const posts = [
     readTime: "3 min read",
     tags: ["Personal", "Writing"],
     excerpt:
-      "Why I'm starting a blog, what I plan to write about — from technical deep dives and AI/ML to startup life and career reflections — and what you can expect in future posts.",
+      "Why I'm starting a blog, what I plan to write about and what you can expect in future posts.",
   },
 ]
 

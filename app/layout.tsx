@@ -19,6 +19,14 @@ export const metadata: Metadata = {
   title: "Bereket Lemma",
   description: "Software Engineer · Security · Cloud",
   metadataBase: new URL("https://bereketlemma.com"),
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    other: [
+      { rel: "icon", url: "/android-chrome-192x192.png", sizes: "192x192" },
+      { rel: "icon", url: "/android-chrome-512x512.png", sizes: "512x512" },
+    ],
+  },
   keywords: ["Software Engineer", "Security", "Cloud", "GCP", "Next.js"],
   authors: [{ name: "Bereket Lemma" }],
   openGraph: {

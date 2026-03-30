@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useInView } from "react-intersection-observer"
-import { Dumbbell, Swords, Gamepad2, Church, Coffee } from "lucide-react"
+import { Dumbbell, Swords, Gamepad2, Church, Coffee, Utensils } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 // Custom soccer ball icon (Lucide doesn't have one)
@@ -24,49 +24,32 @@ const hobbies: {
 }[] = [
   {
     icon: Dumbbell,
-    title: "Fitness & Lifting",
+    title: "Lifting & Soccer",
     description:
-      "Tracking every session on Hevy. Consistency over intensity.",
+      "Lifting is my main fitness focus. I enjoy the process of getting stronger and the mental clarity it brings. Soccer is my favorite sport to play and watch. I grew up playing and am a lifelong fan of the game.",
     link: "https://hevy.com/user/bereket10",
     linkLabel: "Follow me on Hevy →",
   },
   {
-    icon: SoccerBall,
-    title: "Soccer",
-    description:
-      "Love playing — I'm down anytime, anywhere. On weekends you'll find me watching the English Premier League.",
-    link: null,
-    linkLabel: null,
-  },
-  {
-    icon: Swords,
-    title: "Anime",
-    description:
-      "Attack on Titan changed the way I think about freedom, sacrifice, and what it means to fight for something bigger than yourself.",
-    link: null,
-    linkLabel: null,
-  },
-  {
     icon: Gamepad2,
-    title: "Video Games",
+    title: "Gaming & Anime",
     description:
-      "Far Cry 3 for the storytelling — Vaas is one of the greatest villains ever written. Uncharted 4 for the world building and cinematic feel.",
-    link: null,
-    linkLabel: null,
-  },
-  {
-    icon: Church,
-    title: "Spiritual Life",
-    description:
-      "Actively working on my spiritual life. Faith keeps me grounded.",
+      "I am a casual gamer but enjoy immersing myself in a good story game or anime. Games like resident evil and uncharted 4 are some of my favorites. I also enjoy anime like attack on titan and vinland saga. Any recommendations are welcome!",
     link: null,
     linkLabel: null,
   },
   {
     icon: Coffee,
-    title: "Coffee",
+    title: "Coffee & Spiritual Life",
+    description: "As Ethiopian I grew up around coffee culture and I love trying new roasts and brewing methods. I am also working on my spiritual life and enjoy reading the Bible.",
+    linkLabel: null,
+    link: null
+  },
+  {
+    icon: Utensils,
+    title: "Cooking",
     description:
-      "You can't represent Ethiopia without loving coffee. I'm all about that sip-and-code life.",
+      "I enjoy cooking and trying new recipes. I find it to be a creative outlet to experiment with flavors and cuisines. Let me know if you have any favorite recipes to share!",
     link: null,
     linkLabel: null,
   },

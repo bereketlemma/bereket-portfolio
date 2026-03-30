@@ -1,23 +1,31 @@
-import type { Metadata } from "next"
+"use client"
+
+import { useEffect } from "react"
 import Link from "next/link"
 import { Github, ExternalLink, ArrowLeft } from "lucide-react"
 import { allProjects } from "@/lib/projects"
 
-export const metadata: Metadata = {
-  title: "Projects — Bereket Lemma",
-  description: "A collection of projects I've built — from trading engines to network intrusion detection.",
-}
-
 export default function ProjectsPage() {
+  useEffect(() => {
+    const savedPosition = sessionStorage.getItem("projectsScrollPosition")
+    if (savedPosition) {
+      window.scrollTo(0, parseInt(savedPosition))
+      sessionStorage.removeItem("projectsScrollPosition")
+    }
+  }, [])
+
   return (
     <main className="mx-auto max-w-3xl px-6 py-24">
-      <Link
-        href="/"
+      <button
+        onClick={() => {
+          sessionStorage.setItem("homeScrollPosition", "projects")
+          window.history.back()
+        }}
         className="mb-10 inline-flex items-center gap-2 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
       >
         <ArrowLeft size={14} />
         back to home
-      </Link>
+      </button>
 
       <div className="mb-12 flex items-center gap-4">
         <h1 className="font-syne text-2xl font-bold text-foreground">All Projects</h1>

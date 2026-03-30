@@ -72,11 +72,11 @@ export default function Navbar() {
           </div>
 
           <div className="group relative">
-            <Link href="mailto:bereket.lemma10@gmail.com" aria-label="Send Email" className="text-muted-foreground hover:text-accent transition-colors">
+            <Link href="/contact" className="text-muted-foreground hover:text-accent transition-colors">
               <Mail size={18} />
             </Link>
             <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-              Email
+              Contact
             </span>
           </div>
         </div>

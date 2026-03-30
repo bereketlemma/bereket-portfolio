@@ -49,14 +49,26 @@ export default function ProjectsPage() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-3 ml-3 shrink-0">
+              <div className="flex items-center gap-2 ml-3 shrink-0">
                 {project.live && (
-                  <Link href={project.live} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
-                    <ExternalLink size={16} />
+                  <Link
+                    href={project.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+                  >
+                    <ExternalLink size={12} />
+                    live
                   </Link>
                 )}
-                <Link href={project.github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-accent transition-colors">
-                  <Github size={16} />
+                <Link
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+                >
+                  <Github size={12} />
+                  github
                 </Link>
               </div>
             </div>

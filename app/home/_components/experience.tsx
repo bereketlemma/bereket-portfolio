@@ -23,6 +23,15 @@ const experiences = [
     link: "https://www.youtube.com/watch?v=CvY1y46ypYw",
     linkLabel: "Watch the pitch →",
   },
+    {
+    date: "Feb 2025 — May 2025",
+    role: "Full-Stack Software Engineer Intern",
+    company: "Hewitt Learning",
+    location: "Remote",
+    description:
+      "Designed scalable REST APIs with C#, ASP.NET Core, and MySQL with RBAC. Automated PDF report generation reducing turnaround by 60%. Deployed via GitHub Actions CI/CD.",
+    tags: ["C#", "ASP.NET Core", "MySQL", "REST APIs", "CI/CD"],
+  },
   {
     date: "May 2024 — Aug 2024",
     role: "Security Engineer Intern",
@@ -31,15 +40,6 @@ const experiences = [
     description:
       "Automated IT and vulnerability monitoring workflows using PowerShell and Python REST APIs, eliminating 80+ engineering hours/week. Deployed 5+ automated security compliance checks integrated with Azure and GitHub Actions CI/CD.",
     tags: ["Python", "PowerShell", "Azure", "GitHub Actions", "Security"],
-  },
-  {
-    date: "Feb 2025 — May 2025",
-    role: "Full-Stack Software Engineer Intern",
-    company: "Hewitt Learning",
-    location: "Remote",
-    description:
-      "Designed scalable REST APIs with C#, ASP.NET Core, and MySQL with RBAC. Automated PDF report generation reducing turnaround by 60%. Deployed via GitHub Actions CI/CD.",
-    tags: ["C#", "ASP.NET Core", "MySQL", "REST APIs", "CI/CD"],
   },
 ]
 

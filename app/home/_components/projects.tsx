@@ -120,7 +120,7 @@ export default function Projects() {
           href="/projects"
           className="group rounded border border-border/60 px-6 py-2.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2"
         >
-          <span className="animate-pulse group-hover:animate-none">view all projects</span>
+          <span className="animate-pulse group-hover:animate-none">view all projects </span>
           <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
         </Link>
       </div>

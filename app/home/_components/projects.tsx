@@ -29,38 +29,40 @@ function ProjectCard({
       {/* Top accent line */}
       <div className="absolute top-0 left-0 h-px w-0 bg-accent/60 group-hover:w-full transition-all duration-500" />
 
-      <div className="relative flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <h3 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
-            {project.title}
-          </h3>
-          {project.wip && (
-            <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
-              WIP
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2 ml-3 shrink-0">
-          {project.live && (
+      <div className="relative flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
+              {project.title}
+            </h3>
+            {project.wip && (
+              <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
+                WIP
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            {project.live && (
+              <Link
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+              >
+                <ExternalLink size={12} />
+                live
+              </Link>
+            )}
             <Link
-              href={project.live}
+              href={project.github}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
             >
-              <ExternalLink size={12} />
-              live
+              <Github size={12} />
+              github
             </Link>
-          )}
-          <Link
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
-          >
-            <Github size={12} />
-            github
-          </Link>
+          </div>
         </div>
       </div>
 

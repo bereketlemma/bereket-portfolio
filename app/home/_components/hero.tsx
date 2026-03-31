@@ -6,14 +6,17 @@ import { TerminalHeader } from "@/components/terminal-header"
 const terminalSections = [
   {
     heading: '📍 Location',
-    lines: ['Software Engineer based in Spokane, WA.'],
+    lines: ['Software Engineer based in Seattle, WA.'],
+  },
+  {
+    heading: '🟢 Open to Opportunities',
+    lines: ['Actively seeking SWE & Security Engineering roles.'],
   },
   {
     heading: '🤖 Currently',
     lines: [
-      'Competing in the OpenAI Parameter Golf Challenge — training a language',
-      'model to fit within 16MB, under 10 min on 8x H100 GPUs, optimized for',
-      'compression on FineWeb.',
+      'Building a Trading Engine (Stat Arb) and exploring OpenAI projects.',
+      'Always learning and shipping new things.',
     ],
   },
   {

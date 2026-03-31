@@ -10,19 +10,17 @@ import { ArrowRight } from "lucide-react"
 const latestPosts = [
   {
     slug: "openai-parameter-golf",
-    title: "OpenAI Parameter Golf Challenge",
-    date: "2026-03-15",
-    excerpt:
-      "A deep dive into competing in OpenAI's Parameter Golf — optimizing model configs for maximum efficiency under tight constraints.",
-    tags: ["OpenAI", "LLMs", "Competition"],
+    title: "What I'm Learning in the OpenAI Parameter Golf Challenge",
+    date: "2026-03-29",
+    excerpt: "Sharing insights and lessons learned from participating in the OpenAI Parameter Golf Challenge.",
+    tags: ["AI", "Learning"],
   },
   {
     slug: "introduction",
-    title: "Hello World — Introduction",
-    date: "2026-02-01",
-    excerpt:
-      "Who I am, what I'm building, and why I started writing.",
-    tags: ["Personal", "Introduction"],
+    title: "Why I'm Starting This Blog",
+    date: "2026-03-28",
+    excerpt: "Why I'm starting a blog, what I plan to write about and what you can expect in future posts.",
+    tags: ["Personal", "Writing"],
   },
 ]
 

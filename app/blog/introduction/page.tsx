@@ -52,8 +52,8 @@ export default function IntroductionPost() {
         </p>
 
         <p>
-          Writing also forces me to actually understand what I&apos;m doing. It&apos;s easy to copy a Stack Overflow answer and move on.
-          It&apos;s harder to explain <span className="text-accent">why</span> something works. That&apos;s the kind of depth I want to build.
+          Writing also forces me to actually understand what I&apos;m doing. It&apos;s easy to copy and paste a solution that works, but
+          It&apos;s harder to explain <span className="text-accent">why</span> something works or <span className="text-accent">how</span> it fits into the bigger picture. That&apos;s the kind of depth I want to build.
         </p>
 
         <h2 className="font-syne text-lg font-bold text-foreground mt-2">What I&apos;ll be writing about</h2>
@@ -64,7 +64,7 @@ export default function IntroductionPost() {
 
         <ul className="list-disc list-inside flex flex-col gap-2 pl-2">
           <li>
-            <span className="text-accent">Technical deep dives</span> : breakdowns of real problems I&apos;ve solved at work or in side projects.
+            <span className="text-accent">Technical deep dives</span> : breakdowns of real problems I&apos;ve solved or interesting systems I&apos;ve built.
             Think system design decisions, debugging war stories, and things I wish someone had explained to me earlier.
           </li>
           <li>
@@ -93,10 +93,7 @@ export default function IntroductionPost() {
         </p>
 
         <p>
-          If anything I write resonates or you just want to connect, feel free to reach out at{" "}
-          <a href="mailto:bereket.lemma10@gmail.com" className="text-accent hover:underline">
-            bereket.lemma10@gmail.com
-          </a>.
+          If anything I write resonates or you just want to connect, contact me through the <Link href="/contact" className="text-accent underline underline-offset-4">contact form</Link> 
         </p>
 
         <p className="font-mono text-xs text-muted-foreground/60 mt-4">

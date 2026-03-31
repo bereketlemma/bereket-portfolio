@@ -60,8 +60,8 @@ export default function ParameterGolfPost() {
 
         <p>
           Once I felt comfortable, I scaled up to a remote GPU environment using
-          <span className="text-accent">Runpod</span>, which is recommended for its proximity to the challenge's
-          official evaluation setup. This allowed me to iterate faster and test ideas at scale.
+          <span className="text-accent"> Runpod</span>, which is recommended for its proximity to the challenge's
+          official evaluation setup.This allowed me to iterate faster and test ideas at scale.
         </p>
 
         <h2 className="font-syne text-lg font-bold text-foreground mt-2">The Creative Process</h2>
@@ -135,7 +135,7 @@ export default function ParameterGolfPost() {
             </Link>
         </p>
 
-        <p className="font-mono text-xs text-muted-foreground/60 mt-4">
+        <p className="mt-1 text-base text-foreground/70">
             𝒷𝑒𝓇𝑒𝓀𝑒𝓉 𝓁𝑒𝓂𝓂𝒶
         </p>
 

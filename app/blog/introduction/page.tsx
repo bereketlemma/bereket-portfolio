@@ -38,7 +38,7 @@ export default function IntroductionPost() {
       <div className="flex flex-col gap-6 text-sm leading-relaxed text-muted-foreground">
 
         <p>
-          Hey, I&apos;m <span className="text-foreground font-medium">Bereket Lemma</span> a software engineer based in Spokane, WA.
+          Hey, I&apos;m <span className="text-accent">Bereket Lemma</span>, a software engineer based in Seattle, WA.
           I&apos;ve been building things for a few years now, from full-stack apps to security tooling to training language models
           and I realized I&apos;ve never really documented what I&apos;m learning along the way. This blog is my way of changing that.
         </p>

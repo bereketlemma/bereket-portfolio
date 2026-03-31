@@ -44,30 +44,21 @@ export default function Navbar() {
             </span>
           </div>
 
-          <div className="group relative">
+          <div className="group relative hidden md:block">
             <Link href="https://music.youtube.com/playlist?list=PLyUW1Ua_KEvbbp43z66PSI7Hl03j4e6-L&si=ZxSfk7Ykk-Puq5Kt" target="_blank" rel="noopener noreferrer" aria-label="YouTube Music Playlist" className="text-muted-foreground hover:text-accent transition-colors">
               <Music size={18} />
             </Link>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 pointer-events-none">
               Playlist
             </span>
           </div>
 
-          <div className="group relative">
+          <div className="group relative hidden md:block">
             <Link href="https://github.com/bereketlemma" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile" className="text-muted-foreground hover:text-accent transition-colors">
               <Github size={18} />
             </Link>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 pointer-events-none">
               GitHub
-            </span>
-          </div>
-
-          <div className="group relative">
-            <Link href="https://linkedin.com/in/bereketl" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile" className="text-muted-foreground hover:text-accent transition-colors">
-              <Linkedin size={18} />
-            </Link>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-              LinkedIn
             </span>
           </div>
 
@@ -123,10 +114,10 @@ export default function Navbar() {
           {/* Mobile menu toggle */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden text-muted-foreground hover:text-accent transition-colors"
+            className="md:hidden text-muted-foreground hover:text-accent transition-colors p-1"
             aria-label="Toggle navigation menu"
           >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
 
@@ -146,6 +137,25 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {/* Resume buttons for mobile */}
+            <a
+              href="/assets/Bereket_Lemma_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View Resume"
+              className="border border-border rounded px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center mt-2"
+            >
+              Resume
+            </a>
+            <a
+              href="/assets/Bereket_Lemma_Resume.pdf"
+              download="Bereket_Lemma_Resume.pdf"
+              aria-label="Download Resume"
+              className="border border-border rounded px-2 py-1.5 text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center mt-1"
+            >
+              <Download size={14} />
+              <span className="ml-1">Download</span>
+            </a>
           </div>
         </div>
       )}

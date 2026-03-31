@@ -18,7 +18,7 @@ export default function ProjectsPage() {
     <main className="mx-auto max-w-3xl px-6 py-24">
       <button
         onClick={() => {
-          sessionStorage.setItem("homeScrollPosition", "projects")
+          sessionStorage.setItem("homeScrollPosition", "blog")
           window.history.back()
         }}
         className="mb-10 inline-flex items-center gap-2 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"

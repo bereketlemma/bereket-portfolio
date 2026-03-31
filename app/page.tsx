@@ -6,14 +6,16 @@ import Experience from "./home/_components/experience"
 import Skills from "./home/_components/skills"
 import Hobbies from "./home/_components/hobbies"
 import Projects from "./home/_components/projects"
+
+import LatestPost from "./home/_components/latest-post"
 import Footer from "./home/_components/footer"
 
 export default function Home() {
   useEffect(() => {
     const section = sessionStorage.getItem("homeScrollPosition")
-    if (section === "projects") {
+    if (section === "projects" || section === "blog") {
       setTimeout(() => {
-        const el = document.getElementById("projects")
+        const el = document.getElementById(section)
         if (el) el.scrollIntoView({ behavior: "smooth" })
         sessionStorage.removeItem("homeScrollPosition")
       }, 500)
@@ -27,6 +29,7 @@ export default function Home() {
       <Skills />
       <Hobbies />
       <Projects />
+      <LatestPost />
       <Footer />
     </>
   )

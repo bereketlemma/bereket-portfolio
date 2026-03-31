@@ -133,8 +133,9 @@ export default function Hero() {
 
         {/* About me text */}
         <div className="max-w-xl space-y-1 text-sm leading-relaxed text-muted-foreground">
-          <p>B.S. in <span className="text-accent">Computer Science & Mathematics</span> from <span className="text-accent">Whitworth University</span>.</p>
-          <p>Focused on backend development, cloud infrastructure, and security engineering. Building systems with dependable infrastructure and zero-trust architecture.</p>
+          <p>B.S. in <span className="text-accent">Computer Science & Mathematics</span> from <a href="https://www.whitworth.edu/" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4">Whitworth University</a>.</p>
+          <p>Focused on backend development, cloud infrastructure, and security engineering to build scalable, reliable, and secure software.</p>
+          <p>For more info, check out my <a href="/assets/Bereket_Lemma_Resume.pdf" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4">résumé</a> or send me a <a href="/contact" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4">message</a>!</p>
         </div>
       </div>
 

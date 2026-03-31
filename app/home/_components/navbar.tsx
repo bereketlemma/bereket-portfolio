@@ -135,13 +135,13 @@ export default function Navbar() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-sm">
-          <div className="mx-auto max-w-3xl px-6 py-3 flex flex-col gap-2">
+          <div className="mx-auto max-w-3xl px-3 py-2 flex flex-col gap-1">
             {sectionLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="font-mono text-sm text-muted-foreground hover:text-accent transition-colors py-1.5"
+                className="font-mono text-xs text-muted-foreground hover:text-accent transition-colors py-1"
               >
                 {link.label}
               </Link>

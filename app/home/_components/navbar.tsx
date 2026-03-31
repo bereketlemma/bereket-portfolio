@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { Github, Linkedin, Mail, BookOpen, Music, Menu, X } from "lucide-react"
+import { Github, Linkedin, Mail, BookOpen, Music, Menu, X, Download } from "lucide-react"
 
 const sectionLinks = [
   { href: "/#experience", label: "Experience" },
@@ -89,19 +89,35 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <div className="group relative">
-            <Link
-              href="/assets/Bereket_Lemma_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View Resume"
-              className="rounded border border-border px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all md:px-3 md:py-1.5 md:text-sm"
-            >
-              Resume
-            </Link>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-              view resume
-            </span>
+          {/* Resume: view button and download button, separated, each with its own tooltip */}
+          <div className="flex items-center gap-2">
+            <div className="group relative">
+              <a
+                href="/assets/Bereket_Lemma_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View Resume"
+                className="border border-border rounded px-3 py-1.5 font-mono text-xs md:text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center"
+              >
+                Resume
+              </a>
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
+                View Resume
+              </span>
+            </div>
+            <div className="group relative">
+              <a
+                href="/assets/Bereket_Lemma_Resume.pdf"
+                download="Bereket_Lemma_Resume.pdf"
+                aria-label="Download Resume"
+                className="border border-border rounded px-2 py-1.5 text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center"
+              >
+                <Download size={16} className="md:w-4 md:h-4" />
+              </a>
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
+                Download Resume
+              </span>
+            </div>
           </div>
 
           {/* Mobile menu toggle */}

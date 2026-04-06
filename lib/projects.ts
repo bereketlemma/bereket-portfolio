@@ -12,6 +12,18 @@ export const allProjects = [
     live: "https://devscope.bereketlemma.com",
   },
   {
+    title: "LLM Inference Benchmark Suite",
+    shortTitle: "LLM Inference Bench",
+    description:
+      "Benchmarking suite that runs Mistral-7B in FP16 and AWQ-Marlin INT4 via vLLM on GCP GPUs, measuring throughput, latency, and memory usage. Results visualized in a Next.js dashboard.",
+    shortDescription:
+      "Benchmarks Mistral-7B FP16 vs AWQ-Marlin INT4 with vLLM on GCP GPUs, tracking throughput, latency, and memory in a Next.js dashboard.",
+    tags: ["Python", "vLLM", "GCP", "Mistral-7B", "AWQ-Marlin", "Next.js", "Benchmarking"],
+    shortTags: ["vLLM", "GCP", "Mistral-7B", "AWQ-Marlin", "Next.js", "Benchmarking"],
+    github: "https://github.com/bereketlemma/llm-inference-bench",
+    live: "https://bench.bereketlemma.com/",
+  },
+  {
     title: "Network Intrusion Detection System",
     shortTitle: "NIDS — Network Intrusion Detection",
     description:

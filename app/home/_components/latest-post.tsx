@@ -9,6 +9,13 @@ import { ArrowRight } from "lucide-react"
 /* ── Update this array whenever you publish a new post ── */
 const latestPosts = [
   {
+    slug: "llm-inference-bench",
+    title: "What I Learned Benchmarking FP16 vs INT4 LLM Inference with vLLM",
+    date: "2026-04-06",
+    excerpt: "I built a benchmark to answer whether INT4 is truly faster than FP16 in production, and learned why awq_marlin was the turning point.",
+    tags: ["AI", "Benchmarking"],
+  },
+  {
     slug: "openai-parameter-golf",
     title: "What I'm Learning in the OpenAI Parameter Golf Challenge",
     date: "2026-03-29",

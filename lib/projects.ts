@@ -1,6 +1,6 @@
 export const allProjects = [
   {
-    title: "DevScope — Repository Intelligence Platform",
+    title: "DevScope: Repository Intelligence Platform",
     shortTitle: "DevScope",
     description:
       "Built a distributed engineering analytics platform mining GitHub repository data to surface PR velocity, review latency, and code churn. Streams events through Cloud Pub/Sub into BigQuery for sub-second querying. Vertex AI anomaly detection on Cloud Run flags productivity regressions with 95% precision.",
@@ -25,7 +25,7 @@ export const allProjects = [
   },
   {
     title: "Network Intrusion Detection System",
-    shortTitle: "NIDS — Network Intrusion Detection",
+    shortTitle: "NIDS: Network Intrusion Detection",
     description:
       "Real-time network intrusion detection system classifying live traffic across 7 attack categories including DoS, DDoS, port scanning, and brute-force. Trained Random Forest on 2.5M+ CICIDS2017 records achieving 97.47% accuracy and 98.21% F1-score. Results visualized in a live Streamlit dashboard.",
     shortDescription:

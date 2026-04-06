@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 const posts = [
   {
+    slug: "llm-inference-bench",
+    title: "What I Learned Benchmarking FP16 vs INT4 LLM Inference with vLLM",
+    date: "April 6, 2026",
+    readTime: "12 min read",
+    tags: ["AI", "Benchmarking", "Systems"],
+    excerpt:
+      "I built a benchmark to answer whether INT4 is truly faster than FP16 in production, and learned why awq_marlin was the turning point.",
+  },
+  {
     slug: "introduction",
     title: "Why I'm Starting This Blog",
     date: "March 28, 2026",

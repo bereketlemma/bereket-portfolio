@@ -8,5 +8,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/projects`, lastModified: new Date(), priority: 0.8 },
     { url: `${baseUrl}/blog`, lastModified: new Date(), priority: 0.8 },
     { url: `${baseUrl}/blog/introduction`, lastModified: new Date(), priority: 0.6 },
+    { url: `${baseUrl}/blog/llm-inference-bench`, lastModified: new Date(), priority: 0.6 },
   ]
 }

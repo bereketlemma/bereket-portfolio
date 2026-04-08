@@ -42,7 +42,9 @@ export default function ProjectsPage() {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h2 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-colors">
-                    {project.shortTitle}
+                    <Link href={`/projects/${project.slug}`} className="hover:underline underline-offset-4">
+                      {project.shortTitle}
+                    </Link>
                   </h2>
                   {"wip" in project && project.wip && (
                     <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
@@ -80,6 +82,15 @@ export default function ProjectsPage() {
                   {tag}
                 </span>
               ))}
+            </div>
+
+            <div className="mt-4">
+              <Link
+                href={`/projects/${project.slug}`}
+                className="inline-flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+              >
+                view engineering case study →
+              </Link>
             </div>
           </div>
         ))}

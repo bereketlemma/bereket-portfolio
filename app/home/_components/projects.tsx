@@ -9,7 +9,7 @@ function ProjectCard({
   project,
   index,
 }: {
-  project: typeof allProjects[0]
+  project: (typeof allProjects)[number]
   index: number
 }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
@@ -33,7 +33,9 @@ function ProjectCard({
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
-              {project.title}
+              <Link href={`/projects/${project.slug}`} className="hover:underline underline-offset-4">
+                {project.title}
+              </Link>
             </h3>
             {project.wip && (
               <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
@@ -79,6 +81,15 @@ function ProjectCard({
             {tag}
           </span>
         ))}
+      </div>
+
+      <div className="relative mt-4">
+        <Link
+          href={`/projects/${project.slug}`}
+          className="inline-flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+        >
+          view engineering case study →
+        </Link>
       </div>
 
       {/* Bottom accent line */}

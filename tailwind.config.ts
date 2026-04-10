@@ -50,8 +50,9 @@ const config: Config = {
         "text-muted": "#6b7a72",
       },
       fontFamily: {
+        sans: ["var(--font-sans)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
-        syne: ["var(--font-syne)", "sans-serif"],
+        syne: ["var(--font-mono)", "monospace"],
       },
       borderRadius: {
         lg: "var(--radius)",

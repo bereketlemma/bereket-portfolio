@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { JetBrains_Mono, Syne } from "next/font/google"
+import { Inter, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
@@ -10,9 +10,9 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
 })
 
-const syne = Syne({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-syne",
+  variable: "--font-sans",
 })
 
 export const metadata: Metadata = {
@@ -53,7 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${jetbrainsMono.variable} ${syne.variable} font-mono bg-background text-foreground antialiased`}
+        className={`${jetbrainsMono.variable} ${inter.variable} font-sans bg-background text-foreground antialiased`}
       >
         <script
           type="application/ld+json"

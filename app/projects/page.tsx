@@ -89,7 +89,7 @@ export default function ProjectsPage() {
                 href={`/projects/${project.slug}`}
                 className="inline-flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
               >
-                view engineering case study →
+                view build process →
               </Link>
             </div>
           </div>

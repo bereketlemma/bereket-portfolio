@@ -55,15 +55,15 @@ const experiences = [
 ]
 
 function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: number }) {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.08 })
 
   return (
     <div
       ref={ref}
-      className={`group grid grid-cols-1 gap-2 md:grid-cols-[200px_1fr] md:gap-8 transition-all duration-700 ease-out
-        ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+      className={`group grid grid-cols-1 gap-2 md:grid-cols-[200px_1fr] md:gap-8 transition-all duration-500 ease-out
+        ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
       `}
-      style={{ transitionDelay: `${index * 150}ms` }}
+      style={{ transitionDelay: `${index * 70}ms` }}
     >
       <div className="flex flex-col">
         <span className="font-mono text-xs text-accent">{exp.date}</span>
@@ -111,13 +111,13 @@ function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: num
 }
 
 export default function Experience() {
-  const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.5 })
+  const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.25 })
 
   return (
     <section id="experience" className="py-24">
       <div
         ref={headerRef}
-        className={`mb-12 flex items-center gap-4 transition-all duration-700 ${
+        className={`mb-12 flex items-center gap-4 transition-all duration-500 ${
           headerInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
         }`}
       >

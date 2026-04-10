@@ -4,25 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 210 40% 89%;
-    --card: 0 0% 7%;
-    --card-foreground: 210 40% 89%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 210 40% 89%;
-    --primary: 151 100% 50%;
-    --primary-foreground: 0 0% 4%;
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 210 40% 89%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 150 6% 44%;
-    --accent: 151 100% 50%;
-    --accent-foreground: 0 0% 4%;
+    --background: 0 0% 2%;
+    --foreground: 240 100% 99%;
+    --card: 0 0% 5%;
+    --card-foreground: 240 100% 99%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 240 100% 99%;
+    --primary: 135 100% 50%;
+    --primary-foreground: 0 0% 2%;
+    --secondary: 195 100% 56%;
+    --secondary-foreground: 0 0% 2%;
+    --muted: 0 0% 9%;
+    --muted-foreground: 210 20% 72%;
+    --accent: 135 100% 50%;
+    --accent-foreground: 0 0% 2%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 89%;
-    --border: 150 6% 20%;
-    --input: 150 6% 20%;
-    --ring: 151 100% 50%;
+    --destructive-foreground: 240 100% 99%;
+    --border: 196 45% 22%;
+    --input: 196 45% 22%;
+    --ring: 135 100% 50%;
+    --accent-blue: 195 100% 56%;
     --radius: 0.5rem;
   }
 }
@@ -44,6 +45,221 @@
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dsPulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsla(var(--accent), 0.25); }
+  50% { box-shadow: 0 0 0 10px hsla(var(--accent), 0); }
+}
+
+@keyframes dsDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes dsType {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes dsFlipIn {
+  from {
+    opacity: 0;
+    transform: perspective(600px) rotateY(70deg) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(600px) rotateY(0deg) translateY(0);
+  }
+}
+
+@keyframes dsDraw {
+  from { transform: scaleX(0); opacity: 0.3; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes dsOutcomePop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dsTicker {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+@keyframes dsScan {
+  from { transform: translateY(-120%); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  to { transform: translateY(450%); opacity: 0; }
+}
+
+@keyframes dsGlitch {
+  0%, 94%, 100% { transform: translate(0, 0); text-shadow: none; }
+  95% { transform: translate(-1px, 0); text-shadow: 1px 0 hsl(var(--accent-blue) / 0.55), -1px 0 hsl(var(--accent) / 0.55); }
+  96% { transform: translate(1px, 0); text-shadow: -1px 0 hsl(var(--accent-blue) / 0.55), 1px 0 hsl(var(--accent) / 0.55); }
+}
+
+@keyframes dsQueryPop {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes timelineFlow {
+  from { background-position: 0 0; }
+  to { background-position: 0 24px; }
+}
+
+@keyframes timelineNodePulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--accent) / 0.16); }
+  50% { box-shadow: 0 0 0 6px hsl(var(--accent) / 0); }
+}
+
+.ds-pulse-badge {
+  animation: dsPulse 2.2s ease-in-out infinite;
+}
+
+.ds-fade-drop {
+  animation: dsDropIn 0.7s ease-out both;
+}
+
+.ds-type-line {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: dsType 2.4s steps(90, end) 0.35s forwards;
+}
+
+.ds-tech-tile {
+  animation: dsFlipIn 0.55s ease-out both;
+  transform-origin: center;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.ds-tech-tile:hover {
+  transform: rotate(2deg) translateY(-2px);
+  border-color: hsl(var(--accent) / 0.6);
+  box-shadow:
+    0 8px 24px hsla(var(--accent), 0.14),
+    0 0 0 1px hsl(var(--accent-blue) / 0.35);
+}
+
+.ds-circuit {
+  background-image:
+    linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px),
+    radial-gradient(circle at 12% 20%, hsl(var(--accent) / 0.08), transparent 45%),
+    radial-gradient(circle at 85% 12%, hsl(var(--accent-blue) / 0.1), transparent 40%);
+  background-size: 22px 22px, 22px 22px, auto;
+}
+
+.ds-float-card {
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.ds-float-card:hover {
+  transform: translateY(-3px);
+  border-color: hsl(var(--accent) / 0.5);
+  box-shadow:
+    0 10px 24px hsla(var(--accent), 0.14),
+    0 0 22px hsl(var(--accent-blue) / 0.14);
+}
+
+.ds-draw-line {
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: dsDraw 900ms ease-out forwards;
+}
+
+.ds-outcome-pop {
+  animation: dsOutcomePop 700ms ease-out both;
+}
+
+.ds-terminal-ticker {
+  mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent);
+}
+
+.ds-ticker-track {
+  position: absolute;
+  inset: 0;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  animation: dsTicker 18s linear infinite;
+}
+
+.ds-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, hsl(var(--accent)), hsl(var(--accent-blue)), transparent);
+  box-shadow: 0 0 18px hsl(var(--accent) / 0.55);
+  animation: dsScan 1.7s ease-out 200ms 1 both;
+}
+
+.ds-query-pop {
+  animation: dsQueryPop 220ms ease-out both;
+}
+
+.ds-bento-green:hover {
+  box-shadow: 0 12px 30px hsl(var(--accent) / 0.16);
+}
+
+.ds-bento-blue:hover {
+  box-shadow: 0 12px 30px hsl(var(--accent-blue) / 0.16);
+}
+
+.ds-outcome-glitch {
+  animation: dsGlitch 4s steps(2, end) infinite;
+}
+
+.timeline-connector {
+  background-image: linear-gradient(
+    to bottom,
+    hsl(var(--border) / 0.7),
+    hsl(var(--accent) / 0.5),
+    hsl(var(--border) / 0.7)
+  );
+  background-size: 100% 24px;
+  animation: timelineFlow 1.6s linear infinite;
+}
+
+.timeline-node {
+  animation: timelineNodePulse 2.2s ease-in-out infinite;
+}
+
+.timeline-panel {
+  transition: filter 180ms ease;
+}
+
+.timeline-panel:hover {
+  filter: drop-shadow(0 6px 16px hsl(var(--accent) / 0.11));
+}
+
+@media (max-width: 768px) {
+  .ds-type-line {
+    white-space: normal;
+    width: 100%;
+    animation: fadeSlideIn 0.55s ease-out both;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

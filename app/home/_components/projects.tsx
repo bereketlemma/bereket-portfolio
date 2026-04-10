@@ -12,16 +12,16 @@ function ProjectCard({
   project: (typeof allProjects)[number]
   index: number
 }) {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.06 })
 
   return (
     <div
       ref={ref}
-      className={`group relative overflow-hidden rounded border border-border/40 p-6 transition-all duration-700 ease-out
+      className={`group relative overflow-hidden rounded border border-border/40 p-6 transition-all duration-450 ease-out
         hover:border-accent/50 hover:shadow-[0_0_20px_rgba(var(--accent-rgb,100,200,255),0.08)]
-        ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"}
+        ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}
       `}
-      style={{ transitionDelay: `${index * 80}ms` }}
+      style={{ transitionDelay: `${index * 45}ms` }}
     >
       {/* Hover glow gradient */}
       <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-accent/5 via-transparent to-accent/5" />
@@ -88,7 +88,7 @@ function ProjectCard({
           href={`/projects/${project.slug}`}
           className="inline-flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
         >
-          view engineering case study →
+          view build process →
         </Link>
       </div>
 
@@ -99,8 +99,8 @@ function ProjectCard({
 }
 
 export default function Projects() {
-  const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.5 })
-  const { ref: viewMoreRef, inView: viewMoreInView } = useInView({ triggerOnce: true, threshold: 0.5 })
+  const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.25 })
+  const { ref: viewMoreRef, inView: viewMoreInView } = useInView({ triggerOnce: true, threshold: 0.25 })
 
   return (
     <section id="projects" className="py-24">
@@ -108,7 +108,7 @@ export default function Projects() {
       {/* Section header */}
       <div
         ref={headerRef}
-        className={`mb-12 flex items-center gap-4 transition-all duration-700 ${
+        className={`mb-12 flex items-center gap-4 transition-all duration-500 ${
           headerInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
         }`}
       >
@@ -127,7 +127,7 @@ export default function Projects() {
       {/* View all projects link */}
       <div
         ref={viewMoreRef}
-        className={`my-8 flex items-center justify-center transition-all duration-700 ${
+        className={`my-8 flex items-center justify-center transition-all duration-500 ${
           viewMoreInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >

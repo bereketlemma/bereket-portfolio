@@ -46,16 +46,16 @@ function SkillCard({
   data: typeof skills[keyof typeof skills]
   index: number
 }) {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.08 })
 
   return (
     <div
       ref={ref}
-      className={`group relative overflow-hidden rounded border border-border/40 p-5 transition-all duration-700 ease-out
+      className={`group relative overflow-hidden rounded border border-border/40 p-5 transition-all duration-500 ease-out
         hover:border-accent/50 hover:shadow-[0_0_20px_rgba(var(--accent-rgb,100,200,255),0.08)]
-        ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95"}
+        ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}
       `}
-      style={{ transitionDelay: `${index * 150}ms` }}
+      style={{ transitionDelay: `${index * 70}ms` }}
     >
       {/* Hover glow gradient */}
       <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-accent/5 via-transparent to-accent/5" />
@@ -87,7 +87,7 @@ function SkillCard({
               ${inView ? "animate-none" : ""}
             `}
             style={{
-              animation: inView ? `fadeSlideIn 0.4s ease forwards ${index * 100 + i * 50}ms` : "none",
+              animation: inView ? `fadeSlideIn 0.28s ease forwards ${index * 60 + i * 30}ms` : "none",
             }}
           >
             {skill}
@@ -110,7 +110,7 @@ const terminalLines = [
 ]
 
 function TerminalBar() {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 })
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 })
   const [visibleCount, setVisibleCount] = useState(0)
   const [showCursor, setShowCursor] = useState(true)
 
@@ -131,7 +131,7 @@ function TerminalBar() {
   return (
     <div
       ref={ref}
-      className={`mt-8 overflow-hidden rounded border border-border/40 bg-surface/20 transition-all duration-700 ${
+      className={`mt-8 overflow-hidden rounded border border-border/40 bg-surface/20 transition-all duration-500 ${
         inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
       }`}
     >
@@ -164,7 +164,7 @@ function TerminalBar() {
 }
 
 export default function Skills() {
-  const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.5 })
+  const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.25 })
 
   return (
     <section id="skills" className="py-24">
@@ -172,7 +172,7 @@ export default function Skills() {
       {/* Section header */}
       <div
         ref={headerRef}
-        className={`mb-12 flex items-center gap-4 transition-all duration-700 ${
+        className={`mb-12 flex items-center gap-4 transition-all duration-500 ${
           headerInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
         }`}
       >

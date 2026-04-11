@@ -5,35 +5,36 @@ import { useInView } from "react-intersection-observer"
 import { TerminalHeader } from "@/components/terminal-header"
 
 const skills = {
-  Languages: {
+  "Programming": {
     icon: "< />",
     color: "text-blue-400",
-    items: ["C++", "C", "Python", "Go", "TypeScript", "JavaScript", "SQL", "Bash"],
+    items: [
+      "C++", "C", "Python", "Go", "TypeScript", "JavaScript", "SQL", "Bash",
+      "React", "Next.js", "FastAPI", "Node.js", "ASP.NET Core", "Tailwind CSS"
+    ],
   },
-  Frameworks: {
-    icon: "{ }",
-    color: "text-purple-400",
-    items: ["React", "Next.js", "FastAPI", "Node.js", "ASP.NET Core", "Tailwind CSS"],
-  },
-  Cloud: {
+  "Cloud & Security": {
     icon: "☁",
     color: "text-cyan-400",
-    items: ["GCP", "BigQuery", "Pub/Sub", "Cloud Run", "Dataflow", "Vertex AI", "AWS", "Azure", "Firebase"],
+    items: [
+      "GCP", "Cloud Run", "Vertex AI", "AWS", "Azure",
+        // (Removed terminal lines if present)
+    ],
   },
-  Security: {
-    icon: "🔒",
-    color: "text-red-400",
-    items: ["Zero Trust", "RBAC", "Vulnerability Assessment", "SIEM", "PowerShell Automation", "InfoSec"],
-  },
-  Systems: {
+  "Systems": {
     icon: "⚙",
     color: "text-amber-400",
-    items: ["Linux", "Multithreading", "Lock-Free DS", "TCP/UDP Sockets", "Memory Management", "Docker", "Kubernetes"],
+    items: [
+      "Linux", "Multithreading", "Lock-Free DS", "TCP/UDP Sockets", "Memory Management", "Docker", "Kubernetes"
+    ],
   },
-  Data: {
+  "Data": {
     icon: "∑",
     color: "text-green-400",
-    items: ["TensorFlow", "Scikit-learn", "Pandas", "NumPy", "Redis", "PostgreSQL", "MySQL"],
+    items: [
+      "TensorFlow", "Scikit-learn", "Pandas", "NumPy", "Redis", "PostgreSQL", "MySQL",
+      "PyTorch", "Transformers", "LLM Training", "Distributed Inference"
+    ],
   },
 }
 
@@ -101,67 +102,7 @@ function SkillCard({
   )
 }
 
-const terminalLines = [
-  { prefix: "$", text: "always learning", delay: 0 },
-  { prefix: ">", text: "currently exploring quantitative finance", delay: 400 },
-  { prefix: ">", text: "systems programming & low-level optimization", delay: 800 },
-  { prefix: ">", text: "NeetCode 150 DSA — graphs, intervals, daily", delay: 1200 },
-  { prefix: "$", text: "status: grinding ▮", delay: 1600 },
-]
 
-function TerminalBar() {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 })
-  const [visibleCount, setVisibleCount] = useState(0)
-  const [showCursor, setShowCursor] = useState(true)
-
-  useEffect(() => {
-    if (!inView) return
-    if (visibleCount >= terminalLines.length) return
-    const timer = setTimeout(() => {
-      setVisibleCount((prev) => prev + 1)
-    }, terminalLines[visibleCount].delay === 0 ? 300 : terminalLines[visibleCount].delay - (terminalLines[visibleCount - 1]?.delay ?? 0) + 300)
-    return () => clearTimeout(timer)
-  }, [inView, visibleCount])
-
-  useEffect(() => {
-    const interval = setInterval(() => setShowCursor((p) => !p), 500)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <div
-      ref={ref}
-      className={`mt-8 overflow-hidden rounded border border-border/40 bg-surface/20 transition-all duration-500 ${
-        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      }`}
-    >
-      {/* Terminal header */}
-      <TerminalHeader filename="~/learning" />
-
-      {/* Terminal body */}
-      <div className="px-4 py-3 flex flex-col gap-1.5">
-        {terminalLines.map((line, i) => (
-          <div
-            key={i}
-            className={`font-mono text-xs transition-all duration-500 ${
-              i < visibleCount ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
-            }`}
-          >
-            <span className={line.prefix === "$" ? "text-accent" : "text-accent/50"}>
-              {line.prefix}
-            </span>{" "}
-            <span className={line.prefix === "$" ? "text-muted-foreground" : "text-muted-foreground/80"}>
-              {line.text}
-            </span>
-            {i === visibleCount - 1 && i === terminalLines.length - 1 && (
-              <span aria-hidden="true" className={`ml-0.5 inline-block w-1.5 h-3.5 bg-accent align-middle ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity`} />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
 
 export default function Skills() {
   const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.25 })
@@ -188,8 +129,7 @@ export default function Skills() {
         ))}
       </div>
 
-      {/* Bottom bar */}
-      <TerminalBar />
+
 
     </section>
   )

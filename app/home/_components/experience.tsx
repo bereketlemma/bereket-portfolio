@@ -114,7 +114,7 @@ export default function Experience() {
   const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.25 })
 
   return (
-    <section id="experience" className="py-24">
+    <section id="experience" className="pt-12 pb-24">
       <div
         ref={headerRef}
         className={`mb-12 flex items-center gap-4 transition-all duration-500 ${

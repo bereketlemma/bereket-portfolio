@@ -1,35 +1,82 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import Hero from "./home/_components/hero"
 import Experience from "./home/_components/experience"
-import Skills from "./home/_components/skills"
-import Hobbies from "./home/_components/hobbies"
 import Projects from "./home/_components/projects"
-
 import LatestPost from "./home/_components/latest-post"
+import Hobbies from "./home/_components/hobbies"
 import Footer from "./home/_components/footer"
+import { useSection } from "./section-context"
+
+function SectionShell({ visible, children }: { visible: boolean; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const hasScrolled = useRef(false)
+
+  useEffect(() => {
+    if (visible && !hasScrolled.current) {
+      hasScrolled.current = true
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+    if (!visible) {
+      hasScrolled.current = false
+    }
+  }, [visible])
+
+  if (!visible) return null
+
+  return (
+    <div
+      ref={ref}
+      style={{ animation: "sectionReveal 0.5s ease both" }}
+    >
+      {children}
+    </div>
+  )
+}
 
 export default function Home() {
+  const { active, setActive } = useSection()
+
   useEffect(() => {
     const section = sessionStorage.getItem("homeScrollPosition")
-    if (section === "projects" || section === "blog") {
+    if (section) {
+      sessionStorage.removeItem("homeScrollPosition")
       setTimeout(() => {
-        const el = document.getElementById(section)
-        if (el) el.scrollIntoView({ behavior: "smooth" })
-        sessionStorage.removeItem("homeScrollPosition")
-      }, 500)
+        setActive(section as any)
+      }, 600)
+    } else {
+      setActive(null)
     }
-  }, [])
+  }, [setActive])
 
   return (
     <>
-      <Hero />
-      <Experience />
-      <Skills />
-      <Hobbies />
-      <Projects />
-      <LatestPost />
+      <style>{`
+        @keyframes sectionReveal {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+
+      {!active && <Hero />}
+
+      <SectionShell visible={active === "experience"}>
+        <Experience />
+      </SectionShell>
+
+      <SectionShell visible={active === "projects"}>
+        <Projects />
+      </SectionShell>
+
+      <SectionShell visible={active === "posts"}>
+        <LatestPost />
+      </SectionShell>
+
+      <SectionShell visible={active === "hobbies"}>
+        <Hobbies />
+      </SectionShell>
+
       <Footer />
     </>
   )

@@ -9,23 +9,20 @@ const skills = {
     icon: "< />",
     color: "text-blue-400",
     items: [
-      "C++", "C", "Python", "Go", "TypeScript", "JavaScript", "SQL", "Bash",
-      "React", "Next.js", "FastAPI", "Node.js", "ASP.NET Core", "Tailwind CSS"
+      "C++", "C", "Python", "Go", "TypeScript", "JavaScript", "SQL",
+      "React", "Next.js", "Node.js", "ASP.NET Core", "Tailwind CSS"
     ],
   },
   "Cloud & Security": {
     icon: "☁",
     color: "text-cyan-400",
-    items: [
-      "GCP", "Cloud Run", "Vertex AI", "AWS", "Azure",
-        // (Removed terminal lines if present)
-    ],
+    items: ["GCP", "Cloud Run", "Vertex AI", "AWS", "Azure", "IAM", "RBAC", "JWT", "OAuth 2.0", "API Security"  , "Cloud Logging", "OWASP Top 10", "Threat Detection"]
   },
   "Systems": {
     icon: "⚙",
     color: "text-amber-400",
     items: [
-      "Linux", "Multithreading", "Lock-Free DS", "TCP/UDP Sockets", "Memory Management", "Docker", "Kubernetes"
+      "Linux", "Multithreading", "Lock-Free DS", "TCP/UDP Sockets", "Memory Management", "Docker", "Kubernetes", "CI/CD", "Git"
     ],
   },
   "Data": {
@@ -33,7 +30,7 @@ const skills = {
     color: "text-green-400",
     items: [
       "TensorFlow", "Scikit-learn", "Pandas", "NumPy", "Redis", "PostgreSQL", "MySQL",
-      "PyTorch", "Transformers", "LLM Training", "Distributed Inference"
+      "PyTorch", "Transformers", "LLM Training"
     ],
   },
 }

@@ -1,12 +1,11 @@
 "use client"
 
-import { motion, useAnimation } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { motion, useAnimation } from "framer-motion"
 
-/* ── Update this array whenever you publish a new post ── */
 const latestPosts = [
   {
     slug: "llm-inference-bench",
@@ -31,30 +30,6 @@ const latestPosts = [
   },
 ]
 
-/* ── Terminal typing line component ── */
-function TerminalLine({
-  children,
-  delay,
-  prefix = "$",
-}: {
-  children: React.ReactNode
-  delay: number
-  prefix?: string
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: 0.4, ease: "easeOut" }}
-      className="flex gap-2 font-mono text-sm leading-relaxed"
-    >
-      <span className="text-accent select-none shrink-0">{prefix}</span>
-      <span>{children}</span>
-    </motion.div>
-  )
-}
-
-/* ── Blog post card ── */
 function PostCard({
   post,
   index,
@@ -79,7 +54,7 @@ function PostCard({
         visible: {
           opacity: 1,
           y: 0,
-          transition: { delay: 0.6 + index * 0.2, duration: 0.5, ease: "easeOut" },
+          transition: { delay: 0.15 + index * 0.12, duration: 0.5, ease: "easeOut" },
         },
       }}
       initial="hidden"
@@ -122,62 +97,22 @@ function PostCard({
   )
 }
 
-/* ── Main section ── */
 export default function LatestPost() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.15 })
-  const [showCursor, setShowCursor] = useState(true)
-
-  /* Blinking cursor effect */
-  useEffect(() => {
-    const interval = setInterval(() => setShowCursor((v) => !v), 530)
-    return () => clearInterval(interval)
-  }, [])
 
   return (
-    <section ref={ref} id="blog" className="mx-auto max-w-3xl px-6 py-24">
+    <section ref={ref} id="posts" className="py-24">
       {/* Section header */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
+        initial={{ opacity: 0, x: -16 }}
+        animate={inView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.5 }}
-        className="mb-8"
+        className="mb-12 flex items-center gap-4"
       >
-        <p className="mb-1 font-mono text-xs text-accent">06</p>
-        <h2 className="font-syne text-2xl font-bold text-foreground">Blog</h2>
+        <span className="font-mono text-sm text-accent">04.</span>
+        <h2 className="font-syne text-2xl font-bold text-foreground">Posts</h2>
+        <div className="h-px flex-1 bg-border" />
       </motion.div>
-
-      {/* Terminal block */}
-      {inView && (
-        <div className="mb-8 rounded-lg border border-border/40 bg-[#0a0a0a] p-4 overflow-hidden">
-          {/* Terminal dots */}
-          <div className="mb-3 flex gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
-          </div>
-
-          <div className="space-y-1.5 text-muted-foreground">
-            <TerminalLine delay={0.1}>
-              <span className="text-foreground">fetch</span>{" "}
-              <span className="text-accent">--latest</span> blog
-            </TerminalLine>
-
-            <TerminalLine delay={0.35} prefix=">">
-              <span className="text-green-400">200 OK</span>{" "}
-              <span className="text-muted-foreground">
-                — found {latestPosts.length} post{latestPosts.length !== 1 && "s"}
-              </span>
-            </TerminalLine>
-
-            <TerminalLine delay={0.5} prefix=">">
-              <span className="text-muted-foreground">rendering posts...</span>
-              <span className={`ml-0.5 ${showCursor ? "opacity-100" : "opacity-0"} text-accent transition-opacity`}>
-                ▊
-              </span>
-            </TerminalLine>
-          </div>
-        </div>
-      )}
 
       {/* Post cards */}
       <div className="grid gap-4">
@@ -190,14 +125,15 @@ export default function LatestPost() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
-        transition={{ delay: 1.2, duration: 0.4 }}
-        className="mt-6 text-center"
+        transition={{ delay: 0.6, duration: 0.4 }}
+        className="mt-8 flex justify-center"
       >
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1.5 font-mono text-sm text-muted-foreground hover:text-accent transition-colors"
+          className="group rounded border border-border/60 px-6 py-2.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2"
         >
-          view all posts <ArrowRight size={14} />
+          <span>view all posts</span>
+          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
         </Link>
       </motion.div>
     </section>

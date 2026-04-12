@@ -17,16 +17,13 @@ export default function ProjectsPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-24">
-      <button
-        onClick={() => {
-          sessionStorage.setItem("homeScrollPosition", "blog")
-          window.history.back()
-        }}
+      <Link
+        href="/"
         className="mb-10 inline-flex items-center gap-2 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
       >
         <ArrowLeft size={14} />
         back to home
-      </button>
+      </Link>
 
       <div className="mb-12 flex items-center gap-4">
         <h1 className="font-syne text-2xl font-bold text-foreground">All Projects</h1>

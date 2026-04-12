@@ -3,19 +3,39 @@
 import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { Github, Linkedin, Mail, BookOpen, Music, Menu, X, Download } from "lucide-react"
+import { Github, Dumbbell, Music, Mail, Menu, X } from "lucide-react"
+import { useSection } from "@/app/section-context"
 
 const sectionLinks = [
-  { href: "/#experience", label: "Experience" },
-  { href: "/#projects", label: "Projects" },
-  { href: "/#skills", label: "Skills" },
-  { href: "/#hobbies", label: "Hobbies" },
-]
+  { key: "experience", label: "Experience" },
+  { key: "projects", label: "Projects" },
+  { key: "posts", label: "Posts" },
+  { key: "hobbies", label: "Hobbies" },
+] as const
 
 export default function Navbar() {
   const pathname = usePathname()
-  const isBlog = pathname.startsWith("/blog")
+  const isHome = pathname === "/"
   const [menuOpen, setMenuOpen] = useState(false)
+  const { active, toggle, setActive } = useSection()
+
+  function handleSectionClick(key: string) {
+    if (!isHome) {
+      sessionStorage.setItem("homeScrollPosition", key)
+      window.location.href = "/"
+      return
+    }
+    setActive(key as any)
+  }
+
+  function handleHomeClick() {
+    if (!isHome) {
+      window.location.href = "/"
+      return
+    }
+    setActive(null)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-sm">
@@ -24,23 +44,30 @@ export default function Navbar() {
         {/* Left: B logo + icons */}
         <div className="flex items-center gap-4">
           <div className="group relative">
-            <Link href="/" aria-label="Home" className="flex h-8 w-8 items-center justify-center rounded border border-accent font-syne text-sm font-bold text-accent hover:bg-accent hover:text-background transition-all">
+            <button
+              onClick={handleHomeClick}
+              aria-label="Home"
+              className="flex h-8 w-8 items-center justify-center rounded border border-accent font-syne text-sm font-bold text-accent hover:bg-accent hover:text-background transition-all"
+            >
               B
-            </Link>
+            </button>
             <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
               home
             </span>
           </div>
 
           <div className="group relative">
-            <Link href="/blog" aria-label="Blog" className={`transition-colors ${isBlog ? "text-accent" : "text-muted-foreground hover:text-accent"}`}>
-              <BookOpen size={18} />
+            <Link
+              href="https://hevy.com/user/bereket10"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Hevy Workout Profile"
+              className="text-muted-foreground hover:text-accent transition-colors"
+            >
+              <Dumbbell size={18} />
             </Link>
-            {isBlog && (
-              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-green-400" />
-            )}
             <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-              Blog
+              Hevy
             </span>
           </div>
 
@@ -75,40 +102,49 @@ export default function Navbar() {
         {/* Right: section links (desktop) + Resume + mobile toggle */}
         <div className="flex items-center gap-4">
           {sectionLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="hidden md:block font-mono text-xs text-muted-foreground hover:text-accent transition-colors">
+            <button
+              key={link.key}
+              onClick={() => handleSectionClick(link.key)}
+              className={`
+                relative hidden md:block font-mono text-xs transition-colors
+                ${isHome && active === link.key
+                  ? "text-accent"
+                  : "text-muted-foreground hover:text-accent"
+                }
+              `}
+            >
               {link.label}
-            </Link>
+              {isHome && active === link.key && (
+                <span
+                  className="absolute -bottom-1 left-0 right-0 mx-auto h-px w-4 bg-accent"
+                  style={{ left: "50%", transform: "translateX(-50%)" }}
+                />
+              )}
+            </button>
           ))}
 
-          {/* Resume: view button and download button, separated, each with its own tooltip */}
-          <div className="flex items-center gap-2">
-            <div className="group relative">
-              <a
-                href="/assets/Bereket_Lemma_Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="View Resume"
-                className="border border-border rounded px-3 py-1.5 font-mono text-xs md:text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center"
-              >
-                Resume
-              </a>
-              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-                View Resume
-              </span>
-            </div>
-            <div className="group relative">
-              <a
-                href="/assets/Bereket_Lemma_Resume.pdf"
-                download="Bereket_Lemma_Resume.pdf"
-                aria-label="Download Resume"
-                className="border border-border rounded px-2 py-1.5 text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center"
-              >
-                <Download size={16} className="md:w-4 md:h-4" />
-              </a>
-              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-                Download Resume
-              </span>
-            </div>
+          {/* Resume */}
+          <div className="group relative">
+            <a
+              href="/assets/Bereket_Lemma_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View & Download Resume"
+              onClick={() => {
+                const link = document.createElement("a")
+                link.href = "/assets/Bereket_Lemma_Resume.pdf"
+                link.download = "Bereket_Lemma_Resume.pdf"
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+              }}
+              className="border border-border rounded px-3 py-1.5 font-mono text-xs md:text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center"
+            >
+              Resume
+            </a>
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
+              View & Download
+            </span>
           </div>
 
           {/* Mobile menu toggle */}
@@ -128,33 +164,39 @@ export default function Navbar() {
         <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-sm">
           <div className="mx-auto max-w-3xl px-3 py-2 flex flex-col gap-1">
             {sectionLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="font-mono text-xs text-muted-foreground hover:text-accent transition-colors py-1"
+              <button
+                key={link.key}
+                onClick={() => {
+                  handleSectionClick(link.key)
+                  setMenuOpen(false)
+                }}
+                className={`
+                  font-mono text-xs transition-colors py-1 text-left
+                  ${isHome && active === link.key
+                    ? "text-accent"
+                    : "text-muted-foreground hover:text-accent"
+                  }
+                `}
               >
                 {link.label}
-              </Link>
+              </button>
             ))}
-            {/* Resume buttons for mobile */}
             <a
               href="/assets/Bereket_Lemma_Resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="View Resume"
+              aria-label="View & Download Resume"
+              onClick={() => {
+                const link = document.createElement("a")
+                link.href = "/assets/Bereket_Lemma_Resume.pdf"
+                link.download = "Bereket_Lemma_Resume.pdf"
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+              }}
               className="border border-border rounded px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center mt-2"
             >
               Resume
-            </a>
-            <a
-              href="/assets/Bereket_Lemma_Resume.pdf"
-              download="Bereket_Lemma_Resume.pdf"
-              aria-label="Download Resume"
-              className="border border-border rounded px-2 py-1.5 text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center mt-1"
-            >
-              <Download size={14} />
-              <span className="ml-1">Download</span>
             </a>
           </div>
         </div>

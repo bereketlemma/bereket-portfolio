@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Github, ExternalLink } from "lucide-react"
+import { Github, ExternalLink, ArrowRight } from "lucide-react"
 import { useInView } from "react-intersection-observer"
 import { allProjects } from "@/lib/projects"
 
@@ -15,9 +15,10 @@ function ProjectCard({
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.06 })
 
   return (
-    <div
+    <Link
       ref={ref}
-      className={`group relative overflow-hidden rounded border border-border/40 p-6 transition-all duration-450 ease-out
+      href={`/projects/${project.slug}`}
+      className={`group relative block overflow-hidden rounded border border-border/40 p-6 transition-all duration-450 ease-out
         hover:border-accent/50 hover:shadow-[0_0_20px_rgba(var(--accent-rgb,100,200,255),0.08)]
         ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}
       `}
@@ -33,9 +34,7 @@ function ProjectCard({
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
-              <Link href={`/projects/${project.slug}`} className="hover:underline underline-offset-4">
-                {project.title}
-              </Link>
+              {project.title}
             </h3>
             {project.wip && (
               <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
@@ -45,25 +44,27 @@ function ProjectCard({
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {project.live && (
-              <Link
+              <a
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+                onClick={(e) => e.stopPropagation()}
+                className="relative z-10 flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
               >
                 <ExternalLink size={12} />
                 live
-              </Link>
+              </a>
             )}
-            <Link
+            <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+              onClick={(e) => e.stopPropagation()}
+              className="relative z-10 flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
             >
               <Github size={12} />
               github
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -76,25 +77,22 @@ function ProjectCard({
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded border border-border/60 px-2 py-0.5 font-mono text-xs text-muted-foreground hover:border-accent/50 hover:text-accent transition-all duration-300 cursor-default"
+            className="rounded border border-border/60 px-2 py-0.5 font-mono text-xs text-muted-foreground cursor-default"
           >
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="relative mt-4">
-        <Link
-          href={`/projects/${project.slug}`}
-          className="inline-flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
-        >
-          view build process →
-        </Link>
+      {/* Build process hint */}
+      <div className="relative mt-4 flex items-center gap-1.5 font-mono text-xs text-muted-foreground/50 transition-all duration-300 group-hover:text-accent">
+        <span>see how it was built</span>
+        <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
       </div>
 
       {/* Bottom accent line */}
       <div className="absolute bottom-0 right-0 h-px w-0 bg-accent/40 group-hover:w-full transition-all duration-500 delay-100" />
-    </div>
+    </Link>
   )
 }
 
@@ -112,7 +110,7 @@ export default function Projects() {
           headerInView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
         }`}
       >
-        <span className="font-mono text-sm text-accent">05.</span>
+        <span className="font-mono text-sm text-accent">03.</span>
         <h2 className="font-syne text-2xl font-bold text-foreground">Projects</h2>
         <div className="h-px flex-1 bg-border" />
       </div>
@@ -135,7 +133,7 @@ export default function Projects() {
           href="/projects"
           className="group rounded border border-border/60 px-6 py-2.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2"
         >
-          <span className="animate-pulse group-hover:animate-none">view all projects </span>
+          <span>view all projects</span>
           <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
         </Link>
       </div>

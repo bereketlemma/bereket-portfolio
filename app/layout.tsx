@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import "./globals.css"
 import Navbar from "./home/_components/navbar"
+import { SectionProvider } from "./section-context"
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -76,10 +77,12 @@ export default function RootLayout({
             }),
           }}
         />
-        <Navbar />
-        <main className="mx-auto max-w-3xl px-6 pt-20">
-          {children}
-        </main>
+        <SectionProvider>
+          <Navbar />
+          <main className="mx-auto max-w-3xl px-6 pt-20">
+            {children}
+          </main>
+        </SectionProvider>
         <Analytics />
         <SpeedInsights />
       </body>

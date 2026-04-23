@@ -157,6 +157,24 @@ export default function Hero() {
             className={`font-mono text-sm text-muted-foreground transition-all duration-700 md:text-sm ${showSubtitle ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
           >
             <span className="text-foreground/90">Software Engineer</span>
+            <span className="mx-2 text-accent/40">·</span>
+            <span className="text-foreground/50">Systems · ML Infrastructure · Backend</span>
+          </div>
+
+          {/* Credential + availability badges */}
+          <div
+            className={`mt-5 flex flex-wrap items-center justify-center gap-2 transition-all duration-700 ${showSubtitle ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
+            style={{ transitionDelay: "200ms" }}
+          >
+            <span className="rounded border border-accent/40 px-3 py-1 font-mono text-[11px] tracking-wide text-accent/80">
+              ICPC 3rd · Pacific NW Regionals
+            </span>
+            <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] tracking-wide text-muted-foreground">
+              $50k Investment · Celeri.io
+            </span>
+            <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] tracking-wide text-muted-foreground">
+              Available May 2026
+            </span>
           </div>
         </div>
 
@@ -229,7 +247,7 @@ export default function Hero() {
               }}
             />
             <p className="text-sm leading-relaxed text-muted-foreground">
-              I build things at the intersection of <span className="text-accent">backend systems</span>, <span className="text-accent">cloud infrastructure</span>, and <span className="text-accent">security</span>. Most of my work involves designing data pipelines, shipping production APIs, and making sure systems hold up under real traffic.
+              I work in <span className="text-accent">systems and backend infrastructure</span>. Recent projects: a custom <span className="text-accent">LLVM 18 optimization pass</span> that catches dead stores -O2 misses, a <span className="text-accent">streaming analytics platform</span> on GCP, and an <span className="text-accent">ML inference benchmark suite</span> comparing FP16 vs AWQ-Marlin INT4. I like getting things correct before making them fast, and I always want to know why something actually works.
             </p>
           </div>
 
@@ -301,26 +319,18 @@ export default function Hero() {
             className={`transition-all duration-700 ${block5.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
             style={{ transitionDelay: block5.visible ? "100ms" : "0ms" }}
           >
-            <div className="w-full overflow-hidden rounded-xl border border-border/60 bg-muted/10 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
-              <div className="px-4 pb-2 pt-3">
-                <p className="mb-1 font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+            <div className="flex items-center justify-between rounded-xl border border-border/60 bg-muted/10 px-5 py-4">
+              <div>
+                <p className="mb-0.5 font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
                   Currently Based In
                 </p>
-                <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  <span>Current Time: {seattleTime}</span>
-                  <span>Seattle, WA</span>
-                </div>
+                <p className="font-mono text-sm text-foreground/80">Seattle, WA</p>
               </div>
-              <div className="px-2 pb-2">
-                <div className="overflow-hidden rounded-lg border border-border/50">
-                  <iframe
-                    title="Satellite view of Seattle, Washington"
-                    src="https://maps.google.com/maps?q=Seattle%2C%20WA&t=k&z=11&ie=UTF8&iwloc=&output=embed"
-                    className="h-44 w-full border-0 contrast-[1.02] saturate-[0.92]"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
+              <div className="text-right">
+                <p className="mb-0.5 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                  Local Time
+                </p>
+                <p className="font-mono text-sm text-foreground/80">{seattleTime}</p>
               </div>
             </div>
           </div>
@@ -339,13 +349,13 @@ export default function Hero() {
               }}
             />
             <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-              If you want to collaborate on something, have a role that might be a fit, or just want to talk shop, I'd like to hear from you.
+              I'm looking for new grad software engineering roles in systems, backend, or ML infrastructure. Available May 2026. If you have something that might be a fit, or just want to talk, I'd like to hear from you.
             </p>
             <a
               href="/contact"
               className="group inline-flex items-center gap-2 rounded-md border border-accent px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-accent transition-all hover:bg-accent hover:text-accent-foreground"
             >
-              reach out
+              get in touch
               <span
                 aria-hidden="true"
                 className="inline-block transition-transform duration-200 group-hover:translate-x-1"

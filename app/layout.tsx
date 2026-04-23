@@ -18,7 +18,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Bereket Lemma",
-  description: "Software Engineer · Security · Cloud",
+  description: "Software Engineer specializing in systems programming, backend infrastructure, and ML systems. ICPC Pacific NW Regionals · Available May 2026.",
   metadataBase: new URL("https://bereketlemma.com"),
   icons: {
     icon: "/favicon.ico",
@@ -28,11 +28,11 @@ export const metadata: Metadata = {
       { rel: "icon", url: "/android-chrome-512x512.png", sizes: "512x512" },
     ],
   },
-  keywords: ["Software Engineer", "Security", "Cloud", "GCP", "Next.js"],
+  keywords: ["Software Engineer", "Systems Programming", "LLVM", "ML Infrastructure", "Backend", "GCP", "C++", "Next.js", "New Grad"],
   authors: [{ name: "Bereket Lemma" }],
   openGraph: {
-    title: "Bereket Lemma",
-    description: "Software Engineer · Security · Cloud",
+    title: "Bereket Lemma — Software Engineer",
+    description: "Systems programming, backend infrastructure, and ML systems. ICPC Pacific NW Regionals · Available May 2026.",
     url: "https://bereketlemma.com",
     siteName: "Bereket Lemma",
     type: "website",
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bereket Lemma",
-    description: "Software Engineer · Security · Cloud",
+    title: "Bereket Lemma — Software Engineer",
+    description: "Systems programming, backend infrastructure, and ML systems. ICPC Pacific NW Regionals · Available May 2026.",
     images: ["/og-image.png"],
   },
 }

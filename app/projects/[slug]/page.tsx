@@ -251,218 +251,6 @@ function buildLlmBenchStages(): FlowStage[] {
   ]
 }
 
-function buildNidsStages(): FlowStage[] {
-  return [
-    {
-      id: "step-1",
-      title: "Step 1",
-      status: "completed",
-      iconColor: "accent",
-      description: buildAudienceDescription(
-        "I needed a system that can look at network traffic and flag attacks in real time, not after the damage is done.",
-        "The goal was multiclass classification: given a network flow, label it as normal or identify the specific attack category (DoS, DDoS, brute force, port scan, etc.)."
-      ),
-    },
-    {
-      id: "step-2",
-      title: "Step 2",
-      status: "completed",
-      iconColor: "primary",
-      description: buildAudienceDescription(
-        "I used a well-known intrusion detection dataset (CICIDS2017) that contains labeled examples of both normal traffic and several types of attacks.",
-        "Flow records from CICIDS2017 were cleaned, null values removed, and features standardized into a consistent format for supervised multiclass training."
-      ),
-    },
-    {
-      id: "step-3",
-      title: "Step 3",
-      status: "completed",
-      iconColor: "secondary",
-      description: buildAudienceDescription(
-        "The dataset had way more normal traffic than attack traffic. Without fixing this, the model just learns to say 'normal' for everything and still gets 95% accuracy.",
-        "I applied undersampling to the majority class before training to force the model to actually learn attack patterns instead of defaulting to the most common label.",
-        "Undersampling over oversampling (like SMOTE). Oversampling can create synthetic examples that don't represent real attacks, which leads to false confidence in test metrics."
-      ),
-    },
-    {
-      id: "step-4",
-      title: "Step 4",
-      status: "completed",
-      iconColor: "accent",
-      description: buildAudienceDescription(
-        "I tested a few model types and Random Forest consistently outperformed the others. It handles multiple attack classes well and you can actually interpret why it made a decision.",
-        "Random Forest was selected over SVM and logistic regression for its strong per-class precision, low variance across cross-validation folds, and built-in feature importance ranking."
-      ),
-    },
-    {
-      id: "step-5",
-      title: "Step 5",
-      status: "completed",
-      iconColor: "muted",
-      description: buildAudienceDescription(
-        "I tuned hyperparameters and validated on held-out data. A model that only works on training data is useless in production.",
-        "Grid search over tree depth, number of estimators, and min leaf size. Validated on a 20% held-out split that the model never sees during training."
-      ),
-    },
-    {
-      id: "step-6",
-      title: "Step 6",
-      status: "completed",
-      iconColor: "primary",
-      description: buildAudienceDescription(
-        "I evaluated with F1 score, not just accuracy. Accuracy can lie when classes are imbalanced. F1 penalizes the model for missing rare attack types.",
-        "Per-class F1 scores and a weighted macro F1 were used on the test set to ensure minority attack classes (like Heartbleed) are not silently ignored by the final model."
-      ),
-    },
-    {
-      id: "step-7",
-      title: "Step 7",
-      status: "completed",
-      iconColor: "secondary",
-      description: buildAudienceDescription(
-        "I built a Streamlit dashboard so operators can see what the model is detecting in real time. No terminal output, no log files to parse.",
-        "The UI shows live prediction counts by attack category, trend lines over time, and a breakdown of confidence scores so operators can spot shaky classifications."
-      ),
-    },
-    {
-      id: "step-8",
-      title: "Step 8",
-      status: "completed",
-      iconColor: "accent",
-      description: buildAudienceDescription(
-        "I connected the trained model to a live data stream so new traffic gets classified as it arrives, not after someone manually runs a script.",
-        "Inference runs on incoming flow records and pushes predictions directly to the monitoring dashboard. No batch job, no delay."
-      ),
-    },
-    {
-      id: "step-9",
-      title: "Step 9",
-      status: "completed",
-      iconColor: "primary",
-      description: buildAudienceDescription(
-        "I let the system run continuously and checked that prediction counts and category distributions stayed consistent and didn't drift or spike from bugs.",
-        "Validated that label distributions, aggregate counts, and dashboard rendering remained stable under sustained operation without memory leaks or stale state."
-      ),
-    },
-    {
-      id: "step-10",
-      title: "Step 10",
-      status: "completed",
-      iconColor: "secondary",
-      description: buildAudienceDescription(
-        "The final system classifies multiple attack types in real time and gives operators a clear dashboard to act on. It's not just a model, it's a usable detection workflow.",
-        "End-to-end pipeline: raw network flows go in, classified predictions come out, and operators see actionable summaries within seconds."
-      ),
-    },
-  ]
-}
-
-function buildCpuSchedulerStages(): FlowStage[] {
-  return [
-    {
-      id: "step-1",
-      title: "Step 1",
-      status: "completed",
-      iconColor: "accent",
-      description: buildAudienceDescription(
-        "Textbook scheduler comparisons use toy examples. I wanted to see how FCFS, Round Robin, and MLFQ actually perform under real workloads from production systems.",
-        "The simulator evaluates three scheduling algorithms against trace data from real distributed systems, not synthetic process tables."
-      ),
-    },
-    {
-      id: "step-2",
-      title: "Step 2",
-      status: "completed",
-      iconColor: "primary",
-      description: buildAudienceDescription(
-        "I wrote all three schedulers in C from scratch. Shared process state and queue logic so the only variable changing between tests is the scheduling policy itself.",
-        "FCFS, Round Robin, and MLFQ all use the same process control block structure, ready queue interface, and time accounting. Only the selection logic differs."
-      ),
-    },
-    {
-      id: "step-3",
-      title: "Step 3",
-      status: "completed",
-      iconColor: "secondary",
-      description: buildAudienceDescription(
-        "I fed the simulator over 1,000 real workload traces from PlanetLab, a global research network. These traces capture how actual VMs behave under real load.",
-        "PlanetLab traces include CPU utilization patterns from distributed VMs with bursty, periodic, and sustained workload profiles."
-      ),
-    },
-    {
-      id: "step-4",
-      title: "Step 4",
-      status: "completed",
-      iconColor: "accent",
-      description: buildAudienceDescription(
-        "Every scheduler was measured with the same four metrics: throughput, CPU utilization, turnaround time, and response time. Same scorecard, fair fight.",
-        "Metrics are collected through a shared instrumentation layer so measurement overhead is identical across all three algorithms."
-      ),
-    },
-    {
-      id: "step-5",
-      title: "Step 5",
-      status: "completed",
-      iconColor: "muted",
-      description: buildAudienceDescription(
-        "Single-core is the easy case. I ran every scheduler on multi-core configurations to see how they handle contention when processes compete for shared resources.",
-        "Schedulers were evaluated at 2, 4, and 8 core counts to measure how each algorithm scales and where contention effects start degrading performance."
-      ),
-    },
-    {
-      id: "step-6",
-      title: "Step 6",
-      status: "completed",
-      iconColor: "primary",
-      description: buildAudienceDescription(
-        "FCFS maximizes throughput but interactive tasks suffer. Round Robin keeps response times low but wastes cycles on context switching. MLFQ tries to get both, and mostly does.",
-        "MLFQ's priority boosting avoids starvation while maintaining responsiveness. Round Robin with a small quantum wins on response time but loses 8-12% throughput to context switch overhead.",
-        "For interactive workloads, low response time matters more than raw throughput. Users notice lag before they notice that a batch job took 5% longer."
-      ),
-    },
-    {
-      id: "step-7",
-      title: "Step 7",
-      status: "completed",
-      iconColor: "secondary",
-      description: buildAudienceDescription(
-        "There's no single best scheduler. I matched each algorithm to the workload type where it actually wins: FCFS for batch, Round Robin for interactive, MLFQ for mixed.",
-        "Results are segmented by workload profile so each trace category maps to the algorithm that scores highest on its most relevant metric."
-      ),
-    },
-    {
-      id: "step-8",
-      title: "Step 8",
-      status: "completed",
-      iconColor: "accent",
-      description: buildAudienceDescription(
-        "I reran the full test suite multiple times to confirm the rankings were stable and not caused by noise or one lucky trace batch.",
-        "Repeated evaluations across different trace subsets confirmed consistent performance ordering. Variance between runs was under 3% for all key metrics."
-      ),
-    },
-    {
-      id: "step-9",
-      title: "Step 9",
-      status: "completed",
-      iconColor: "primary",
-      description: buildAudienceDescription(
-        "I structured the final output as side-by-side comparisons so you can see exactly where each scheduler wins and where it falls short.",
-        "Output tables show per-algorithm performance on each metric with percentage deltas, making tradeoffs between schedulers immediately visible."
-      ),
-    },
-    {
-      id: "step-10",
-      title: "Step 10",
-      status: "completed",
-      iconColor: "secondary",
-      description: buildAudienceDescription(
-        "The result is practical guidance: pick the right scheduler for your workload type, backed by consistent data from 1,000+ real traces instead of textbook speculation.",
-        "Recommendations are supported by reproducible metric comparisons across real trace-driven simulations with documented methodology."
-      ),
-    },
-  ]
-}
-
 function buildGenericStages(project: ReturnType<typeof getProjectBySlug>): FlowStage[] {
   if (!project) return []
 
@@ -570,11 +358,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       ? buildDevScopeStages()
       : project.slug === "llm-inference-bench"
         ? buildLlmBenchStages()
-        : project.slug === "nids"
-          ? buildNidsStages()
-          : project.slug === "cpu-scheduler"
-            ? buildCpuSchedulerStages()
-            : buildGenericStages(project)
+        : buildGenericStages(project)
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -595,6 +379,20 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           The full build process from start to finish. Each step is what actually happened, why I made the decisions I made, and what tradeoffs were involved.
         </p>
       </header>
+
+      {project.caseStudy.challenges && (
+        <section className="my-10">
+          <div className="relative rounded-lg border border-accent/25 bg-accent/5 px-7 py-6">
+            <div className="absolute left-0 top-0 h-full w-[3px] rounded-l-lg bg-accent/70" />
+            <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+              Hardest Challenge
+            </p>
+            <p className="text-sm leading-relaxed text-foreground/80">
+              {project.caseStudy.challenges}
+            </p>
+          </div>
+        </section>
+      )}
 
       <ProjectFlow stages={stages} />
     </main>

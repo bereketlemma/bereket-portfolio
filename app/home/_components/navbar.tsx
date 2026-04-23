@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { Github, Dumbbell, Music, Mail, Menu, X } from "lucide-react"
+import { Github, Mail, Menu, X } from "lucide-react"
 import { useSection } from "@/app/section-context"
 
 const sectionLinks = [
@@ -53,30 +53,6 @@ export default function Navbar() {
             </button>
             <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
               home
-            </span>
-          </div>
-
-          <div className="group relative">
-            <Link
-              href="https://hevy.com/user/bereket10"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Hevy Workout Profile"
-              className="text-muted-foreground hover:text-accent transition-colors"
-            >
-              <Dumbbell size={18} />
-            </Link>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-              Hevy
-            </span>
-          </div>
-
-          <div className="group relative hidden md:block">
-            <Link href="https://music.youtube.com/playlist?list=PLyUW1Ua_KEvbbp43z66PSI7Hl03j4e6-L&si=ZxSfk7Ykk-Puq5Kt" target="_blank" rel="noopener noreferrer" aria-label="YouTube Music Playlist" className="text-muted-foreground hover:text-accent transition-colors">
-              <Music size={18} />
-            </Link>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 pointer-events-none">
-              Playlist
             </span>
           </div>
 

@@ -30,7 +30,7 @@ export default function ProjectsPage() {
       </div>
 
       <p className="mb-10 text-sm text-muted-foreground/60">
-        Click any project to see the full build process — what I built, why, and the tradeoffs involved.
+        Click any project to see the full build story: what I built, why I built it, and the tradeoffs I ran into.
       </p>
 
       <div className="flex flex-col gap-6">

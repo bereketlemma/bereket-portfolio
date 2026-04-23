@@ -6,6 +6,7 @@ export type ProjectCaseStudy = {
   decisions: string[]
   outcomes: string[]
   nextSteps: string[]
+  challenges?: string
 }
 
 export type Project = {
@@ -28,7 +29,7 @@ export const allProjects: Project[] = [
     shortTitle: "DevScope",
     slug: "devscope",
     description:
-      "Built a distributed engineering analytics platform mining GitHub repository data to surface PR velocity, review latency, and code churn. Streams events through Cloud Pub/Sub into BigQuery for sub-second querying. Vertex AI anomaly detection on Cloud Run flags productivity regressions with 95% precision.",
+      "Built a distributed engineering analytics platform mining GitHub repository data to surface PR velocity, review latency, and code churn. Streams events through Cloud Pub/Sub into BigQuery for sub-second querying. Vertex AI anomaly detection on Cloud Run flags productivity regressions across tracked repositories.",
     shortDescription:
       "GCP-native engineering analytics platform. GitHub API → Pub/Sub → Dataflow → BigQuery → Vertex AI anomaly detection → FastAPI → React dashboard. Full CI/CD pipeline on Cloud Run.",
     tags: ["Python", "GCP", "BigQuery", "Pub/Sub", "Vertex AI", "Cloud Run", "React", "TypeScript"],
@@ -37,34 +38,36 @@ export const allProjects: Project[] = [
     live: "https://devscope.bereketlemma.com",
     caseStudy: {
       problem:
-        "Engineering leaders lacked a unified view of delivery health across pull requests, review speed, and code churn.",
+        "Teams had no single place to see PR velocity, review lag, and code churn across their repos. Everything was tracked separately or not at all.",
       constraints: [
-        "Had to ingest bursty GitHub webhook traffic without dropping events.",
-        "Needed near real-time analytics for dashboard interactions.",
-        "Targeted low operational overhead while keeping infra cloud-native.",
+        "GitHub webhook traffic is bursty, so the ingestion layer had to handle spikes without dropping events.",
+        "Dashboard queries needed to feel fast, not batch-delayed.",
+        "Wanted to avoid managing servers while still having real infrastructure flexibility.",
       ],
       architecture: [
-        "GitHub API and webhooks feed Pub/Sub topics for decoupled ingestion.",
-        "Dataflow normalizes events and streams them into BigQuery.",
-        "Cloud Run services expose FastAPI endpoints for dashboard queries.",
-        "Vertex AI anomaly detection surfaces velocity regressions.",
+        "GitHub API and webhooks push into Pub/Sub topics for decoupled ingestion.",
+        "Dataflow normalizes events and loads them into BigQuery.",
+        "Cloud Run hosts FastAPI endpoints that the React dashboard queries.",
+        "Vertex AI anomaly detection runs on the event stream to flag velocity drops.",
       ],
       tradeoffs: [
-        "Chose BigQuery over Postgres for analytical flexibility, trading off strict relational modeling for simpler OLAP queries.",
-        "Used managed services to reduce ops burden, accepting slightly higher per-request infra costs.",
+        "Went with BigQuery over Postgres because the queries are analytical, not relational. Gave up some schema strictness but the dashboard queries got a lot simpler.",
+        "Managed GCP services kept ops overhead low, but cost slightly more per request than self-hosting would.",
       ],
       decisions: [
-        "Moved from scheduled batch ingestion to event-driven streaming after identifying stale dashboard metrics.",
-        "Separated ingestion and query services to isolate failures and scale independently.",
+        "Switched from scheduled batch ingestion to event-driven streaming after the dashboard was showing data that was already stale.",
+        "Split ingestion and query into separate services so one failing doesn't take down the other.",
       ],
       outcomes: [
-        "Sub-second analytics queries for key dashboard views.",
-        "High-precision anomaly flagging for engineering productivity signals.",
+        "Dashboard queries come back in under a second for the main views.",
+        "Anomaly detection runs on real repo event streams and flags velocity drops per repo.",
       ],
       nextSteps: [
-        "Add repository-level forecasting for review backlog growth.",
-        "Introduce role-based access controls for team-level dashboards.",
+        "Add forecasting for review backlog growth at the repo level.",
+        "Add role-based access so teams can see their own data without seeing everyone else's.",
       ],
+      challenges:
+        "The anomaly detection worked in testing but was noisy in practice. The Isolation Forest model kept flagging events that were obviously fine in context — a large feature branch merging, a code freeze week, a sprint with unusually high churn. It had no way to know those were intentional. I tried retraining with more data and tuning the contamination parameter, but the model's core problem was that it learned global patterns across all repos, and repos have very different baselines. A five-person team and a fifty-person team look completely different. The fix was adding a z-score fallback that evaluates deviations relative to each repo's own rolling history rather than a global model. The combination worked better than either alone: the Isolation Forest catches subtle multi-metric anomalies, the z-score check filters out the spikes that are statistically normal for that specific repo.",
     },
   },
   {
@@ -81,117 +84,80 @@ export const allProjects: Project[] = [
     live: "https://bench.bereketlemma.com/",
     caseStudy: {
       problem:
-        "Model optimization choices were difficult to compare objectively without repeatable latency, throughput, and memory benchmarks.",
+        "I wanted to know if INT4 quantization was actually faster than FP16 in practice, not just in theory. There was no clean way to compare them without building something myself.",
       constraints: [
-        "GPU instances were expensive, so benchmark runs had to be efficient and automated.",
-        "Comparisons needed to be fair across quantization modes and prompt mixes.",
-        "Results had to be understandable to both ML and product audiences.",
+        "GPU time on GCP is expensive, so benchmark runs had to be automated and efficient.",
+        "Comparisons had to be fair across both quantization modes and different prompt types.",
+        "Wanted results that made sense to people who aren't already deep in quantization literature.",
       ],
       architecture: [
-        "Python benchmark runner executes standardized workloads against vLLM.",
-        "GCP GPU instances host Mistral-7B FP16 and AWQ-Marlin INT4 variants.",
-        "Metrics are aggregated and visualized in a Next.js dashboard.",
+        "Python benchmark runner sends standardized workloads to a vLLM server.",
+        "GCP GPU instances run Mistral-7B in both FP16 and AWQ-Marlin INT4.",
+        "Results get aggregated and shown in a Next.js dashboard.",
       ],
       tradeoffs: [
-        "INT4 quantization improved memory efficiency and throughput but can reduce output quality in edge prompts.",
-        "Prioritized reproducibility over maximal single-run speed by fixing workload scenarios.",
+        "INT4 is faster and uses less memory, but output quality can slip on edge-case prompts.",
+        "Used fixed prompts and warmup windows for every run. Gave up some peak throughput numbers but the comparisons are actually fair.",
       ],
       decisions: [
-        "Standardized warmup and sampling windows to avoid noisy first-token results.",
-        "Split benchmark profiles into latency-first and throughput-first workloads.",
+        "Standardized warmup and sampling windows to avoid noisy first-token latency skewing things.",
+        "Split profiles into latency-first and throughput-first workloads since the optimal setup differs.",
       ],
       outcomes: [
-        "Clear FP16 vs INT4 performance deltas across core inference metrics.",
-        "Faster model-selection decisions for deployment scenarios.",
+        "INT4 hits about 3.3x higher throughput than FP16 on the same hardware with the same prompts.",
+        "Makes it a lot easier to decide between FP16 and INT4 based on what the deployment actually needs.",
       ],
       nextSteps: [
-        "Add benchmark runs for additional open models and context lengths.",
-        "Track token-quality metrics alongside latency and throughput.",
+        "Add runs for other open models and longer context lengths.",
+        "Start tracking output quality metrics alongside latency and throughput.",
       ],
     },
   },
   {
-    title: "Network Intrusion Detection System",
-    shortTitle: "NIDS: Network Intrusion Detection",
-    slug: "nids",
+    title: "LLVM Dead Store Elimination Pass",
+    shortTitle: "LLVM DSE Pass",
+    slug: "llvm-dse-pass",
     description:
-      "Real-time network intrusion detection system classifying live traffic across 7 attack categories including DoS, DDoS, port scanning, and brute-force. Trained Random Forest on 2.5M+ CICIDS2017 records achieving 97.47% accuracy and 98.21% F1-score. Results visualized in a live Streamlit dashboard.",
+      "Custom LLVM 18 optimization pass implemented as an out-of-tree plugin on the new pass manager. Eliminates redundant memory writes that -O2 leaves behind using three strategies: write-only alloca removal, MemorySSA-based dominated store elimination, and pre-lifetime.end store pruning. Validated with 14 lit/FileCheck tests. Benchmarked against 30 PolyBench/C kernels: ~4% additional dead stores eliminated beyond -O2, ~1.2% binary size reduction, under 3% compile overhead.",
     shortDescription:
-      "ML-based network intrusion detection system trained on CICIDS2017 dataset (2.5M rows). Random Forest classifier achieving 97.47% accuracy with a Streamlit dashboard for real-time monitoring.",
-    tags: ["Python", "Scikit-learn", "Random Forest", "Streamlit", "CICIDS2017"],
-    shortTags: ["Python", "Scikit-learn", "Random Forest", "Streamlit", "Pandas"],
-    github: "https://github.com/bereketlemma/nids",
+      "Out-of-tree LLVM 18 optimization pass targeting dead stores missed by -O2. Three strategies: write-only alloca removal, MemorySSA dominated-store elimination, pre-lifetime.end pruning. 14 FileCheck tests. ~4% more stores eliminated, ~1.2% binary size reduction on 30 PolyBench/C kernels.",
+    tags: ["C++", "LLVM", "MemorySSA", "Compilers", "CMake", "GitHub Actions"],
+    shortTags: ["C++", "LLVM", "MemorySSA", "Compilers"],
+    github: "https://github.com/bereketlemma/llvm-dse-pass",
     live: null,
     caseStudy: {
       problem:
-        "Security analysts needed quicker detection of malicious traffic patterns across multiple attack categories.",
+        "LLVM's built-in DSE pass is conservative by design. It leaves stores behind in patterns it can't safely analyze, even when the stores are clearly dead.",
       constraints: [
-        "Dataset size exceeded 2.5M rows, requiring efficient preprocessing.",
-        "Model had to balance high recall with low false positives.",
+        "Had to plug into LLVM 18's new pass manager without touching any in-tree source files.",
+        "The analysis has to be sound. If two pointers might alias, or a store sits before a potential exception, it can't be eliminated.",
+        "Needed a repeatable way to measure whether the pass actually helped, not just assume it did.",
       ],
       architecture: [
-        "Feature engineering pipeline built on Pandas and Scikit-learn.",
-        "Random Forest classifier trained and validated on CICIDS2017.",
-        "Streamlit dashboard presents real-time-style classification summaries.",
+        "Out-of-tree CMake plugin that registers with the new pass manager via PassBuilder callbacks.",
+        "Write-only alloca removal finds allocas where every store is dead because the value is never loaded.",
+        "MemorySSA walk finds stores that get overwritten by a later store to the same location before any load.",
+        "Pre-lifetime.end pruning removes stores sitting right before lifetime.end intrinsics.",
+        "lit/FileCheck tests for each strategy verify correct elimination on targeted patterns.",
       ],
       tradeoffs: [
-        "Random Forest improved interpretability and stability, but increased model size.",
-        "Focused on practical multiclass performance over deep-learning complexity.",
+        "MemorySSA gives more precise results than simple dominator checks, but requires understanding a lot more of the LLVM IR internals.",
+        "Staying out-of-tree meant never touching upstream LLVM code, but I had to wire up pass registration manually through PassBuilder callbacks.",
       ],
       decisions: [
-        "Adopted class-balanced training after observing minority class misses.",
-        "Added threshold tuning for operationally safer alert behavior.",
+        "Chose PolyBench/C as the benchmark corpus because the memory access patterns are well-understood and predictable.",
+        "Kept the three strategies independent so I could test and debug each one without the others interfering.",
       ],
       outcomes: [
-        "Achieved strong classification accuracy and F1 performance.",
-        "Delivered an analyst-friendly interface for traffic monitoring.",
+        "Handles three patterns -O2 skips: write-only allocas, stores that get overwritten before they're ever read, and stores right before lifetime.end intrinsics.",
+        "Benchmarked on 30 PolyBench/C kernels: ~4% more dead stores eliminated beyond -O2, ~1.2% binary size reduction, under 3% compile overhead. Each strategy has its own FileCheck tests and stacking all three produces no regressions.",
       ],
       nextSteps: [
-        "Integrate online learning for evolving traffic patterns.",
-        "Add alert export hooks for SIEM integration.",
+        "Extend Strategy 2 to handle cross-block cases using post-dominance (currently restricted to single blocks for correctness).",
+        "Add interprocedural analysis for non-public functions.",
       ],
-    },
-  },
-  {
-    title: "CPU Scheduler Simulator",
-    shortTitle: "CPU Scheduler Simulator",
-    slug: "cpu-scheduler",
-    description:
-      "Implemented FCFS, Round Robin, and MLFQ scheduling from scratch in C and benchmarked against 1,000+ real PlanetLab distributed VM workload traces. Measured throughput, CPU utilization, turnaround time, and response time to identify optimal strategy per workload type.",
-    shortDescription:
-      "Simulation of core CPU scheduling algorithms — FCFS, SJF, Round Robin, and Priority Scheduling. Visualizes process execution, wait times, and turnaround times.",
-    tags: ["C", "PlanetLab Traces", "Systems", "OS Concepts"],
-    shortTags: ["C++", "Systems", "OS Concepts"],
-    github: "https://github.com/bereketlemma/cpu-scheduler",
-    live: null,
-    caseStudy: {
-      problem:
-        "Wanted to compare scheduling algorithms under realistic distributed workload traces instead of toy examples.",
-      constraints: [
-        "Needed deterministic simulation behavior for reproducible comparisons.",
-        "Had to process large PlanetLab trace sets efficiently in C.",
-      ],
-      architecture: [
-        "Core simulator engine in C implementing FCFS, Round Robin, and MLFQ.",
-        "Trace parser ingests PlanetLab workload files for replay.",
-        "Metrics module computes throughput, utilization, turnaround, and response time.",
-      ],
-      tradeoffs: [
-        "MLFQ improved responsiveness for interactive workloads at the cost of tuning complexity.",
-        "Round Robin gave fairness but introduced extra context switching overhead.",
-      ],
-      decisions: [
-        "Normalized metric collection across all algorithms to ensure fair comparisons.",
-        "Separated simulator core from reporting logic to simplify future extensions.",
-      ],
-      outcomes: [
-        "Produced consistent algorithm performance rankings by workload type.",
-        "Created a reusable baseline for systems-level scheduling experiments.",
-      ],
-      nextSteps: [
-        "Add SRTF and EDF policies for broader comparisons.",
-        "Export run results as JSON for dashboard visualization.",
-      ],
+      challenges:
+        "Strategy 2 originally worked across basic blocks using post-dominance analysis to find stores dominated on all paths by a later write. The logic looked right on simple test cases and the FileCheck tests passed. The problem showed up when I ran it against IR with exception handling: a store before a call that might throw is not actually dominated by a store after it, because the exception edge creates a path where the later store never executes. Post-dominance trees don't capture that cleanly, and the pass was silently eliminating stores that were still live on the exception path. The values were wrong but nothing crashed, which made it hard to catch. I found it by running against larger IR with exception handling and noticing incorrect output. The fix was restricting Strategy 2 to single basic blocks entirely. It eliminates fewer stores, but every elimination is provably correct without needing to reason about exception edges across blocks.",
     },
   },
   {
@@ -199,9 +165,9 @@ export const allProjects: Project[] = [
     shortTitle: "Trading Engine",
     slug: "trading-engine",
     description:
-      "High-performance trading engine processing 1M+ simulated orders/sec with <5μs p99 tick-to-trade latency. Lock-free SPSC ring buffer with cache-line-aligned atomics and price-time priority matching with zero heap allocation on the critical path.",
+      "High-performance order-matching engine reaching 1M+ orders/sec and <5μs p99 tick-to-trade latency in user-space simulation (no kernel bypass, no real NIC overhead). Lock-free SPSC ring buffer with cache-line-aligned atomics and price-time priority matching with zero heap allocation on the critical path.",
     shortDescription:
-      "High-performance trading engine processing 1M+ simulated orders/sec with <5μs p99 tick-to-trade latency. Lock-free SPSC ring buffer with cache-line-aligned atomics and price-time priority matching with zero heap allocation on the critical path.",
+      "Order-matching engine reaching 1M+ orders/sec and <5μs p99 latency in user-space simulation. Lock-free SPSC ring buffer, cache-line-aligned atomics, price-time priority matching, zero heap allocation on the critical path.",
     tags: ["C++20", "Linux", "TCP/UDP", "Multithreading", "Redis", "Docker"],
     shortTags: ["C++20", "Linux", "TCP/UDP", "Multithreading", "Redis", "Docker"],
     github: "https://github.com/bereketlemma/low-latency-trading-engine",
@@ -209,31 +175,31 @@ export const allProjects: Project[] = [
     wip: true,
     caseStudy: {
       problem:
-        "Needed an exchange-style matching engine prototype focused on predictable microsecond-level latency.",
+        "Wanted to understand what it actually takes to build a low-latency matching engine. Not just read about it, build one.",
       constraints: [
-        "Latency budget required avoiding dynamic allocation in the hot path.",
-        "Throughput target exceeded 1M simulated orders per second.",
+        "Any dynamic allocation in the hot path kills latency consistency, so the critical path had to be allocation-free.",
+        "Target was 1M+ simulated orders per second with p99 under 5 microseconds.",
       ],
       architecture: [
-        "C++20 matching core with price-time priority order book.",
-        "Lock-free SPSC ring buffer for producer-consumer handoff.",
-        "Cache-line-aware data structures to reduce contention and false sharing.",
+        "C++20 matching core with a price-time priority order book.",
+        "Lock-free SPSC ring buffer handles producer-consumer handoff without contention.",
+        "Cache-line-aligned data structures to avoid false sharing between threads.",
       ],
       tradeoffs: [
-        "Lock-free design reduced tail latency but increased implementation complexity.",
-        "Static memory layout improved predictability while reducing runtime flexibility.",
+        "Going lock-free brought down tail latency but made the code harder to reason about and debug.",
+        "Preallocating everything made latency more predictable but means you have to know your working set size upfront.",
       ],
       decisions: [
-        "Pinned critical loops to avoid allocator and branch-heavy abstractions.",
-        "Prioritized p99 latency tracking over average latency metrics.",
+        "Kept the critical path allocation-free and avoided branch-heavy abstractions in the hot loop.",
+        "Tracked p99 latency specifically because averages hide the tail, which is what actually matters in this context.",
       ],
       outcomes: [
-        "Reached high order throughput with low microsecond tail latency in simulation.",
-        "Established a strong baseline architecture for further exchange features.",
+        "Hitting 1M+ orders/sec and p99 under 5 microseconds in user-space simulation (no kernel bypass, no real NIC overhead).",
+        "Lock-free path and zero-allocation hot path are both in place. Good foundation to build execution reporting and market data replay on top of.",
       ],
       nextSteps: [
-        "Add persistent snapshotting and recovery paths.",
-        "Integrate synthetic market data replay for stress scenarios.",
+        "Add persistent snapshotting and recovery.",
+        "Build out synthetic market data replay to stress test under realistic order flow.",
       ],
     },
   },
@@ -252,117 +218,31 @@ export const allProjects: Project[] = [
     wip: true,
     caseStudy: {
       problem:
-        "Research iterations for mean-reversion strategies were too slow in pure Python for large pair universes.",
+        "Running z-score and rolling correlation computations across 50+ equity pairs in pure Python was too slow to iterate on. A parameter sweep that should take minutes was taking hours.",
       constraints: [
-        "Needed robust statistical signals over multi-year data.",
-        "Backtest runtime had to support frequent parameter sweeps.",
+        "Signals needed to hold up over multi-year data, not just in-sample.",
+        "Fast enough to run full parameter sweeps without waiting around.",
       ],
       architecture: [
-        "Python orchestration for data ingestion, feature prep, and strategy logic.",
-        "C++ compute kernels exposed via pybind11 for heavy inner loops.",
-        "Evaluation layer measures returns, drawdowns, and signal stability.",
+        "Python handles data ingestion, feature prep, and strategy logic.",
+        "C++ compute kernels exposed to Python via pybind11 for the heavy inner loops.",
+        "Evaluation layer tracks returns, drawdowns, and signal stability across pairs.",
       ],
       tradeoffs: [
-        "Hybrid Python/C++ stack improved speed but increased build complexity.",
-        "Richer signal set improved selectivity at the cost of more tuning dimensions.",
+        "Mixing Python and C++ via pybind11 got the speed up, but added build complexity and made the dev loop slightly more annoying.",
+        "More signals helped filter out weak pairs, but added more knobs to tune and more ways to accidentally overfit.",
       ],
       decisions: [
-        "Moved critical rolling-stat computations into C++ after profiling bottlenecks.",
-        "Added walk-forward validation to reduce overfitting risk.",
+        "Profiled first, then moved only the bottleneck computations into C++. Didn't rewrite everything.",
+        "Added walk-forward validation after noticing the in-sample results looked too clean.",
       ],
       outcomes: [
-        "Achieved large runtime speedup versus pure Python implementation.",
-        "Enabled broader exploration across pair combinations and parameters.",
+        "C++ inner loop runs about 25x faster than the NumPy baseline on the same input. Full parameter sweeps across 50+ pairs now finish in reasonable time.",
+        "Can iterate on lookback windows, z-score thresholds, and pair selection without the runtime being the bottleneck.",
       ],
       nextSteps: [
-        "Add transaction cost and slippage stress models.",
-        "Integrate portfolio-level risk caps and execution constraints.",
-      ],
-    },
-  },
-  {
-    title: "Personal Portfolio — bereketlemma.com",
-    shortTitle: "Personal Portfolio",
-    slug: "portfolio",
-    description:
-      "This portfolio — built from scratch with Next.js 14, TypeScript, Tailwind CSS, and Firebase. Features a terminal-style hero with typewriter animation, scroll-reveal animations, blog, and admin CMS. Deployed to a custom domain via Vercel and Cloudflare.",
-    shortDescription:
-      "Built from scratch with Next.js 14, TypeScript, Tailwind CSS, and Firebase. Terminal-style hero, scroll-reveal animations, blog, and custom domain via Vercel and Cloudflare.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Firebase", "Vercel", "Framer Motion"],
-    shortTags: ["Next.js", "TypeScript", "Tailwind CSS", "Firebase", "Vercel"],
-    github: "https://github.com/bereketlemma/bereket-portfolio",
-    live: "https://bereketlemma.com",
-    wip: false,
-    caseStudy: {
-      problem:
-        "Needed a portfolio that communicates technical depth while still feeling personal and fast to navigate.",
-      constraints: [
-        "Wanted strong performance and SEO for public discoverability.",
-        "UI needed to feel distinct without relying on heavy client-side overhead.",
-      ],
-      architecture: [
-        "Next.js App Router with TypeScript and Tailwind for structured UI delivery.",
-        "Modular section components for hero, projects, skills, and blog.",
-        "Deployment via Vercel with domain and DNS managed through Cloudflare.",
-      ],
-      tradeoffs: [
-        "Balanced animation richness with page performance and accessibility.",
-        "Used a custom visual system over boilerplate templates to improve differentiation.",
-      ],
-      decisions: [
-        "Introduced terminal-style hero to reinforce engineering identity.",
-        "Kept content model simple to make iteration and publishing fast.",
-      ],
-      outcomes: [
-        "Delivered a distinctive portfolio experience with clear technical storytelling.",
-        "Reduced friction for adding new projects and blog content.",
-      ],
-      nextSteps: [
-        "Add deeper case-study pages for each major project.",
-        "Introduce content analytics to track what recruiters view most.",
-      ],
-    },
-  },
-  {
-    title: "NavigateCity",
-    shortTitle: "NavigateCity",
-    slug: "navigatecity",
-    description:
-      "Web application helping users explore cities worldwide by providing curated information on museums, restaurants, parks, and famous sights. Features a natural language AI page where users write plain English requests and an AI generates database queries to execute — no SQL knowledge required.",
-    shortDescription:
-      "Web application helping users explore cities worldwide by providing curated information on museums, restaurants, parks, and famous sights. Features a natural language AI page where users write plain English requests and an AI generates database queries to execute.",
-    tags: ["Python", "Flask", "MySQL", "OpenAI API", "HTML/CSS"],
-    shortTags: ["Python", "Flask", "MySQL", "OpenAI API", "HTML/CSS"],
-    github: "https://github.com/bereketlemma/Navigate-City",
-    live: "https://mmielle.com/navigatecity",
-    wip: false,
-    caseStudy: {
-      problem:
-        "Users wanted city discovery recommendations without manually writing SQL queries against location data.",
-      constraints: [
-        "Needed to translate ambiguous natural language into safe, usable queries.",
-        "UI had to stay approachable for non-technical users.",
-      ],
-      architecture: [
-        "Flask backend handles routing, API orchestration, and database access.",
-        "MySQL stores curated city datasets across attractions and categories.",
-        "OpenAI-powered assistant generates SQL from natural language prompts.",
-      ],
-      tradeoffs: [
-        "Natural language flexibility improved UX but required stronger validation of generated queries.",
-        "Simple web stack improved delivery speed while limiting advanced front-end interactivity.",
-      ],
-      decisions: [
-        "Added guardrails to constrain generated query structure.",
-        "Prioritized curated categories to keep recommendations reliable.",
-      ],
-      outcomes: [
-        "Enabled plain-English exploration of city data without SQL knowledge.",
-        "Improved discoverability of attractions through guided query experiences.",
-      ],
-      nextSteps: [
-        "Add user preference memory for personalized suggestions.",
-        "Expand city coverage with richer real-time event datasets.",
+        "Add transaction cost and slippage models so the backtest reflects real conditions better.",
+        "Add portfolio-level position sizing and risk caps.",
       ],
     },
   },

@@ -2,28 +2,20 @@
 
 import { useInView } from "react-intersection-observer"
 
-const experiences = [
+type Entry = {
+  date: string
+  role: string
+  company: string
+  location: string
+  description?: string
+  bullets?: string[]
+  tags: string[]
+  link?: string | null
+  linkLabel?: string | null
+}
+
+const workEntries: Entry[] = [
   {
-    date: "Mar 2026 — Present",
-    role: "Parameter Golf Competitor",
-    company: "OpenAI",
-    location: "Remote",
-    description:
-      "Training a language model to fit within 16MB, under 10 minutes on 8 H100 GPUs, optimized for maximum compression on FineWeb. Engineering custom training loops with gradient accumulation, mixed-precision arithmetic, and memory-efficient data loading.",
-    tags: ["Python", "PyTorch", "LLM", "Quantization", "H100"],
-  },
-  {
-    date: "Nov 2024 — Jan 2025",
-    role: "Startup Engineer (Founding Team)",
-    company: "Celeri.io",
-    location: "Spokane, WA",
-    description:
-      "Won $50,000 investment at Sparks Weekend to build communication software for criminal courts, reducing pretrial detention times by connecting stakeholders across counties.",
-    tags: ["Pitch Deck", "Prototyping", "Team communication", "Product Design", "Legal-Tech"],
-    link: "https://www.youtube.com/watch?v=CvY1y46ypYw",
-    linkLabel: "Watch the pitch →",
-  },
-    {
     date: "Feb 2025 — May 2025",
     role: "Full-Stack Software Engineer Intern",
     company: "Hewitt Learning",
@@ -49,12 +41,47 @@ const experiences = [
     description:
       "Built a full-stack database management system for a nonprofit, migrating 1000+ user records from manual Excel spreadsheets to a relational MySQL database. Led a 4-member team delivering role-based authentication, full CRUD operations, and sortable views.",
     tags: ["React", "Node.js", "MySQL", "Express.js", "Heroku", "Netlify"],
-    link: null,
-    linkLabel: null,
   },
 ]
 
-function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: number }) {
+const competitionEntries: Entry[] = [
+  {
+    date: "Mar 2026 — Present",
+    role: "Parameter Golf Challenge",
+    company: "OpenAI (Open Competition)",
+    location: "Remote",
+    description:
+      "Training a 16MB language model under 10 minutes on 8× H100 GPUs, optimized for maximum compression on FineWeb. Engineering custom training loops with gradient accumulation, mixed-precision arithmetic, and memory-efficient data loading.",
+    tags: ["Python", "PyTorch", "LLM", "Quantization", "H100"],
+  },
+  {
+    date: "Nov 2024 — Jan 2025",
+    role: "Startup Engineer (Founding Team)",
+    company: "Celeri.io",
+    location: "Spokane, WA",
+    description:
+      "Won $50,000 investment at Sparks Weekend to build communication software for criminal courts, reducing pretrial detention times by connecting stakeholders across counties.",
+    tags: ["Pitch Deck", "Prototyping", "Team Communication", "Product Design", "Legal-Tech"],
+    link: "https://www.youtube.com/watch?v=CvY1y46ypYw",
+    linkLabel: "Watch the pitch →",
+  },
+]
+
+const researchEntries: Entry[] = [
+  {
+    date: "Feb 2025 — May 2025",
+    role: "Operating Systems Research",
+    company: "Whitworth University",
+    location: "Spokane, WA",
+    bullets: [
+      "Implemented four scheduling algorithms in C, benchmarked across 1,000+ distributed VM traces, and authored findings with comprehensive technical documentation and statistical analysis.",
+      "Conducted statistical analysis identifying Round Robin as optimal for mixed workloads, reducing average wait time by 40% vs FCFS baseline. Authored findings as a full IEEE-format research paper.",
+    ],
+    tags: ["C", "Operating Systems", "Scheduling Algorithms", "Research", "IEEE"],
+  },
+]
+
+function EntryCard({ entry, index }: { entry: Entry; index: number }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.08 })
 
   return (
@@ -66,34 +93,49 @@ function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: num
       style={{ transitionDelay: `${index * 70}ms` }}
     >
       <div className="flex flex-col">
-        <span className="font-mono text-xs text-accent">{exp.date}</span>
-        <span className="mt-1 font-mono text-xs text-muted-foreground">{exp.location}</span>
+        <span className="font-mono text-xs text-accent">{entry.date}</span>
+        <span className="mt-1 font-mono text-xs text-muted-foreground">{entry.location}</span>
       </div>
 
       <div className="relative overflow-hidden rounded border border-border/40 p-5 transition-all duration-300
         group-hover:border-accent/50 group-hover:shadow-[0_0_20px_rgba(var(--accent-rgb,100,200,255),0.08)]">
 
-        {/* Hover glow gradient */}
         <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-accent/5 via-transparent to-accent/5" />
-
-        {/* Top accent line */}
         <div className="absolute top-0 left-0 h-px w-0 bg-accent/60 group-hover:w-full transition-all duration-500" />
 
-        <h3 className="relative font-syne text-base font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">{exp.role}</h3>
-        <p className="relative mt-0.5 font-mono text-sm text-accent">{exp.company}</p>
-        <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">{exp.description}</p>
-        {exp.link && (
+        <h3 className="relative font-syne text-base font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
+          {entry.role}
+        </h3>
+        <p className="relative mt-0.5 font-mono text-sm text-accent">{entry.company}</p>
+
+        {entry.description && (
+          <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">{entry.description}</p>
+        )}
+
+        {entry.bullets && entry.bullets.length > 0 && (
+          <ul className="relative mt-3 flex flex-col gap-2">
+            {entry.bullets.map((bullet, i) => (
+              <li key={i} className="flex gap-2 text-sm leading-relaxed text-muted-foreground">
+                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/50" />
+                {bullet}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {entry.link && (
           <a
-            href={exp.link}
+            href={entry.link}
             target="_blank"
             rel="noopener noreferrer"
             className="relative mt-2 inline-block font-mono text-xs text-accent hover:underline transition-all duration-300 group-hover:translate-x-1"
           >
-            {exp.linkLabel}
+            {entry.linkLabel}
           </a>
         )}
+
         <div className="relative mt-4 flex flex-wrap gap-2">
-          {exp.tags.map((tag) => (
+          {entry.tags.map((tag) => (
             <span
               key={tag}
               className="rounded border border-border/60 px-2 py-0.5 font-mono text-xs text-muted-foreground hover:border-accent/50 hover:text-accent transition-all duration-300 cursor-default"
@@ -103,9 +145,26 @@ function ExperienceCard({ exp, index }: { exp: typeof experiences[0]; index: num
           ))}
         </div>
 
-        {/* Bottom accent line */}
         <div className="absolute bottom-0 right-0 h-px w-0 bg-accent/40 group-hover:w-full transition-all duration-500 delay-100" />
       </div>
+    </div>
+  )
+}
+
+function SubSectionHeader({ label }: { label: string }) {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 })
+
+  return (
+    <div
+      ref={ref}
+      className={`mb-8 flex items-center gap-3 transition-all duration-500 ${
+        inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+      }`}
+    >
+      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/60">
+        {label}
+      </span>
+      <div className="h-px flex-1 bg-border/40" />
     </div>
   )
 }
@@ -126,10 +185,34 @@ export default function Experience() {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <div className="flex flex-col gap-10">
-        {experiences.map((exp, i) => (
-          <ExperienceCard key={i} exp={exp} index={i} />
-        ))}
+      {/* Work */}
+      <div className="mb-14">
+        <SubSectionHeader label="Work" />
+        <div className="flex flex-col gap-10">
+          {workEntries.map((entry, i) => (
+            <EntryCard key={i} entry={entry} index={i} />
+          ))}
+        </div>
+      </div>
+
+      {/* Competitions */}
+      <div className="mb-14">
+        <SubSectionHeader label="Competitions" />
+        <div className="flex flex-col gap-10">
+          {competitionEntries.map((entry, i) => (
+            <EntryCard key={i} entry={entry} index={i} />
+          ))}
+        </div>
+      </div>
+
+      {/* Research */}
+      <div>
+        <SubSectionHeader label="Research" />
+        <div className="flex flex-col gap-10">
+          {researchEntries.map((entry, i) => (
+            <EntryCard key={i} entry={entry} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
 
-type Section = "home" | "experience" | "projects" | "posts" | "hobbies" | null
+type Section = "home" | "experience" | "projects" | "posts" | "activity" | null
 
 type SectionContextType = {
   active: Section

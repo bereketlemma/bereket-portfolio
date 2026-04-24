@@ -1,9 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { Github, ExternalLink, ArrowRight } from "lucide-react"
+import { Github, ExternalLink, MousePointerClick } from "lucide-react"
 import { useInView } from "react-intersection-observer"
 import { allProjects } from "@/lib/projects"
+import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion"
 
 function ProjectCard({
   project,
@@ -14,94 +15,127 @@ function ProjectCard({
 }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.06 })
 
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [7, -7]), { stiffness: 400, damping: 30 })
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-7, 7]), { stiffness: 400, damping: 30 })
+
+  const shineX = useTransform(mouseX, [-0.5, 0.5], [0, 100])
+  const shineY = useTransform(mouseY, [-0.5, 0.5], [0, 100])
+  const angle  = useTransform(mouseX, [-0.5, 0.5], [120, 240])
+
+  const shine = useMotionTemplate`radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.14) 0%, transparent 50%), linear-gradient(${angle}deg, hsl(var(--accent)/0.07) 0%, rgba(56,189,248,0.05) 40%, transparent 80%)`
+
+  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const r = e.currentTarget.getBoundingClientRect()
+    mouseX.set((e.clientX - r.left) / r.width - 0.5)
+    mouseY.set((e.clientY - r.top) / r.height - 0.5)
+  }
+  function onMouseLeave() { mouseX.set(0); mouseY.set(0) }
+
   return (
-    <Link
+    <div
       ref={ref}
-      href={`/projects/${project.slug}`}
-      className={`group relative block overflow-hidden rounded border border-border/40 p-6 transition-all duration-450 ease-out
-        hover:border-accent/50 hover:shadow-[0_0_20px_rgba(var(--accent-rgb,100,200,255),0.08)]
-        ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}
-      `}
-      style={{ transitionDelay: `${index * 45}ms` }}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      className={`transition-all duration-500 ease-out h-full ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}`}
+      style={{ perspective: "1000px", transitionDelay: `${index * 45}ms` }}
     >
-      {/* Hover glow gradient */}
-      <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-accent/5 via-transparent to-accent/5" />
+      <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="h-full">
+        <Link
+          href={`/projects/${project.slug}`}
+          className="group relative flex h-full flex-col overflow-hidden rounded border border-border/40 p-5 transition-colors duration-300 hover:border-accent/50 hover:shadow-[0_24px_50px_rgba(0,0,0,0.35)]"
+        >
+          {/* Holographic shine — follows mouse */}
+          <motion.div
+            className="pointer-events-none absolute inset-0 rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            style={{ background: shine }}
+          />
+
+          {/* Hover glow gradient */}
+          <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-accent/5 via-transparent to-accent/5" />
 
       {/* Top accent line */}
       <div className="absolute top-0 left-0 h-px w-0 bg-accent/60 group-hover:w-full transition-all duration-500" />
 
-      <div className="relative flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="font-syne text-base font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
-              {project.title}
-            </h3>
-            {project.wip && (
-              <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
-                WIP
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {project.live && (
-              <a
-                href={project.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="relative z-10 flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
-              >
-                <ExternalLink size={12} />
-                live
-              </a>
-            )}
+      {/* Clickable badge — always visible */}
+      <div className="relative mb-3 flex items-center justify-between">
+        <span className="flex items-center gap-1 rounded border border-accent/30 bg-accent/8 px-2 py-0.5 font-mono text-[10px] text-accent/70 transition-colors group-hover:border-accent/60 group-hover:text-accent">
+          <MousePointerClick size={10} />
+          click to see how it was built
+        </span>
+      </div>
+
+      {/* Title row */}
+      <div className="relative mb-3 flex items-start justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="font-syne text-sm font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
+            {project.shortTitle}
+          </h3>
+          {project.wip && (
+            <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
+              WIP
+            </span>
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5">
+          {project.live && (
             <a
-              href={project.github}
+              href={project.live}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex items-center gap-1.5 rounded border border-border/60 px-2 py-1 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
+              className="relative z-10 flex items-center gap-1 rounded border border-border/60 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground hover:border-accent hover:text-accent transition-all"
             >
-              <Github size={12} />
-              github
+              <ExternalLink size={11} />
+              live
             </a>
-          </div>
+          )}
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="relative z-10 flex items-center gap-1 rounded border border-border/60 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground hover:border-accent hover:text-accent transition-all"
+          >
+            <Github size={11} />
+            github
+          </a>
         </div>
       </div>
 
-      <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">
-        {project.description}
+      {/* Description — clamped so all cards stay same height */}
+      <p className="relative text-xs leading-relaxed text-muted-foreground line-clamp-3 flex-1">
+        {project.shortDescription}
       </p>
 
-      <div className="relative mt-4 flex flex-wrap gap-2">
-        {project.tags.map((tag) => (
+      {/* Tags */}
+      <div className="relative mt-4 flex flex-wrap gap-1.5">
+        {project.shortTags.map((tag) => (
           <span
             key={tag}
-            className="rounded border border-border/60 px-2 py-0.5 font-mono text-xs text-muted-foreground cursor-default"
+            className="rounded border border-border/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground cursor-default"
           >
             {tag}
           </span>
         ))}
       </div>
 
-      {/* Build process hint */}
-      <div className="relative mt-4 flex items-center gap-1.5 font-mono text-xs text-muted-foreground/50 transition-all duration-300 group-hover:text-accent">
-        <span>see how it was built</span>
-        <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-      </div>
 
       {/* Bottom accent line */}
       <div className="absolute bottom-0 right-0 h-px w-0 bg-accent/40 group-hover:w-full transition-all duration-500 delay-100" />
-    </Link>
+        </Link>
+      </motion.div>
+    </div>
   )
 }
 
 export default function Projects() {
   const { ref: headerRef, inView: headerInView } = useInView({ triggerOnce: true, threshold: 0.25 })
-  const { ref: viewMoreRef, inView: viewMoreInView } = useInView({ triggerOnce: true, threshold: 0.25 })
 
   return (
-    <section id="projects" className="py-24">
+    <section id="projects" className="py-8 lg:py-16">
 
       {/* Section header */}
       <div
@@ -115,27 +149,11 @@ export default function Projects() {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      {/* First 3 projects */}
-      <div className="flex flex-col gap-6">
-        {allProjects.slice(0, 3).map((project, i) => (
+      {/* All projects — 3 column grid */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {allProjects.map((project, i) => (
           <ProjectCard key={project.title} project={project} index={i} />
         ))}
-      </div>
-
-      {/* View all projects link */}
-      <div
-        ref={viewMoreRef}
-        className={`my-8 flex items-center justify-center transition-all duration-500 ${
-          viewMoreInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-        }`}
-      >
-        <Link
-          href="/projects"
-          className="group rounded border border-border/60 px-6 py-2.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2"
-        >
-          <span>view all projects</span>
-          <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
-        </Link>
       </div>
 
     </section>

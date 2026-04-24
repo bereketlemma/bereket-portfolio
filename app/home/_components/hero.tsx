@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { motion } from "framer-motion"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 
 /* ─── Terminal ─────────────────────────────────── */
 const terminalCommands: Record<string, string[]> = {
@@ -100,6 +100,12 @@ const terminalCommands: Record<string, string[]> = {
 type Line = { id: string; type: "input" | "output" | "error"; text: string }
 
 const quickCmds = ["help", "whoami", "experience", "projects", "posts", "activity", "skills", "icpc", "contact", "clear"]
+const initialTerminalLines: Line[] = [
+  { id: "w0", type: "output", text: "bereketlemma@portfolio ~ interactive terminal" },
+  { id: "w1", type: "output", text: "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€" },
+  { id: "w2", type: "output", text: "ask me anything. type or click a command below." },
+  { id: "w3", type: "output", text: "" },
+]
 
 function MiniTerminal() {
   const [lines, setLines] = useState<Line[]>([
@@ -121,23 +127,15 @@ function MiniTerminal() {
   // Remove auto-type — experience is shown by default, no need to auto-run
 
 
-  function run(cmd: string) {
+  function run(cmd: string, replace = false) {
     const raw = cmd.trim()
     if (!raw) return
 
     // Strip leading "/" and resolve key
     const stripped = raw.startsWith("/") ? raw.slice(1) : raw
     const key = stripped.toLowerCase()
-
-    const next: Line[] = [{ id: `${Date.now()}-in`, type: "input", text: raw }]
-
     if (key === "clear") {
-      setLines([
-        { id: "w0", type: "output", text: "bereketlemma@portfolio ~ interactive terminal" },
-        { id: "w1", type: "output", text: "─────────────────────────────────────────" },
-        { id: "w2", type: "output", text: "ask me anything. type or click a command below." },
-        { id: "w3", type: "output", text: "" },
-      ])
+      setLines((prev) => prev.slice(0, 4))
       setInput("")
       return
     }
@@ -159,7 +157,7 @@ function MiniTerminal() {
       }
     }
 
-    setLines((prev) => [...prev, ...newLines])
+    setLines((prev) => (replace ? [...prev.slice(0, 4), ...newLines] : [...prev, ...newLines]))
     setCmdHistory((prev) => [raw, ...prev])
     setHistIdx(-1)
     setInput("")
@@ -214,7 +212,7 @@ function MiniTerminal() {
         {quickCmds.map((cmd) => (
           <button
             key={cmd}
-            onClick={(e) => { e.stopPropagation(); run(cmd) }}
+            onClick={(e) => { e.stopPropagation(); run(cmd, true) }}
             className="rounded border border-border/40 bg-muted/30 px-2 py-0.5 font-mono text-[10px] text-muted-foreground/55 transition-all hover:border-accent/50 hover:bg-accent/8 hover:text-accent"
           >
             {cmd}
@@ -257,6 +255,33 @@ function Card({ children, className = "" }: { children: React.ReactNode; classNa
 /* ─── Hero ─────────────────────────────────────── */
 export default function Hero() {
   const [seattleTime, setSeattleTime] = useState("")
+  const heroMouseX = useMotionValue(0)
+  const heroMouseY = useMotionValue(0)
+
+  const heroRotateX = useSpring(useTransform(heroMouseY, [-0.5, 0.5], [4, -4]), {
+    stiffness: 180,
+    damping: 26,
+  })
+  const heroRotateY = useSpring(useTransform(heroMouseX, [-0.5, 0.5], [-5, 5]), {
+    stiffness: 180,
+    damping: 26,
+  })
+  const planeX = useSpring(useTransform(heroMouseX, [-0.5, 0.5], [-18, 18]), {
+    stiffness: 120,
+    damping: 24,
+  })
+  const planeY = useSpring(useTransform(heroMouseY, [-0.5, 0.5], [-14, 14]), {
+    stiffness: 120,
+    damping: 24,
+  })
+  const orbX = useSpring(useTransform(heroMouseX, [-0.5, 0.5], [-28, 28]), {
+    stiffness: 110,
+    damping: 22,
+  })
+  const orbY = useSpring(useTransform(heroMouseY, [-0.5, 0.5], [-20, 20]), {
+    stiffness: 110,
+    damping: 22,
+  })
 
   const getSeattleTime = () =>
     new Intl.DateTimeFormat("en-US", {
@@ -270,10 +295,24 @@ export default function Hero() {
     return () => clearInterval(interval)
   }, [])
 
+  function handleHeroMouseMove(e: React.MouseEvent<HTMLElement>) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    heroMouseX.set((e.clientX - rect.left) / rect.width - 0.5)
+    heroMouseY.set((e.clientY - rect.top) / rect.height - 0.5)
+  }
+
+  function handleHeroMouseLeave() {
+    heroMouseX.set(0)
+    heroMouseY.set(0)
+  }
+
   return (
     <section
       className="relative flex min-h-0 flex-col gap-3 py-6 lg:min-h-[calc(100vh-56px-48px)] lg:py-6"
       id="about"
+      onMouseMove={handleHeroMouseMove}
+      onMouseLeave={handleHeroMouseLeave}
+      style={{ perspective: "1600px" }}
     >
       {/* Ambient grid */}
       <div className="pointer-events-none absolute inset-0"
@@ -282,66 +321,155 @@ export default function Hero() {
           backgroundSize: "48px 48px",
         }}
       />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-[6%] top-10 hidden h-56 rounded-[2rem] border border-border/20 bg-gradient-to-br from-accent/6 via-transparent to-sky-400/6 lg:block"
+        style={{
+          x: planeX,
+          y: planeY,
+          rotateX: heroRotateX,
+          rotateY: heroRotateY,
+          transformStyle: "preserve-3d",
+        }}
+      >
+        <div
+          className="absolute inset-0 rounded-[2rem] opacity-50"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, hsl(var(--border) / 0.22) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border) / 0.22) 1px, transparent 1px)",
+            backgroundSize: "26px 26px",
+          }}
+        />
+      </motion.div>
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-10 top-20 hidden h-40 w-40 rounded-full bg-accent/10 blur-3xl lg:block"
+        style={{ x: orbX, y: orbY }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-4 top-12 hidden h-48 w-48 rounded-full bg-sky-400/10 blur-3xl lg:block"
+        style={{ x: orbY, y: orbX }}
+      />
 
       {/* ── Bento grid ── */}
       <div className="relative grid h-full grid-cols-1 gap-3 lg:grid-cols-4 lg:grid-rows-2 lg:flex-1">
 
         {/* ① Name + Identity — col 1-2, row 1 */}
-        <Card className="lg:col-span-2 lg:row-span-1 flex flex-col justify-center p-6">
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}
-            className="mb-1 font-mono text-xs text-muted-foreground/50">
-            Hey! I'm
-          </motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.5 }}
-            className="font-syne text-4xl font-bold leading-tight text-foreground sm:text-5xl">
-            Bereket Lemma
-          </motion.h1>
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
-            className="mt-3 flex flex-col gap-1">
-            <span className="font-syne text-lg font-semibold text-foreground/90">Software Engineer</span>
-            <div className="flex flex-wrap items-center gap-2 font-mono text-sm">
-              <span className="text-muted-foreground/40">specializing in</span>
-              <span className="text-amber-400">Backend Systems</span>
-              <span className="text-muted-foreground/30">+</span>
-              <span className="text-sky-400">ML Infrastructure</span>
-            </div>
-          </motion.div>
+        <motion.div
+          className="h-full lg:col-span-2 lg:row-span-1"
+          style={{ rotateX: heroRotateX, rotateY: heroRotateY, transformStyle: "preserve-3d" }}
+        >
+        <Card className="flex h-full flex-col justify-center p-6">
+          <div className="flex max-w-[28rem] flex-col justify-center" style={{ transform: "translateZ(22px)" }}>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 }}
+              className="mb-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground/50">
+              Hey! I'm
+            </motion.p>
+            <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.5 }}
+              className="font-syne text-4xl font-bold leading-[0.95] text-foreground sm:text-5xl">
+              Bereket Lemma
+            </motion.h1>
+            <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
+              className="mt-4 flex w-full max-w-[24rem] flex-col gap-2">
+              <span className="font-syne text-lg font-semibold text-foreground/90">Software Engineer</span>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-sm">
+                <span className="text-muted-foreground/40">specializing in</span>
+                <span className="text-amber-400">Backend Systems</span>
+                <span className="text-muted-foreground/30">+</span>
+                <span className="text-sky-400">ML Infrastructure</span>
+              </div>
+            </motion.div>
+          </div>
           <div className="pointer-events-none absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-accent/5 blur-2xl" />
         </Card>
+        </motion.div>
 
-        {/* ② About — col 3-4, row 1 — PROMINENT TOP RIGHT */}
-        <Card className="lg:col-span-2 lg:row-span-1 flex flex-col gap-3 overflow-y-auto p-5">
-          <div className="flex shrink-0 items-center gap-2">
-            <span className="font-mono text-xs text-accent">01.</span>
-            <span className="font-syne text-sm font-bold text-foreground">About</span>
-            <div className="h-px flex-1 bg-border/40" />
-          </div>
-          {[
-            {
-              bar: "bg-accent/40",
-              text: <>I am an aspiring <span className="text-amber-400">software engineer</span> finishing my B.S. in <span className="text-foreground/80">Computer Science and Applied Mathematics</span> at <a href="https://www.whitworth.edu" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors">Whitworth University</a> this May, specializing in <span className="text-amber-400">backend systems</span> and <span className="text-sky-400">ML infrastructure</span>.</>,
-            },
-            {
-              bar: "bg-accent/30",
-              text: <>What draws me to backend systems and ML infrastructure is building systems that maintain <span className="text-accent">correctness guarantees</span> without sacrificing <span className="text-accent">throughput</span>. In a backend system, a single wrong assumption can cause silent <span className="text-red-400/80">data corruption</span> or <span className="text-red-400/80">race conditions</span> under load. In ML inference, a bad <span className="text-violet-400">quantization</span> choice tanks throughput and degrades <span className="text-accent">latency</span> for every user request. Getting both right requires going deep, and that is what I find worth spending time on.</>,
-            },
-            {
-              bar: "bg-accent/20",
-              text: <><a href="https://icpc.global/" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline underline-offset-4 hover:text-amber-400/80 transition-colors">Placed 3rd at the ICPC Pacific Northwest Regionals</a>: the International Collegiate Programming Contest, one of the most competitive algorithmic programming competitions for university students worldwide. Won a <a href="https://www.youtube.com/watch?v=CvY1y46ypYw" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline underline-offset-4 hover:text-emerald-400/80 transition-colors">$50,000 investment</a> at Sparks Weekend to build <span className="text-accent">Celeri.io</span>, communication software for criminal courts that helps reduce unnecessary pretrial detention by connecting the right people at the right time.</>,
-            },
-            {
-              bar: "bg-accent/12",
-              text: <>I'm looking to join a team where I can keep <span className="text-foreground/80">growing</span>, take real <span className="text-foreground/80">ownership</span>, and work on meaningful problems with <span className="text-foreground/80">strong people</span>. If that sounds like your team, <a href="/contact" className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors">I'd love to connect</a>.</>,
-            },
-          ].map(({ bar, text }, i) => (
-            <motion.div key={i} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.15 + i * 0.08, duration: 0.4 }}
-              className="relative shrink-0 pl-3">
-              <div className={`absolute left-0 top-0 h-full w-[2px] rounded-full ${bar}`} />
-              <p className="text-xs leading-relaxed text-muted-foreground">{text}</p>
-            </motion.div>
-          ))}
-        </Card>
+{/* ② About — col 3-4, row 1 — PROMINENT TOP RIGHT */}
+<motion.div
+  className="h-full lg:col-span-2 lg:row-span-1"
+  style={{ rotateX: heroRotateX, rotateY: heroRotateY, transformStyle: "preserve-3d" }}
+>
+<Card className="flex h-full flex-col gap-5 overflow-hidden p-6">
+  <div className="flex shrink-0 items-center gap-2">
+    <span className="font-mono text-xs text-accent">01.</span>
+    <span className="font-syne text-sm font-bold text-foreground">About</span>
+    <div className="h-px flex-1 bg-border/40" />
+  </div>
+
+  <div className="flex flex-1 flex-col justify-center gap-5">
+
+  {[
+    {
+      bar: "bg-accent/40",
+      text: (
+        <>
+          I'm an aspiring <span className="text-amber-400">software engineer</span> finishing my B.S. in{" "}
+          <span className="text-foreground/80">Computer Science and Applied Mathematics</span> at{" "}
+          <a
+            href="https://www.whitworth.edu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors"
+          >
+            Whitworth University
+          </a>
+          , with a focus on <span className="text-amber-400">backend systems</span> and{" "}
+          <span className="text-sky-400">ML infrastructure</span>. I’m most interested in building systems
+          that stay{" "}
+          <span className="text-accent">reliable under load</span>, whether that means avoiding silent
+          failures and race conditions in backend systems or making smart{" "}
+          <span className="text-violet-400">quantization</span> choices in ML inference that protect{" "}
+          <span className="text-accent">throughput</span> and{" "}
+          <span className="text-accent">latency</span>.
+        </>
+      ),
+    },
+    {
+      bar: "bg-accent/30",
+      text: (
+        <>
+          <a
+            href="https://icpc.global/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-amber-400 underline underline-offset-4 hover:text-amber-400/80 transition-colors"
+          >
+            I placed 3rd at the ICPC Pacific Northwest Regionals
+          </a>
+          , one of the strongest collegiate programming contests in the region. I also won a{" "}
+          <a
+            href="https://www.youtube.com/watch?v=CvY1y46ypYw"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-emerald-400 underline underline-offset-4 hover:text-emerald-400/80 transition-colors"
+          >
+            $50,000 investment
+          </a>{" "}
+          at Spark Weekend to help build <span className="text-accent">Celeri.io</span>, a legal
+          communication platform focused on better coordination across the justice system. I enjoy work
+          where{" "}
+          <span className="text-accent">performance</span>, correctness, and real-world impact all matter.
+        </>
+      ),
+    },
+  ].map(({ bar, text }, i) => (
+    <motion.div
+      key={i}
+      initial={{ opacity: 0, x: 8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.15 + i * 0.08, duration: 0.4 }}
+      className="relative w-full pl-4"
+    >
+      <div className={`absolute left-0 top-0 h-full w-[2px] rounded-full ${bar}`} />
+      <p className="text-pretty font-sans text-[13px] leading-[1.9] tracking-[0.01em] text-muted-foreground sm:text-sm sm:leading-8">
+        {text}
+      </p>
+    </motion.div>
+  ))}
+  </div>
+</Card>
+</motion.div>
 
         {/* ③ Terminal — col 1-2, row 2 */}
         <Card className="lg:col-span-2 lg:row-span-1 overflow-hidden p-0">
@@ -356,9 +484,15 @@ export default function Hero() {
                 className="h-2 w-2 rounded-full bg-emerald-400" />
               <span className="font-mono text-xs text-foreground/70">Available Now</span>
             </div>
-            <p className="font-mono text-[11px] leading-relaxed text-muted-foreground/50">
-              Open to new grad software engineering roles in systems, backend, or ML infrastructure.
-            </p>
+            <div className="flex flex-col gap-2">
+              <p className="font-mono text-[11px] leading-relaxed text-muted-foreground/50">
+                Open to new grad software engineering roles in systems, backend, or ML infrastructure.
+              </p>
+              <p className="font-mono text-[11px] leading-relaxed text-muted-foreground/50">
+                I'm looking to join a team where I can keep growing, take real ownership, and work on
+                meaningful problems with strong people. If that sounds like your team, I'd love to connect.
+              </p>
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <a href="/contact"
@@ -397,3 +531,4 @@ export default function Hero() {
     </section>
   )
 }
+

@@ -45,7 +45,7 @@ function ProjectCard({
       <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="h-full">
         <Link
           href={`/projects/${project.slug}`}
-          className="group relative flex h-full flex-col overflow-hidden rounded border border-border/40 p-5 transition-colors duration-300 hover:border-accent/50 hover:shadow-[0_24px_50px_rgba(0,0,0,0.35)]"
+          className="group relative flex h-full min-h-[15.5rem] flex-col overflow-hidden rounded border border-border/40 p-5 transition-colors duration-300 hover:border-accent/50 hover:shadow-[0_24px_50px_rgba(0,0,0,0.35)] lg:min-h-[16.5rem]"
         >
           {/* Holographic shine — follows mouse */}
           <motion.div
@@ -68,9 +68,9 @@ function ProjectCard({
       </div>
 
       {/* Title row */}
-      <div className="relative mb-3 flex items-start justify-between gap-2">
+      <div className="relative mb-3 flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-syne text-sm font-bold text-foreground group-hover:text-accent transition-all duration-300 group-hover:translate-x-1">
+          <h3 className="font-syne text-sm font-bold text-foreground transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent sm:text-base">
             {project.shortTitle}
           </h3>
           {project.wip && (
@@ -106,7 +106,7 @@ function ProjectCard({
       </div>
 
       {/* Description — clamped so all cards stay same height */}
-      <p className="relative text-xs leading-relaxed text-muted-foreground line-clamp-3 flex-1">
+      <p className="relative flex-1 text-xs leading-6 text-muted-foreground line-clamp-3 sm:text-[13px]">
         {project.shortDescription}
       </p>
 
@@ -115,7 +115,7 @@ function ProjectCard({
         {project.shortTags.map((tag) => (
           <span
             key={tag}
-            className="rounded border border-border/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground cursor-default"
+            className="cursor-default rounded border border-border/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
           >
             {tag}
           </span>

@@ -5,7 +5,7 @@ import Hero from "./home/_components/hero"
 import Experience from "./home/_components/experience"
 import Projects from "./home/_components/projects"
 import LatestPost from "./home/_components/latest-post"
-import Hobbies from "./home/_components/hobbies"
+import RecentActivity from "./home/_components/recent-activity"
 import Footer from "./home/_components/footer"
 import { useSection } from "./section-context"
 
@@ -73,8 +73,8 @@ export default function Home() {
         <LatestPost />
       </SectionShell>
 
-      <SectionShell visible={active === "hobbies"}>
-        <Hobbies />
+      <SectionShell visible={active === "activity"}>
+        <RecentActivity />
       </SectionShell>
 
       <Footer />

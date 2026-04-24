@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { motion, useAnimation } from "framer-motion"
 
+
 const latestPosts = [
   {
     slug: "llm-inference-bench",
@@ -20,6 +21,13 @@ const latestPosts = [
     date: "2026-03-29",
     excerpt: "Sharing insights and lessons learned from participating in the OpenAI Parameter Golf Challenge.",
     tags: ["AI", "Learning"],
+  },
+  {
+    slug: "introduction",
+    title: "Why I'm Starting This Blog",
+    date: "2026-03-28",
+    excerpt: "Why I'm starting a blog, what I plan to write about and what you can expect in future posts.",
+    tags: ["Personal", "Writing"],
   },
 ]
 
@@ -94,7 +102,7 @@ export default function LatestPost() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.15 })
 
   return (
-    <section ref={ref} id="posts" className="py-24">
+    <section ref={ref} id="posts" className="py-8 lg:py-16">
       {/* Section header */}
       <motion.div
         initial={{ opacity: 0, x: -16 }}
@@ -114,21 +122,6 @@ export default function LatestPost() {
         ))}
       </div>
 
-      {/* View all link */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ delay: 0.6, duration: 0.4 }}
-        className="mt-8 flex justify-center"
-      >
-        <Link
-          href="/blog"
-          className="group rounded border border-border/60 px-6 py-2.5 font-mono text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all duration-300 flex items-center gap-2"
-        >
-          <span>view all posts</span>
-          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
-        </Link>
-      </motion.div>
     </section>
   )
 }

@@ -517,14 +517,17 @@ export default function Hero() {
               <div>{seattleTime}</div>
             </div>
           </div>
-          {/* Map fills the rest */}
-          <iframe
-            title="Satellite view of Seattle, Washington"
-            src="https://maps.google.com/maps?q=Seattle%2C%20WA&t=k&z=11&ie=UTF8&iwloc=&output=embed"
-            className="min-h-0 flex-1 w-full border-0 opacity-80 contrast-[1.02] saturate-[0.85]"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+          <div className="flex flex-1 items-center justify-center p-4">
+            <div className="h-full max-h-[15rem] w-full overflow-hidden rounded-xl border border-border/30">
+              <iframe
+                title="Satellite view of Seattle, Washington"
+                src="https://maps.google.com/maps?q=Seattle%2C%20WA&t=k&z=11&ie=UTF8&iwloc=&output=embed"
+                className="h-full w-full border-0 opacity-80 contrast-[1.02] saturate-[0.85]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
         </Card>
 
       </div>

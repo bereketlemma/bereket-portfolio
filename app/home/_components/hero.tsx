@@ -1,91 +1,16 @@
 "use client"
 
-import { useEffect, useState, useRef, useCallback } from "react"
-
-function useScrollReveal(threshold = 0.2) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
-
-  return { ref, visible }
-}
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
 
 export default function Hero() {
-  const [showCursor, setShowCursor] = useState(true)
-  const [greetIndex, setGreetIndex] = useState(0)
-  const [nameIndex, setNameIndex] = useState(0)
-  const [greetDone, setGreetDone] = useState(false)
-  const [nameDone, setNameDone] = useState(false)
-  const [showSubtitle, setShowSubtitle] = useState(false)
-  const [showCue, setShowCue] = useState(false)
   const [seattleTime, setSeattleTime] = useState("")
-
-  const aboutAnchor = useRef<HTMLDivElement>(null)
-
-  const header = useScrollReveal(0.3)
-  const block1 = useScrollReveal(0.2)
-  const block2 = useScrollReveal(0.2)
-  const block3 = useScrollReveal(0.2)
-  const block4 = useScrollReveal(0.2)
-  const block5 = useScrollReveal(0.15)
-  const block6 = useScrollReveal(0.2)
-
-  const greeting = "Hey! I'm"
-  const fullName = "Bereket Lemma"
 
   const getSeattleTime = () =>
     new Intl.DateTimeFormat("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-      timeZone: "America/Los_Angeles",
-      timeZoneName: "short",
+      hour: "numeric", minute: "2-digit", hour12: true,
+      timeZone: "America/Los_Angeles", timeZoneName: "short",
     }).format(new Date())
-
-  useEffect(() => {
-    const interval = setInterval(() => setShowCursor((prev) => !prev), 530)
-    return () => clearInterval(interval)
-  }, [])
-
-  useEffect(() => {
-    if (greetIndex < greeting.length) {
-      const timer = setTimeout(() => setGreetIndex((prev) => prev + 1), 75)
-      return () => clearTimeout(timer)
-    }
-    if (!greetDone) setGreetDone(true)
-  }, [greetIndex, greetDone])
-
-  useEffect(() => {
-    if (!greetDone) return
-    if (nameIndex >= fullName.length) {
-      if (!nameDone) setNameDone(true)
-      return
-    }
-    const timer = setTimeout(() => setNameIndex((prev) => prev + 1), 75)
-    return () => clearTimeout(timer)
-  }, [greetDone, nameIndex, nameDone])
-
-  useEffect(() => {
-    if (!nameDone) return
-    const t1 = setTimeout(() => setShowSubtitle(true), 200)
-    const t2 = setTimeout(() => setShowCue(true), 800)
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [nameDone])
 
   useEffect(() => {
     setSeattleTime(getSeattleTime())
@@ -93,280 +18,170 @@ export default function Hero() {
     return () => clearInterval(interval)
   }, [])
 
-  const scrollToAbout = useCallback(() => {
-    aboutAnchor.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-  }, [])
+  const fade = (delay: number) => ({
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5, ease: "easeOut" as const, delay },
+  })
 
   return (
-    <section className="relative">
-      <style>{`
-        @keyframes chevronBounce {
-          0%, 100% { transform: translateY(0); opacity: 0.5; }
-          50% { transform: translateY(6px); opacity: 1; }
-        }
-        @keyframes subtlePulse {
-          0%, 100% { opacity: 0.04; }
-          50% { opacity: 0.08; }
-        }
-        @keyframes lineGrow {
-          from { transform: scaleX(0); }
-          to { transform: scaleX(1); }
-        }
-        @keyframes accentDraw {
-          from { height: 0; }
-          to { height: 100%; }
-        }
-      `}</style>
+    <section className="relative flex min-h-0 flex-col py-8 lg:min-h-[calc(100vh-56px-48px)] lg:justify-center lg:py-0" id="about">
 
-      {/* ── Hero ── */}
-      <div className="relative flex min-h-[85vh] flex-col items-center justify-center px-4">
-        {/* Ambient grid */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--accent) / 0.06) 1px, transparent 0)`,
-            backgroundSize: "48px 48px",
-            animation: "subtlePulse 6s ease-in-out infinite",
-            maskImage: "radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 70%)",
-            WebkitMaskImage: "radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 70%)",
-          }}
-        />
+      {/* Ambient grid */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--accent) / 0.05) 1px, transparent 0)`,
+          backgroundSize: "48px 48px",
+          maskImage: "radial-gradient(ellipse 80% 80% at 50% 40%, black 20%, transparent 80%)",
+          WebkitMaskImage: "radial-gradient(ellipse 80% 80% at 50% 40%, black 20%, transparent 80%)",
+        }}
+      />
 
-        <div className="relative max-w-3xl text-center">
-          <div className="mb-2 font-mono text-base tracking-wide text-muted-foreground md:text-lg">
-            {greeting.slice(0, greetIndex)}
-            {!greetDone && (
-              <span
-                aria-hidden="true"
-                className={`ml-0.5 inline-block h-5 w-[2px] align-middle bg-accent transition-opacity duration-100 ${showCursor ? "opacity-100" : "opacity-0"}`}
-              />
-            )}
-          </div>
+      {/* ── Two columns + vertical divider ── */}
+      <div className="relative grid grid-cols-1 lg:grid-cols-2 lg:items-start">
 
-          <h1 className="mb-8 font-syne text-4xl font-bold leading-tight text-foreground md:text-6xl">
-            {fullName.slice(0, nameIndex)}
-            {greetDone && (
-              <span
-                aria-hidden="true"
-                className={`ml-1 inline-block h-10 w-[2px] align-middle bg-accent transition-opacity duration-100 md:h-14 ${showCursor ? "opacity-100" : "opacity-0"}`}
-              />
-            )}
-          </h1>
+        {/* Vertical divider — desktop only */}
+        <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-border/50 to-transparent lg:block" />
 
-          <div
-            className={`font-mono text-sm text-muted-foreground transition-all duration-700 md:text-sm ${showSubtitle ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
-          >
-            <span className="text-foreground/90">Software Engineer</span>
-            <span className="mx-2 text-accent/40">·</span>
-            <span className="text-foreground/50">Systems · ML Infrastructure · Backend</span>
-          </div>
+        {/* ── Left — Identity ── */}
+        <div className="flex flex-col gap-5 pr-0 lg:pr-14">
 
-          {/* Credential + availability badges */}
-          <div
-            className={`mt-5 flex flex-wrap items-center justify-center gap-2 transition-all duration-700 ${showSubtitle ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"}`}
-            style={{ transitionDelay: "200ms" }}
-          >
-            <span className="rounded border border-accent/40 px-3 py-1 font-mono text-[11px] tracking-wide text-accent/80">
-              ICPC 3rd · Pacific NW Regionals
+          <motion.p {...fade(0)} className="font-mono text-sm text-muted-foreground">
+            Hey! I'm
+          </motion.p>
+
+          <motion.h1 {...fade(0.1)} className="font-syne text-3xl font-bold leading-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+            Bereket Lemma
+          </motion.h1>
+
+          <motion.div {...fade(0.2)} className="flex flex-wrap items-center gap-2 font-mono text-sm">
+            <span className="text-foreground/80">Software Engineer</span>
+            <span className="text-foreground/25">specializing in</span>
+            <span className="rounded border border-amber-400/40 bg-amber-400/5 px-2 py-0.5 text-[11px] tracking-wide text-amber-400">
+              Backend Systems
             </span>
-            <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] tracking-wide text-muted-foreground">
-              $50k Investment · Celeri.io
+            <span className="text-foreground/20">+</span>
+            <span className="rounded border border-sky-400/40 bg-sky-400/5 px-2 py-0.5 text-[11px] tracking-wide text-sky-400">
+              ML Infrastructure
             </span>
-            <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] tracking-wide text-muted-foreground">
-              Available May 2026
-            </span>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Scroll cue */}
-        <button
-          onClick={scrollToAbout}
-          aria-label="Scroll to about section"
-          className={`absolute bottom-8 flex flex-col items-center gap-0 transition-all duration-700 ${showCue ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
-        >
-          <span className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
-            scroll
-          </span>
-          {[0, 1, 2].map((i) => (
-            <svg
-              key={i}
-              width="14"
-              height="8"
-              viewBox="0 0 14 8"
-              fill="none"
-              className="text-accent"
-              style={{
-                animation: `chevronBounce 1.8s ease-in-out infinite`,
-                animationDelay: `${i * 0.2}s`,
-              }}
-            >
-              <path
-                d="M1 1L7 7L13 1"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          ))}
-        </button>
-      </div>
+          <motion.p {...fade(0.3)} className="max-w-md text-sm leading-relaxed text-muted-foreground">
+            I build compiler optimization passes, distributed data pipelines, and ML inference systems.
+            Currently finishing my B.S. in Computer Science and Applied Mathematics at Whitworth University.
+          </motion.p>
 
-      {/* ── About ── */}
-      <div ref={aboutAnchor} className="mx-auto max-w-3xl px-4 pb-16 pt-12" id="about">
-
-        {/* Section header */}
-        <div
-          ref={header.ref}
-          className={`mb-12 flex items-center gap-4 transition-all duration-700 ${header.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
-        >
-          <span className="font-mono text-sm text-accent">01.</span>
-          <h2 className="font-syne text-2xl font-bold text-foreground">About</h2>
-          <div
-            className="h-px flex-1 bg-gradient-to-r from-accent/50 via-border to-transparent"
-            style={{
-              transformOrigin: "left",
-              animation: header.visible ? "lineGrow 0.8s ease 0.3s both" : "none",
-            }}
-          />
-        </div>
-
-        {/* Content blocks — each reveals independently */}
-        <div className="flex flex-col gap-10">
-
-          {/* Block 1: What I do */}
-          <div
-            ref={block1.ref}
-            className={`relative pl-5 transition-all duration-700 ${block1.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
-          >
-            <div
-              className="absolute left-0 top-0 w-[2px] rounded-full bg-accent/40"
-              style={{
-                animation: block1.visible ? "accentDraw 0.5s ease 0.15s both" : "none",
-                height: block1.visible ? "100%" : "0%",
-              }}
-            />
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              I work in <span className="text-accent">systems and backend infrastructure</span>. Recent projects: a custom <span className="text-accent">LLVM 18 optimization pass</span> that catches dead stores -O2 misses, a <span className="text-accent">streaming analytics platform</span> on GCP, and an <span className="text-accent">ML inference benchmark suite</span> comparing FP16 vs AWQ-Marlin INT4. I like getting things correct before making them fast, and I always want to know why something actually works.
-            </p>
-          </div>
-
-          {/* Block 2: Celeri.io */}
-          <div
-            ref={block2.ref}
-            className={`relative pl-5 transition-all duration-700 ${block2.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
-            style={{ transitionDelay: block2.visible ? "100ms" : "0ms" }}
-          >
-            <div
-              className="absolute left-0 top-0 w-[2px] rounded-full bg-accent/40"
-              style={{
-                animation: block2.visible ? "accentDraw 0.5s ease 0.2s both" : "none",
-                height: block2.visible ? "100%" : "0%",
-              }}
-            />
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              Won <span className="text-accent">$50,000 investment</span> at <span className="text-accent">Sparks Weekend</span> to build communication software for <span className="text-accent">criminal courts</span>, reducing pretrial detention times by connecting <span className="text-accent">stakeholders</span> across counties. Placed <a href="https://icpc.global/" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 transition-colors hover:text-accent/80">3rd at ICPC Pacific Northwest Regionals</a>.
-            </p>
-          </div>
-
-          {/* Block 3: Current challenge */}
-          <div
-            ref={block3.ref}
-            className={`relative pl-5 transition-all duration-700 ${block3.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
-            style={{ transitionDelay: block3.visible ? "100ms" : "0ms" }}
-          >
-            <div
-              className="absolute left-0 top-0 w-[2px] rounded-full bg-accent/40"
-              style={{
-                animation: block3.visible ? "accentDraw 0.5s ease 0.2s both" : "none",
-                height: block3.visible ? "100%" : "0%",
-              }}
-            />
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              Right now I'm competing in the <a href="https://openai.com/blog/parameter-golf" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 transition-colors hover:text-accent/80">OpenAI Parameter Golf Challenge</a>: training a 16MB language model in under 10 minutes on 8x H100 GPUs. The constraint is what makes it interesting.
-            </p>
-          </div>
-
-          {/* Block 4: Education */}
-          <div
-            ref={block4.ref}
-            className={`relative pl-5 transition-all duration-700 ${block4.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
-            style={{ transitionDelay: block4.visible ? "100ms" : "0ms" }}
-          >
-            <div
-              className="absolute left-0 top-0 w-[2px] rounded-full bg-accent/40"
-              style={{
-                animation: block4.visible ? "accentDraw 0.5s ease 0.2s both" : "none",
-                height: block4.visible ? "100%" : "0%",
-              }}
-            />
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              B.S. in <span className="text-accent">Computer Science</span> and <span className="text-accent">Applied Mathematics</span> from{" "}
-              <a
-                href="https://www.whitworth.edu"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent underline underline-offset-4 transition-colors hover:text-accent/80"
-              >
-                Whitworth University
-              </a>.
-            </p>
-          </div>
-
-          {/* Block 5: Location card */}
-          <div
-            ref={block5.ref}
-            className={`transition-all duration-700 ${block5.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
-            style={{ transitionDelay: block5.visible ? "100ms" : "0ms" }}
-          >
-            <div className="flex items-center justify-between rounded-xl border border-border/60 bg-muted/10 px-5 py-4">
-              <div>
-                <p className="mb-0.5 font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
-                  Currently Based In
-                </p>
-                <p className="font-mono text-sm text-foreground/80">Seattle, WA</p>
-              </div>
-              <div className="text-right">
-                <p className="mb-0.5 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                  Local Time
-                </p>
-                <p className="font-mono text-sm text-foreground/80">{seattleTime}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Block 6: CTA */}
-          <div
-            ref={block6.ref}
-            className={`relative pl-5 transition-all duration-700 ${block6.visible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}
-            style={{ transitionDelay: block6.visible ? "100ms" : "0ms" }}
-          >
-            <div
-              className="absolute left-0 top-0 w-[2px] rounded-full bg-accent/40"
-              style={{
-                animation: block6.visible ? "accentDraw 0.5s ease 0.2s both" : "none",
-                height: block6.visible ? "100%" : "0%",
-              }}
-            />
-            <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-              I'm looking for new grad software engineering roles in systems, backend, or ML infrastructure. Available May 2026. If you have something that might be a fit, or just want to talk, I'd like to hear from you.
-            </p>
+          <motion.div {...fade(0.4)} className="flex flex-wrap items-center gap-3">
             <a
               href="/contact"
-              className="group inline-flex items-center gap-2 rounded-md border border-accent px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-accent transition-all hover:bg-accent hover:text-accent-foreground"
+              className="group inline-flex items-center gap-2 rounded-md border border-accent bg-accent/5 px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-accent transition-all hover:bg-accent hover:text-accent-foreground"
             >
               get in touch
-              <span
-                aria-hidden="true"
-                className="inline-block transition-transform duration-200 group-hover:translate-x-1"
-              >
-                -&gt;
-              </span>
+              <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
             </a>
-          </div>
+            <a
+              href="/assets/Bereket_Lemma_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-md border border-border/60 px-5 py-2.5 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground transition-all hover:border-accent/50 hover:text-accent"
+            >
+              resume
+            </a>
+          </motion.div>
+
+          <motion.div {...fade(0.5)} className="flex items-center gap-2">
+            <motion.div
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="h-1.5 w-1.5 rounded-full bg-emerald-400"
+            />
+            <span className="font-mono text-xs text-muted-foreground/50">Available now · Open to new grad roles</span>
+          </motion.div>
+
+        </div>
+
+        {/* ── Right — About ── */}
+        <div className="mt-10 flex flex-col gap-5 pl-0 lg:mt-0 lg:pl-14">
+
+          {/* Section label — aligns with Hey I'm on the left */}
+          <motion.div {...fade(0.05)} className="flex items-center gap-3">
+            <span className="font-mono text-xs text-accent">01.</span>
+            <span className="font-syne text-sm font-bold text-foreground">About</span>
+            <div className="h-px flex-1 bg-border/40" />
+          </motion.div>
+
+          <motion.div {...fade(0.15)} className="relative pl-4">
+            <div className="absolute left-0 top-0 h-full w-[2px] rounded-full bg-accent/30" />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              I'm a software engineer from <span className="text-foreground/80">Ethiopia</span>, studying{" "}
+              <span className="text-foreground/80">CS and Applied Mathematics</span> at{" "}
+              <a href="https://www.whitworth.edu" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors">Whitworth University</a>.
+              I gravitate toward hard problems — the ones where you need to understand how the machine actually works to make progress.
+            </p>
+          </motion.div>
+
+          <motion.div {...fade(0.25)} className="relative pl-4">
+            <div className="absolute left-0 top-0 h-full w-[2px] rounded-full bg-accent/25" />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              I've built a custom <span className="text-accent">LLVM 18 dead store elimination pass</span>, a distributed analytics pipeline on GCP, and ML inference benchmarks comparing FP16 vs AWQ-Marlin INT4.
+              I like knowing why things work, not just that they do.
+            </p>
+          </motion.div>
+
+          <motion.div {...fade(0.35)} className="relative pl-4">
+            <div className="absolute left-0 top-0 h-full w-[2px] rounded-full bg-accent/20" />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Placed{" "}
+              <a href="https://icpc.global/" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors">3rd at ICPC Pacific Northwest Regionals</a>.
+              Won a{" "}
+              <a href="https://www.youtube.com/watch?v=CvY1y46ypYw" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors">$50,000 investment</a>{" "}
+              at Sparks Weekend to build <span className="text-accent">Celeri.io</span>, communication software for criminal courts aimed at cutting pretrial detention times.
+            </p>
+          </motion.div>
+
+          <motion.div {...fade(0.45)} className="relative pl-4">
+            <div className="absolute left-0 top-0 h-full w-[2px] rounded-full bg-accent/15" />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Currently competing in the{" "}
+              <a href="https://openai.com/blog/parameter-golf" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors">OpenAI Parameter Golf Challenge</a>,
+              training a 16MB language model under 10 minutes on 8× H100 GPUs. The constraint is what makes it interesting.
+            </p>
+          </motion.div>
+
+          <motion.div {...fade(0.55)} className="relative pl-4">
+            <div className="absolute left-0 top-0 h-full w-[2px] rounded-full bg-accent/10" />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Looking for new grad roles where I can work on systems that scale, performance that matters, and problems worth solving. If that sounds like your team,{" "}
+              <a href="/contact" className="text-accent underline underline-offset-4 hover:text-accent/80 transition-colors">let's talk</a>.
+            </p>
+          </motion.div>
 
         </div>
       </div>
+
+      {/* ── Map — spans full width below both columns ── */}
+      <motion.div {...fade(0.65)} className="mt-8 overflow-hidden rounded-xl border border-border/60 bg-muted/10 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+        <div className="flex items-center justify-between px-4 pb-2 pt-3">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">Currently Based In</p>
+          <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+            <span>{seattleTime}</span>
+            <span>Seattle, WA</span>
+          </div>
+        </div>
+        <div className="px-2 pb-2">
+          <div className="overflow-hidden rounded-lg border border-border/50">
+            <iframe
+              title="Satellite view of Seattle, Washington"
+              src="https://maps.google.com/maps?q=Seattle%2C%20WA&t=k&z=11&ie=UTF8&iwloc=&output=embed"
+              className="h-36 w-full border-0 opacity-80 contrast-[1.02] saturate-[0.85] lg:h-44"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        </div>
+      </motion.div>
+
     </section>
   )
 }

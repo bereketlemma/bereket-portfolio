@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 import { allProjects, getProjectBySlug } from "@/lib/projects"
+import { BackButton } from "@/components/back-button"
 import { notFound } from "next/navigation"
 import { ProjectFlow } from "@/components/projects/project-flow"
 
@@ -361,15 +361,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         : buildGenericStages(project)
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <main className="px-4 py-10 sm:px-8 lg:px-16">
       <div className="mb-6 sm:mb-8">
-        <Link
-          href="/projects"
+        <BackButton
+          section="projects"
+          label="back to projects"
           className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/75 px-4 py-2 font-mono text-xs text-muted-foreground transition-all hover:border-accent hover:text-accent"
-        >
-          <ArrowLeft size={14} />
-          back to projects
-        </Link>
+        />
       </div>
 
       <header className="py-1 sm:py-2">

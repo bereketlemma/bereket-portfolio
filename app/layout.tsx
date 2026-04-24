@@ -18,7 +18,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Bereket Lemma",
-  description: "Software Engineer specializing in systems programming, backend infrastructure, and ML systems. ICPC Pacific NW Regionals · Available May 2026.",
+  description: "Software Engineer specializing in systems programming, backend infrastructure, and ML systems. ICPC Pacific NW Regionals · Available Now.",
   metadataBase: new URL("https://bereketlemma.com"),
   icons: {
     icon: "/favicon.ico",
@@ -79,7 +79,7 @@ export default function RootLayout({
         />
         <SectionProvider>
           <Navbar />
-          <main className="mx-auto max-w-3xl px-6 pt-20">
+          <main className="px-4 pb-12 pt-20 sm:px-8 lg:px-16">
             {children}
           </main>
         </SectionProvider>

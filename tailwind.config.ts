@@ -44,10 +44,10 @@ const config: Config = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         // Custom palette
-        surface: "#111a14",
-        "accent-cyan": "#00d4ff",
-        "text-primary": "#e2e8f0",
-        "text-muted": "#6b7a72",
+        surface: "#151512",
+        "accent-cyan": "#E08A3C",
+        "text-primary": "#F5F1EA",
+        "text-muted": "#7A7268",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "sans-serif"],

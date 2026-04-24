@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { BackButton } from "@/components/back-button"
+
+
 
 export const metadata: Metadata = {
   title: "Why I&apos;m Starting This Blog | Bereket Lemma",
@@ -12,13 +14,11 @@ export default function IntroductionPost() {
     <main className="mx-auto max-w-3xl px-6 py-24">
 
       {/* Back */}
-      <Link
-        href="/blog"
+      <BackButton
+        section="posts"
+        label="back to posts"
         className="mb-10 inline-flex items-center gap-2 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
-      >
-        <ArrowLeft size={14} />
-        back to blog
-      </Link>
+      />
 
       {/* Header */}
       <div className="mb-8">

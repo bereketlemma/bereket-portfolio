@@ -1,18 +1,19 @@
+
+
+
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { BackButton } from "@/components/back-button"
 
 export default function ParameterGolfPost() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-24">
 
       {/* Back */}
-      <Link
-        href="/blog"
+      <BackButton
+        section="posts"
+        label="back to posts"
         className="mb-10 inline-flex items-center gap-2 rounded border border-border/60 px-3 py-1.5 font-mono text-xs text-muted-foreground hover:border-accent hover:text-accent transition-all"
-      >
-        <ArrowLeft size={14} />
-        back to blog
-      </Link>
+      />
 
       {/* Header */}
       <div className="mb-8">

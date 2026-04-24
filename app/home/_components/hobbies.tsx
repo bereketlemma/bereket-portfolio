@@ -14,9 +14,9 @@ const hobbies: {
 }[] = [
   {
     icon: Dumbbell,
-    title: "Lifting & Soccer",
+    title: "Sports",
     description:
-      "I run a 6-day PPL split and track everything in Hevy. Lifting is the one thing I do every single day no matter what. I also follow Chelsea FC religiously and play pickup whenever I can.",
+      "I love sports and am a very active person. Down to play basketball, volleyball, pickleball, you name it. But soccer is what I mainly play and watch. Currently cutting and getting lean for the summer, and very excited for the World Cup this summer.",
     link: "https://hevy.com/user/bereket10",
     linkLabel: "follow me on Hevy →",
   },
@@ -30,9 +30,9 @@ const hobbies: {
   },
   {
     icon: Coffee,
-    title: "Coffee & Spiritual Life",
+    title: "Coffee",
     description:
-      "Ethiopian coffee is a whole ritual back home. I grew up around it and still take it seriously. I also lead a weekly Bible study on Discord and spend a lot of time reading theology.",
+      "Ethiopian coffee is a whole ritual back home. I grew up around it and still take it seriously.",
     link: null,
     linkLabel: null,
   },
@@ -40,7 +40,7 @@ const hobbies: {
     icon: Utensils,
     title: "Cooking",
     description:
-      "I cook most of my own meals and actually enjoy it. It started from tracking macros but now I experiment with different cuisines. Ethiopian food is still what I make best.",
+      "Started cooking my sophomore year of college when I moved off campus and just kept going with it. Love trying new recipes. If you've got ideas or recipes, send them my way.",
     link: null,
     linkLabel: null,
   },

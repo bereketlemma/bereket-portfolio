@@ -10,7 +10,7 @@ const sectionLinks = [
   { key: "experience", label: "Experience" },
   { key: "projects", label: "Projects" },
   { key: "posts", label: "Posts" },
-  { key: "hobbies", label: "Hobbies" },
+  { key: "activity", label: "Activity" },
 ] as const
 
 export default function Navbar() {
@@ -39,7 +39,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-6">
+      <div className="flex h-14 items-center justify-between px-4 sm:px-8 lg:px-16">
 
         {/* Left: B logo + icons */}
         <div className="flex items-center gap-4">

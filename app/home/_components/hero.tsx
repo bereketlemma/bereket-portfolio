@@ -119,9 +119,12 @@ function MiniTerminal() {
   const [histIdx, setHistIdx] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const outputRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (outputRef.current) {
+      outputRef.current.scrollTop = outputRef.current.scrollHeight
+    }
   }, [lines])
 
   // Remove auto-type — experience is shown by default, no need to auto-run
@@ -194,7 +197,7 @@ function MiniTerminal() {
       </div>
 
       {/* Output */}
-      <div className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-4 py-3">
+      <div ref={outputRef} className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-4 py-3">
         {lines.map((line) => (
           <div key={line.id} className={`font-mono text-[11px] leading-relaxed ${
             line.type === "input" ? "text-accent" :

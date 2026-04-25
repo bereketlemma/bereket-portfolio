@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
@@ -9,6 +10,7 @@ type Entry = {
   role: string
   company: string
   companyUrl?: string
+  logoUrl?: string
   location: string
   featured?: boolean
   description?: string
@@ -24,6 +26,7 @@ const internships: Entry[] = [
     role: "Full-Stack Software Engineer Intern",
     company: "Hewitt Learning",
     companyUrl: "https://hewittlearning.org/",
+    logoUrl: "https://www.google.com/s2/favicons?domain=hewittlearning.org&sz=64",
     location: "Remote",
     featured: true,
     description:
@@ -35,6 +38,7 @@ const internships: Entry[] = [
     role: "Security Engineer Intern",
     company: "Washington Trust Bank",
     companyUrl: "https://www.watrust.com/",
+    logoUrl: "https://www.google.com/s2/favicons?domain=watrust.com&sz=64",
     location: "Spokane, WA",
     description:
       "Automated IT and vulnerability monitoring workflows using PowerShell and Python REST APIs, eliminating 80+ engineering hours/week. Deployed 5+ automated security compliance checks integrated with Azure and GitHub Actions CI/CD.",
@@ -45,6 +49,7 @@ const internships: Entry[] = [
     role: "Software Engineering (Volunteer)",
     company: "West Central Community Center",
     companyUrl: "https://www.westcentralcc.org/",
+    logoUrl: "https://www.google.com/s2/favicons?domain=westcentralcc.org&sz=64",
     location: "Spokane, WA",
     description:
       "Built a full-stack database management system for a nonprofit, migrating 1000+ user records from manual Excel spreadsheets to a relational MySQL database. Led a 4-member team delivering role-based authentication, full CRUD operations, and sortable views.",
@@ -165,9 +170,20 @@ function EntryCard({ entry }: { entry: Entry }) {
 
         {/* Role + visit */}
         <div className="flex items-start justify-between gap-2">
-          <h3 className={`font-syne font-bold text-foreground transition-colors group-hover:text-accent ${featured ? "text-base" : "text-sm"}`}>
-            {entry.role}
-          </h3>
+          <div className="grid min-w-0 grid-cols-[36px_minmax(0,1fr)] items-center gap-3">
+            {entry.logoUrl && (
+              <Image
+                src={entry.logoUrl}
+                alt={`${entry.company} logo`}
+                width={36}
+                height={36}
+                className="h-9 w-9 shrink-0 rounded-md border border-border/50 bg-background object-contain p-1"
+              />
+            )}
+            <h3 className={`font-syne font-bold text-foreground transition-colors group-hover:text-accent ${featured ? "text-base" : "text-sm"}`}>
+              {entry.role}
+            </h3>
+          </div>
           {entry.companyUrl && (
             <a
               href={entry.companyUrl}
@@ -182,7 +198,7 @@ function EntryCard({ entry }: { entry: Entry }) {
         </div>
 
         {/* Company */}
-        <p className="mt-0.5 font-mono text-xs text-accent/80">{entry.company}</p>
+        <p className="mt-0.5 pl-12 font-mono text-xs text-accent/80">{entry.company}</p>
 
         {/* Description or bullets — each sentence on its own line */}
         <div className="mt-3 flex-1 overflow-y-auto">

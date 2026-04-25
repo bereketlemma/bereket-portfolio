@@ -10,7 +10,7 @@ const sectionLinks = [
   { key: "experience", label: "Experience" },
   { key: "projects", label: "Projects" },
   { key: "posts", label: "Posts" },
-  { key: "activity", label: "Activity" },
+  { key: "activity", label: "Terminal" },
 ] as const
 
 export default function Navbar() {

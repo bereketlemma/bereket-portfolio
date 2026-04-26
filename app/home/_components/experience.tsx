@@ -29,9 +29,16 @@ const internships: Entry[] = [
     logoUrl: "https://www.google.com/s2/favicons?domain=hewittlearning.org&sz=64",
     location: "Remote",
     featured: true,
-    description:
-      "Designed scalable REST APIs with C#, ASP.NET Core, and MySQL with RBAC. Automated PDF report generation reducing turnaround by 60%. Deployed via GitHub Actions CI/CD.",
-    tags: ["C#", "ASP.NET Core", "MySQL", "REST APIs", "CI/CD"],
+    bullets: [
+      "Delivered the PASS Test System, replacing Hewitt Learning's legacy Paradox platform with a full-stack web application built on C#, ASP.NET Core, Postgres, Entity Framework, and a TypeScript and React frontend",
+      "Designed a relational Postgres schema to fully replace Paradox, modeling test levels, orders, grading state, and delivery preferences as structured tables while preserving complete access to historical student records",
+      "Built a C# ASP.NET Core REST API with role-based access control, securing endpoints for order management, test tracking, scantron generation, and report delivery behind authenticated routes",
+      "Integrated with WooCommerce to automatically ingest parent test orders as they were placed online, syncing order data into the PASS database in real time and eliminating all manual entry and export workflows",
+      "Implemented a full test status pipeline across Pending, Grading, Completed, Emailed, and Printed states, with each transition triggering backend logic and powering a database-driven scantron printing system for admins",
+      "Automated PDF report generation and email delivery on grading completion, eliminating Word and Adobe Mail Merge entirely and reducing report turnaround by 60%",
+      "Delivered a React and TypeScript admin dashboard for real-time order tracking, test status management, and scantron queue oversight, deployed via GitHub Actions CI/CD",
+    ],
+    tags: ["C#", "ASP.NET Core", "Postgres", "Entity Framework", "TypeScript", "React", "WooCommerce", "REST APIs", "GitHub Actions"],
   },
   {
     date: "May 2024 — Aug 2024",
@@ -40,9 +47,17 @@ const internships: Entry[] = [
     companyUrl: "https://www.watrust.com/",
     logoUrl: "https://www.google.com/s2/favicons?domain=watrust.com&sz=64",
     location: "Spokane, WA",
-    description:
-      "Automated IT and vulnerability monitoring workflows using PowerShell and Python REST APIs, eliminating 80+ engineering hours/week. Deployed 5+ automated security compliance checks integrated with Azure and GitHub Actions CI/CD.",
-    tags: ["Python", "PowerShell", "Azure", "GitHub Actions", "Security"],
+    bullets: [
+      "Served as a key team member in the company-wide introduction and multi-state rollout of Microsoft Surface Laptop Go 3, coordinating deployment across the organization to ensure smooth adoption at scale",
+      "Collaborated extensively with the Network Engineering team to coordinate device provisioning, network access configurations, and security compliance for employee workstations across multiple locations",
+      "Conducted testing and certification for mass provisioning of Microsoft Surface laptops over wired connections, validating network integrity and establishing a streamlined, repeatable deployment process",
+      "Imaged and configured 100+ laptops with standardized setups aligned to enterprise IT policies, network infrastructure requirements, and banking security standards",
+      "Diagnosed and resolved Surface Laptop Go 3 hardware and software errors, troubleshooting connectivity and performance issues in coordination with the Network Engineering team",
+      "Managed employee Cherwell helpdesk cases and tickets covering password resets, account access issues, and application troubleshooting across the organization",
+      "Used Active Directory to reset Microsoft passwords, lock and unlock accounts, and maintain proper authentication and access controls for banking applications",
+      "Automated IT and vulnerability monitoring workflows using PowerShell and Python REST APIs, eliminating 80+ engineering hours per week and deploying 5+ automated security compliance checks integrated with Azure and GitHub Actions",
+    ],
+    tags: ["Active Directory", "PowerShell", "Python", "Azure", "Cherwell", "GitHub Actions", "Security", "IT Infrastructure"],
   },
   {
     date: "Jan 2023 — May 2023",
@@ -51,9 +66,16 @@ const internships: Entry[] = [
     companyUrl: "https://www.westcentralcc.org/",
     logoUrl: "https://www.google.com/s2/favicons?domain=westcentralcc.org&sz=64",
     location: "Spokane, WA",
-    description:
-      "Built a full-stack database management system for a nonprofit, migrating 1000+ user records from manual Excel spreadsheets to a relational MySQL database. Led a 4-member team delivering role-based authentication, full CRUD operations, and sortable views.",
-    tags: ["React", "Node.js", "MySQL", "Express.js", "Heroku", "Netlify"],
+    bullets: [
+      "Built a full-stack web application to replace West Central Community Center's manual spreadsheet workflows with a structured MySQL database, migrating 1,000+ records into a normalized, relational schema designed for future scalability",
+      "Architected a three-tier system: React.js Single Page Application for the client, Node.js and Express.js middleware layer for API routing and database queries, and MySQL as the relational DBMS storing all organizational data in separate, joinable tables",
+      "Used Axios on the frontend to make typed HTTP requests to the Express API, with middleware handling communication between React and MySQL and managing all data flow between the two services",
+      "Delivered four dedicated application pages: a login page for access control, a main view page for browsing records, an editing page for modifying existing entries, and a sorting page allowing staff to filter and reorder records by any field",
+      "Implemented full CRUD operations across the application, allowing staff to create, read, update, and delete records directly through the interface without touching the database manually",
+      "Chose local session-based authentication over PassportJS to keep the security layer simple and maintainable for a small team, with a login gate preventing unauthorized access to any database functionality",
+      "Deployed the Express backend to Heroku and the React frontend to Netlify, using environment-separated configurations to connect the two services in production",
+    ],
+    tags: ["React", "Node.js", "Express.js", "MySQL", "Axios", "Heroku", "Netlify"],
   },
 ]
 
@@ -61,36 +83,54 @@ const competitions: Entry[] = [
   {
     date: "Mar 2026 — Present",
     role: "Parameter Golf Challenge",
-    company: "OpenAI (Open Competition)",
+    company: "OpenAI",
     companyUrl: "https://openai.com/index/parameter-golf/",
     location: "Remote",
-    description:
-      "Training a 16MB language model under 10 minutes on 8× H100 GPUs, optimized for maximum compression on FineWeb. Engineering custom training loops with gradient accumulation, mixed-precision arithmetic, and memory-efficient data loading.",
-    tags: ["Python", "PyTorch", "LLM", "Quantization", "H100"],
+    bullets: [
+      "Achieved val_bpb 1.1233 (3-seed mean, sliding window stride 64) at 15.55MB on 8xH100 SXM in 600s, improving the prior leaderboard record by 0.0013 BPB through two novel post-training optimizations and targeted hyperparameter tuning",
+      "Implemented GPTQ-lite: instead of using the row maximum for int6 quantization scale, search 5 clip percentiles per weight matrix row and select the one minimizing reconstruction MSE, achieving a 0.0006 BPB reduction at zero additional training cost",
+      "Added EMA weight averaging with decay 0.997 applied every training step before quantization, stacking with Tight SWA to provide continuous smoothing alongside discrete checkpoint averaging, contributing another 0.0006 BPB improvement",
+      "Tuned warmdown from 3000 to 3500 iterations and late QAT threshold from 0.1 to 0.15, enabling earlier fake quantization and reducing the quantization gap for a combined 0.0003 BPB gain",
+      "Architecture: 11-layer transformer, 512 dim, 8 heads with GQA, U-Net skip connections, Partial RoPE, SmearGate, BigramHash, tied embeddings with logit softcap 30.0",
+      "Training stack: FlashAttention 3, Muon optimizer for matrices, AdamW for embeddings, 786K tokens/step at seq_len 2048, int6/int8 per-row quantization, zstd level 22 compression, all 3 seeds under 16MB with std 0.0005 BPB",
+    ],
+    tags: ["Python", "PyTorch", "LLM", "Quantization", "GPTQ", "FlashAttention", "H100", "Muon"],
   },
   {
     date: "Nov 2024 — Jan 2025",
-    role: "Startup Engineer (Founding Team)",
+    role: "Startup Engineer, Founding Team",
     company: "Celeri.io",
     companyUrl: "https://www.youtube.com/watch?v=CvY1y46ypYw",
     location: "Spokane, WA",
     featured: true,
-    description:
-      "Won $50,000 investment at Sparks Weekend to build communication software for criminal courts, reducing pretrial detention times by connecting stakeholders across counties.",
-    tags: ["Pitch Deck", "Prototyping", "Team Communication", "Product Design", "Legal-Tech"],
+    bullets: [
+      "Won $50,000 in seed funding at Spark Weekend to build Celeri.io, a centralized web-based platform connecting law enforcement, prosecutors, defense attorneys, courts, and defendants to streamline the pre-trial criminal process",
+      "Addressed a system where 70% of the U.S. prison population (466,100 people) are awaiting trial, averaging 135 days at $117/day in taxpayer cost, with Spokane County alone spending over $1.5 million annually on pre-trial detention",
+      "The platform targets the fragmented court process where a single Thursday morning session involves 1 judge, 66 prosecutors, 60 public defenders, and at least 5 scheduling systems that do not communicate, known as the Cattle Call",
+      "Responsible for database architecture and management, designing the data layer to support secure, multi-party access across law enforcement, court staff, attorneys, and defendants",
+      "Celeri replaces disconnected paper-based workflows with a shared central database giving all parties real-time access to case information, reducing administrative backlog, data loss, and unnecessary detention",
+      "Targeting 3,143 counties nationwide with a subscription model scaled by county population; survey validation showed 78% believe cloud-based scheduling improves collaboration and 74% agree less manual administration leads to a fairer system",
+    ],
+    tags: ["Legal-Tech", "Database Design", "Product Development", "System Architecture", "Go-To-Market", "SaaS"],
     link: "https://www.youtube.com/watch?v=CvY1y46ypYw",
-    linkLabel: "Watch the pitch →",
+    linkLabel: "Watch the pitch",
   },
   {
     date: "Nov 2024",
-    role: "Competitive Programming",
-    company: "ICPC Pacific Northwest Regional — 3rd Place",
+    role: "3rd Place, Pacific Northwest Regional",
+    company: "ICPC",
     companyUrl: "https://icpc.global/",
     location: "Pacific Northwest",
     featured: true,
-    description:
-      "Placed 3rd in the ICPC Pacific Northwest Regional contest, competing against teams from universities across the region. Solved algorithmic problems under time pressure in C++, covering dynamic programming, graph algorithms, and combinatorics.",
-    tags: ["C++", "Algorithms", "Data Structures", "Graph Theory", "Competitive Programming"],
+    bullets: [
+      "Represented Whitworth University as part of a 3-person Division I team in the ICPC Pacific Northwest Regional, competing against top collegiate programming teams across the region",
+      "Earned 3rd place by solving 4 out of 11 challenging algorithmic problems correctly under strict contest time limits",
+      "Solved complex problems in C++ involving dynamic programming, graph algorithms, combinatorics, greedy optimization, advanced data structures, and mathematical problem solving",
+      "Collaborated in a high-pressure contest environment, dividing problems strategically based on individual strengths, debugging rapidly, and optimizing solutions for correctness and performance",
+      "Applied strong mathematical reasoning and algorithmic thinking to produce efficient solutions with minimal runtime and memory overhead",
+      "Balanced speed and accuracy under pressure, managing multiple difficult problems within limited contest time while coordinating solution strategies and quickly adapting when initial approaches failed",
+    ],
+    tags: ["C++", "Algorithms", "Data Structures", "Graph Theory", "Dynamic Programming", "Competitive Programming"],
   },
 ]
 
@@ -138,9 +178,9 @@ function EntryCard({ entry }: { entry: Entry }) {
   const featured = entry.featured ?? false
 
   return (
-    <motion.div variants={cardWrapperVariants} className="h-full">
+    <motion.div variants={cardWrapperVariants} className="lg:h-full">
       <div
-        className={`group relative flex h-full flex-col overflow-hidden rounded border p-5 transition-all duration-300
+        className={`group relative flex flex-col overflow-hidden rounded border p-4 transition-all duration-300 sm:p-5 lg:p-4 lg:h-full
           hover:shadow-[0_0_28px_rgba(var(--accent-rgb,100,200,255),0.10)]
           ${featured
             ? "border-accent/25 bg-gradient-to-br from-accent/5 to-transparent hover:border-accent/50"
@@ -163,14 +203,14 @@ function EntryCard({ entry }: { entry: Entry }) {
         )}
 
         {/* Date + location */}
-        <div className="mb-3 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between">
           <span className="font-mono text-[11px] text-accent">{entry.date}</span>
-          <span className="font-mono text-[11px] text-muted-foreground/50">{entry.location}</span>
+          <span className="font-mono text-[11px] text-muted-foreground/70">{entry.location}</span>
         </div>
 
         {/* Role + visit */}
         <div className="flex items-start justify-between gap-2">
-          <div className="grid min-w-0 grid-cols-[36px_minmax(0,1fr)] items-center gap-3">
+          <div className={`flex min-w-0 items-center gap-3 ${entry.logoUrl ? "" : "w-full"}`}>
             {entry.logoUrl && (
               <Image
                 src={entry.logoUrl}
@@ -180,7 +220,7 @@ function EntryCard({ entry }: { entry: Entry }) {
                 className="h-9 w-9 shrink-0 rounded-md border border-border/50 bg-background object-contain p-1"
               />
             )}
-            <h3 className={`font-syne font-bold text-foreground transition-colors group-hover:text-accent ${featured ? "text-base" : "text-sm"}`}>
+            <h3 className={`min-w-0 font-syne font-bold text-foreground transition-colors group-hover:text-accent ${featured ? "text-base" : "text-sm"}`}>
               {entry.role}
             </h3>
           </div>
@@ -198,29 +238,32 @@ function EntryCard({ entry }: { entry: Entry }) {
         </div>
 
         {/* Company */}
-        <p className="mt-0.5 pl-12 font-mono text-xs text-accent/80">{entry.company}</p>
+        <p className={`mt-0.5 font-mono text-xs text-accent/80 ${entry.logoUrl ? "pl-12" : ""}`}>{entry.company}</p>
 
-        {/* Description or bullets — each sentence on its own line */}
-        <div className="mt-3 flex-1 overflow-y-auto">
+        {/* Description or bullets */}
+        <div
+          className="relative mt-3 flex-1 lg:overflow-y-auto lg:[mask-image:linear-gradient(to_bottom,black_80%,transparent_100%)]"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           {entry.description && (
-            <ul className="flex flex-col gap-1.5">
+            <ul className="flex flex-col gap-2 lg:gap-1.5">
               {entry.description
                 .split(/\.(?:\s+|$)/)
                 .map(s => s.trim())
                 .filter(Boolean)
                 .map((sentence, i) => (
-                  <li key={i} className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/50" />
+                  <li key={i} className="flex gap-2 text-[13px] leading-relaxed text-muted-foreground/90 lg:text-[12px] lg:leading-normal">
+                    <span className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-accent/60 lg:mt-1" />
                     {sentence}.
                   </li>
                 ))}
             </ul>
           )}
           {entry.bullets && entry.bullets.length > 0 && (
-            <ul className="flex flex-col gap-1.5">
+            <ul className="flex flex-col gap-2 lg:gap-1.5">
               {entry.bullets.map((bullet, i) => (
-                <li key={i} className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent/50" />
+                <li key={i} className="flex gap-2 text-[13px] leading-relaxed text-muted-foreground/90 lg:text-[12px] lg:leading-normal">
+                  <span className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-accent/60 lg:mt-1" />
                   {bullet}
                 </li>
               ))}
@@ -241,14 +284,14 @@ function EntryCard({ entry }: { entry: Entry }) {
         )}
 
         {/* Tags */}
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {entry.tags.slice(0, 4).map((tag) => (
-            <span key={tag} className="rounded border border-border/50 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+        <div className="mt-2 flex flex-wrap gap-1">
+          {entry.tags.slice(0, 5).map((tag) => (
+            <span key={tag} className="rounded border border-border/50 px-2 py-0.5 font-mono text-[11px] text-muted-foreground/80">
               {tag}
             </span>
           ))}
-          {entry.tags.length > 4 && (
-            <span className="font-mono text-[10px] text-muted-foreground/40">+{entry.tags.length - 4}</span>
+          {entry.tags.length > 5 && (
+            <span className="font-mono text-[11px] text-muted-foreground/55">+{entry.tags.length - 5}</span>
           )}
         </div>
 
@@ -275,8 +318,8 @@ const tabEntries: Record<Tab, Entry[]> = {
 
 function EntryGroup({ entries }: { entries: Entry[] }) {
   const cols =
-    entries.length === 1 ? "grid-cols-1 w-full max-w-2xl" :
-    entries.length === 2 ? "grid-cols-2" :
+    entries.length === 1 ? "grid-cols-1 lg:max-w-2xl" :
+    entries.length === 2 ? "grid-cols-1 sm:grid-cols-2" :
     "grid-cols-1 sm:grid-cols-3"
 
   return (
@@ -285,7 +328,7 @@ function EntryGroup({ entries }: { entries: Entry[] }) {
       variants={sectionVariants}
       initial="hidden"
       animate="visible"
-      className={`grid h-full gap-4 ${cols}`}
+      className={`grid gap-4 lg:h-full lg:auto-rows-fr ${cols}`}
     >
       {entries.map((entry, i) => (
         <EntryCard key={i} entry={entry} />
@@ -300,14 +343,14 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      className="flex min-h-[calc(100vh-56px-48px)] flex-col overflow-hidden py-6"
+      className="flex min-h-0 flex-col py-6 lg:h-[calc(100vh-128px)] lg:overflow-hidden"
     >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-6 flex items-center gap-4"
+        className="mb-4 flex items-center gap-4"
       >
         <span className="font-mono text-sm text-accent">02.</span>
         <h2 className="font-syne text-2xl font-bold text-foreground">Experience</h2>
@@ -322,14 +365,14 @@ export default function Experience() {
         className="mb-2 flex flex-wrap items-center gap-4"
       >
         {/* Tab grid wrapper — tab bar + arrows share the same column widths */}
-        <div className="w-fit">
+        <div className="w-full sm:w-fit">
           {/* Segmented control */}
           <div className="grid grid-cols-3 gap-1 rounded-xl border border-border/50 bg-muted/30 p-1">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActive(tab.key)}
-                className="relative px-5 py-2 font-mono text-xs uppercase tracking-[0.18em] transition-colors duration-200 rounded-lg"
+                className="relative rounded-lg px-3 py-2 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors duration-200 sm:px-5 sm:text-xs sm:tracking-[0.18em]"
               >
                 {active === tab.key && (
                   <motion.div
@@ -353,7 +396,7 @@ export default function Experience() {
           </div>
 
           {/* Arrow row — one cell per tab, arrow only on non-active tabs */}
-          <div className="grid grid-cols-3 mt-1.5 px-1">
+          <div className="hidden grid-cols-3 mt-1.5 px-1 sm:grid">
             {tabs.map((tab) => (
               <div key={tab.key} className="flex justify-center">
                 <AnimatePresence>
@@ -387,8 +430,8 @@ export default function Experience() {
 
       </motion.div>
 
-      {/* Active entries — fills remaining height, no scroll */}
-      <div className="flex-1 min-h-0">
+      {/* Active entries */}
+      <div className="mt-2 lg:mt-0 lg:flex-1 lg:min-h-0 lg:overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}

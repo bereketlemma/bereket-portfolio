@@ -120,6 +120,27 @@
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes nameShimmer {
+  0% { background-position: 150% center; }
+  100% { background-position: -150% center; }
+}
+
+.name-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    hsl(var(--foreground) / 0.9) 0%,
+    hsl(var(--foreground) / 0.9) 20%,
+    hsl(var(--accent)) 50%,
+    hsl(var(--foreground) / 0.9) 80%,
+    hsl(var(--foreground) / 0.9) 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: nameShimmer 5s linear infinite;
+}
+
 @keyframes timelineFlow {
   from { background-position: 0 0; }
   to { background-position: 0 24px; }

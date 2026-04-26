@@ -4,28 +4,30 @@ import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 import { Github, Mail, Menu, X } from "lucide-react"
-import { useSection } from "@/app/section-context"
+import { useSection, type Section } from "@/app/section-context"
 
-const sectionLinks = [
+type NavSection = Exclude<Section, "home" | null>
+
+const sectionLinks: ReadonlyArray<{ key: NavSection; label: string }> = [
   { key: "experience", label: "Experience" },
   { key: "projects", label: "Projects" },
   { key: "posts", label: "Posts" },
-  { key: "activity", label: "Terminal" },
-] as const
+  { key: "terminal", label: "Terminal" },
+]
 
 export default function Navbar() {
   const pathname = usePathname()
   const isHome = pathname === "/"
   const [menuOpen, setMenuOpen] = useState(false)
-  const { active, toggle, setActive } = useSection()
+  const { active, setActive } = useSection()
 
-  function handleSectionClick(key: string) {
+  function handleSectionClick(key: NavSection) {
     if (!isHome) {
       sessionStorage.setItem("homeScrollPosition", key)
       window.location.href = "/"
       return
     }
-    setActive(key as any)
+    setActive(key)
   }
 
   function handleHomeClick() {

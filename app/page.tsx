@@ -4,10 +4,10 @@ import { useEffect, useRef } from "react"
 import Hero from "./home/_components/hero"
 import Experience from "./home/_components/experience"
 import Projects from "./home/_components/projects"
-import LatestPost from "./home/_components/latest-post"
-import RecentActivity from "./home/_components/recent-activity"
+import Posts from "./home/_components/posts"
+import Terminal from "./home/_components/terminal"
 import Footer from "./home/_components/footer"
-import { useSection } from "./section-context"
+import { useSection, type Section } from "./section-context"
 
 function SectionShell({ visible, children }: { visible: boolean; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -39,11 +39,19 @@ export default function Home() {
   const { active, setActive } = useSection()
 
   useEffect(() => {
-    const section = sessionStorage.getItem("homeScrollPosition")
+    const normalizeSection = (section: string | null): Section => {
+      const normalized = section === "activity" ? "terminal" : section
+      return normalized === "experience" || normalized === "projects" || normalized === "posts" || normalized === "terminal"
+        ? normalized
+        : null
+    }
+
+    const urlSection = new URLSearchParams(window.location.search).get("section")
+    const section = normalizeSection(urlSection ?? sessionStorage.getItem("homeScrollPosition"))
     if (section) {
       sessionStorage.removeItem("homeScrollPosition")
       setTimeout(() => {
-        setActive(section as any)
+        setActive(section)
       }, 600)
     } else {
       setActive(null)
@@ -70,11 +78,11 @@ export default function Home() {
       </SectionShell>
 
       <SectionShell visible={active === "posts"}>
-        <LatestPost />
+        <Posts />
       </SectionShell>
 
-      <SectionShell visible={active === "activity"}>
-        <RecentActivity />
+      <SectionShell visible={active === "terminal"}>
+        <Terminal />
       </SectionShell>
 
       <Footer />

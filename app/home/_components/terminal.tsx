@@ -5,6 +5,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { useSection } from "@/app/section-context"
+import type { Section } from "@/app/section-context"
 import {
   Folder, User, Cpu, FolderOpen, Activity, Sparkles, HelpCircle, Copy, Check,
   Briefcase, FileText, Mail, Monitor, Calendar, GitBranch, Coffee,
@@ -520,14 +521,14 @@ const CMD_MAN = (args: string): Line[] => {
   ]
 }
 
-const CMD_OPEN = (args: string, navigate: (s: string | null) => void): Line[] => {
+const CMD_OPEN = (args: string, navigate: (s: Section) => void): Line[] => {
   const section = args.trim().toLowerCase()
-  const map: Record<string, string | null> = {
+  const map: Record<string, Section> = {
     home: null, "~": null, "..": null,
     experience: "experience", exp: "experience",
     projects: "projects",
     posts: "posts", blog: "posts",
-    terminal: "activity", activity: "activity",
+    terminal: "terminal", activity: "terminal",
   }
   if (!section) return [
     o("usage: open <section>", "dim"),
@@ -1307,7 +1308,7 @@ function MiniTerminal() {
     return () => window.removeEventListener("portfolio:terminal-run", handleCommandCenterRun)
   })
 
-  function navigate(section: string | null) { setActive(section as any) }
+  function navigate(section: Section) { setActive(section) }
 
   function unlockEgg(cmd: string) {
     const canonical = cmd === "curl_egg" ? "curl" : cmd
@@ -1839,7 +1840,7 @@ function MiniTerminal() {
 }
 
 /* ─── Section ─────────────────────────────────────── */
-export default function RecentActivity() {
+export default function Terminal() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.08 })
 
   const keyboardShortcuts = [
@@ -1904,7 +1905,7 @@ export default function RecentActivity() {
   }
 
   return (
-    <section ref={ref} id="activity" className="flex min-h-0 flex-col py-6 lg:h-[calc(100vh-128px)] lg:overflow-hidden">
+    <section ref={ref} id="terminal" className="flex min-h-0 flex-col py-6 lg:h-[calc(100vh-128px)] lg:overflow-hidden">
 
       <motion.div
         initial={{ opacity: 0, x: -16 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5 }}

@@ -98,7 +98,7 @@ function PostCard({
   )
 }
 
-export default function LatestPost() {
+export default function Posts() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.15 })
 
   return (

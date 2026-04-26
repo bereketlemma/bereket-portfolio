@@ -1,10 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { Github, ExternalLink, MousePointerClick } from "lucide-react"
 import { useInView } from "react-intersection-observer"
 import { allProjects } from "@/lib/projects"
 import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from "framer-motion"
+// useSpring/useTransform kept for parallax layers
 
 function ProjectCard({
   project,
@@ -14,119 +16,122 @@ function ProjectCard({
   index: number
 }) {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.06 })
+  const [hovered, setHovered] = useState(false)
 
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
 
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [7, -7]), { stiffness: 400, damping: 30 })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-7, 7]), { stiffness: 400, damping: 30 })
+  // Directional light — warm spot that follows mouse position
+  const lightX = useTransform(mouseX, [-0.5, 0.5], [15, 85])
+  const lightY = useTransform(mouseY, [-0.5, 0.5], [15, 85])
+  const light = useMotionTemplate`radial-gradient(ellipse 75% 75% at ${lightX}% ${lightY}%, hsl(28 80% 62% / 0.16) 0%, hsl(28 67% 47% / 0.05) 50%, transparent 75%)`
 
-  const shineX = useTransform(mouseX, [-0.5, 0.5], [0, 100])
-  const shineY = useTransform(mouseY, [-0.5, 0.5], [0, 100])
-  const angle  = useTransform(mouseX, [-0.5, 0.5], [120, 240])
-
-  const shine = useMotionTemplate`radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.14) 0%, transparent 50%), linear-gradient(${angle}deg, hsl(var(--accent)/0.07) 0%, rgba(56,189,248,0.05) 40%, transparent 80%)`
+  // Parallax layers — 3 depths
+  const p1x = useSpring(useTransform(mouseX, [-0.5, 0.5], [-12, 12]), { stiffness: 180, damping: 20 })
+  const p1y = useSpring(useTransform(mouseY, [-0.5, 0.5], [-9, 9]),  { stiffness: 180, damping: 20 })
+  const p2x = useSpring(useTransform(mouseX, [-0.5, 0.5], [-6, 6]),  { stiffness: 180, damping: 20 })
+  const p2y = useSpring(useTransform(mouseY, [-0.5, 0.5], [-4, 4]),  { stiffness: 180, damping: 20 })
+  const p3x = useSpring(useTransform(mouseX, [-0.5, 0.5], [-2.5, 2.5]), { stiffness: 180, damping: 20 })
+  const p3y = useSpring(useTransform(mouseY, [-0.5, 0.5], [-1.5, 1.5]), { stiffness: 180, damping: 20 })
 
   function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const r = e.currentTarget.getBoundingClientRect()
     mouseX.set((e.clientX - r.left) / r.width - 0.5)
     mouseY.set((e.clientY - r.top) / r.height - 0.5)
   }
-  function onMouseLeave() { mouseX.set(0); mouseY.set(0) }
+  function onMouseLeave() { mouseX.set(0); mouseY.set(0); setHovered(false) }
+  function onMouseEnter() { setHovered(true) }
 
   return (
     <div
       ref={ref}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
-      className={`transition-all duration-500 ease-out h-full ${inView ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}`}
-      style={{ perspective: "1000px", transitionDelay: `${index * 45}ms` }}
+      onMouseEnter={onMouseEnter}
+      className={`h-full transition-all duration-700 ease-out ${
+        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
+      }`}
+      style={{ transitionDelay: `${index * 65}ms` }}
     >
-      <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} className="h-full">
         <Link
           href={`/projects/${project.slug}`}
-          className="group relative flex h-full min-h-[15.5rem] flex-col overflow-hidden rounded border border-border/40 p-5 transition-colors duration-300 hover:border-accent/50 hover:shadow-[0_24px_50px_rgba(0,0,0,0.35)] lg:min-h-[16.5rem]"
+          className="group relative flex h-full min-h-[15.5rem] flex-col overflow-hidden rounded-xl border border-border/35 bg-[hsl(60_7%_5.5%)] p-5 lg:min-h-[16.5rem]"
         >
-          {/* Holographic shine — follows mouse */}
+          {/* Directional light — warm amber follows mouse */}
+          <motion.div className="pointer-events-none absolute inset-0" style={{ background: light }} />
+
+          {/* Frosted top edge — simulates card thickness highlight */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/12 to-transparent" />
+
+          {/* Bottom depth shadow — makes card feel thick */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/25 to-transparent" />
+
+          {/* Hover border glow */}
           <motion.div
-            className="pointer-events-none absolute inset-0 rounded opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            style={{ background: shine }}
+            className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style={{ boxShadow: "inset 0 0 0 1px hsl(28 67% 47% / 0.22)" }}
           />
 
-          {/* Hover glow gradient */}
-          <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-accent/5 via-transparent to-accent/5" />
+          {/* Scan line on enter */}
+          <motion.div
+            className="pointer-events-none absolute left-0 h-[1px] w-full bg-gradient-to-r from-transparent via-accent/50 to-transparent"
+            initial={{ top: "0%", opacity: 0 }}
+            animate={hovered ? { top: ["0%", "103%"], opacity: [0, 1, 1, 0] } : { top: "0%", opacity: 0 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+          />
 
-      {/* Top accent line */}
-      <div className="absolute top-0 left-0 h-px w-0 bg-accent/60 group-hover:w-full transition-all duration-500" />
-
-      {/* Clickable badge — always visible */}
-      <div className="relative mb-3 flex items-center justify-between">
-        <span className="flex items-center gap-1 rounded border border-accent/30 bg-accent/8 px-2 py-0.5 font-mono text-[10px] text-accent/70 transition-colors group-hover:border-accent/60 group-hover:text-accent">
-          <MousePointerClick size={10} />
-          click to see how it was built
-        </span>
-      </div>
-
-      {/* Title row */}
-      <div className="relative mb-3 flex items-start justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-syne text-sm font-bold text-foreground transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent sm:text-base">
-            {project.shortTitle}
-          </h3>
-          {project.wip && (
-            <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
-              WIP
+          {/* Badge — top parallax layer */}
+          <motion.div className="relative mb-3" style={{ x: p1x, y: p1y }}>
+            <span className="inline-flex items-center gap-1 rounded border border-accent/25 bg-accent/8 px-2 py-0.5 font-mono text-[10px] text-accent/65 transition-colors group-hover:border-accent/50 group-hover:text-accent">
+              <MousePointerClick size={10} />
+              click to see how it was built
             </span>
-          )}
-        </div>
-        <div className="flex shrink-0 items-center gap-1.5">
-          {project.live && (
-            <a
-              href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="relative z-10 flex items-center gap-1 rounded border border-border/60 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground hover:border-accent hover:text-accent transition-all"
-            >
-              <ExternalLink size={11} />
-              live
-            </a>
-          )}
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="relative z-10 flex items-center gap-1 rounded border border-border/60 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground hover:border-accent hover:text-accent transition-all"
+          </motion.div>
+
+          {/* Title + links — mid parallax layer */}
+          <motion.div className="relative mb-3 flex items-start justify-between gap-3" style={{ x: p2x, y: p2y }}>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-syne text-sm font-bold text-foreground/95 transition-colors duration-300 group-hover:text-accent sm:text-base">
+                {project.shortTitle}
+              </h3>
+              {project.wip && (
+                <span className="rounded border border-yellow-500/50 bg-yellow-500/10 px-1.5 py-0.5 font-mono text-[10px] text-yellow-500 whitespace-nowrap">
+                  WIP
+                </span>
+              )}
+            </div>
+            <div className="flex shrink-0 items-center gap-1.5">
+              {project.live && (
+                <a href={project.live} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
+                  className="relative z-10 flex items-center gap-1 rounded border border-border/50 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground transition-all hover:border-accent hover:text-accent">
+                  <ExternalLink size={11} />live
+                </a>
+              )}
+              <a href={project.github} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}
+                className="relative z-10 flex items-center gap-1 rounded border border-border/50 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground transition-all hover:border-accent hover:text-accent">
+                <Github size={11} />github
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Description — base parallax layer */}
+          <motion.p
+            className="relative flex-1 line-clamp-3 text-xs leading-6 text-muted-foreground/80 sm:text-[13px]"
+            style={{ x: p3x, y: p3y }}
           >
-            <Github size={11} />
-            github
-          </a>
-        </div>
-      </div>
+            {project.shortDescription}
+          </motion.p>
 
-      {/* Description — clamped so all cards stay same height */}
-      <p className="relative flex-1 text-xs leading-6 text-muted-foreground line-clamp-3 sm:text-[13px]">
-        {project.shortDescription}
-      </p>
-
-      {/* Tags */}
-      <div className="relative mt-4 flex flex-wrap gap-1.5">
-        {project.shortTags.map((tag) => (
-          <span
-            key={tag}
-            className="cursor-default rounded border border-border/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-
-
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 right-0 h-px w-0 bg-accent/40 group-hover:w-full transition-all duration-500 delay-100" />
+          {/* Tags — grounded, no parallax */}
+          <div className="relative mt-4 flex flex-wrap gap-1.5">
+            {project.shortTags.map((tag) => (
+              <span key={tag}
+                className="cursor-default rounded border border-border/45 px-2 py-0.5 font-mono text-[10px] text-muted-foreground/70 transition-colors group-hover:border-border/65 group-hover:text-muted-foreground/85">
+                {tag}
+              </span>
+            ))}
+          </div>
         </Link>
-      </motion.div>
     </div>
   )
 }

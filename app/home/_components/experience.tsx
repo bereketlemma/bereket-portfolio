@@ -362,7 +362,7 @@ export default function Experience() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="mb-2 flex flex-wrap items-center gap-4"
+        className="sticky top-14 z-40 -mx-4 mb-3 flex flex-wrap items-center gap-4 border-b border-border bg-background px-4 py-3 shadow-[0_14px_28px_hsl(var(--background)/0.98)] sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:mb-2 lg:border-b-0 lg:bg-transparent lg:p-0 lg:shadow-none"
       >
         {/* Tab grid wrapper — tab bar + arrows share the same column widths */}
         <div className="w-full sm:w-fit">
@@ -431,7 +431,7 @@ export default function Experience() {
       </motion.div>
 
       {/* Active entries */}
-      <div className="mt-2 lg:mt-0 lg:flex-1 lg:min-h-0 lg:overflow-hidden">
+      <div className="mt-3 lg:mt-0 lg:flex-1 lg:min-h-0 lg:overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={active}

@@ -47,17 +47,17 @@ function timeAgo(d: string) {
 
 function colorClass(type: LineType): string {
   switch (type) {
-    case "input":   return "text-accent"
-    case "error":   return "text-red-400/70"
-    case "success": return "text-emerald-400/80"
-    case "accent":  return "text-accent font-medium"
-    case "amber":   return "text-amber-400/80"
-    case "sky":     return "text-sky-400/80"
-    case "violet":  return "text-violet-400/80"
+    case "input":   return "text-[#F59E0B]"
+    case "error":   return "text-red-400/80"
+    case "success": return "text-[#22C55E]"
+    case "accent":  return "text-[#22C55E] font-medium"
+    case "amber":   return "text-[#F59E0B]"
+    case "sky":     return "text-sky-400/90"
+    case "violet":  return "text-violet-400/90"
     case "image":     return ""
     case "separator": return ""
-    case "dim":     return "text-muted-foreground/35"
-    default:        return "text-muted-foreground/65"
+    case "dim":     return "text-[#9CA3AF]/85"
+    default:        return "text-[#E5E7EB]"
   }
 }
 
@@ -65,7 +65,7 @@ function colorClass(type: LineType): string {
 const ALL_CMDS = [
   "help", "whoami", "skills", "experience", "projects", "posts",
   "icpc", "contact", "neofetch", "date", "uptime", "ls", "pwd",
-  "history", "echo", "man", "ascii", "banner", "open", "fetch", "gh", "clear",
+  "history", "echo", "man", "ascii", "transcribe", "banner", "open", "fetch", "gh", "clear",
   "hire", "resume", "about", "alias", "tips", "achievements",
   "sudo", "vim", "git", "matrix", "coffee", "exit",
   "share", "leaderboard",
@@ -114,12 +114,10 @@ const CMD_ICONS: Record<string, React.ElementType> = {
 }
 
 const CMD_CATEGORIES = [
-  { label: "Info",        icon: User,       iconColor: "text-sky-400",     cmds: ["whoami", "hire", "resume", "about", "skills", "experience", "projects", "posts", "icpc", "contact"] },
-  { label: "System",      icon: Cpu,        iconColor: "text-violet-400",  cmds: ["neofetch", "date", "uptime", "ls", "pwd", "history", "ascii"] },
-  { label: "Navigate",    icon: FolderOpen, iconColor: "text-amber-400",   cmds: ["open experience", "open projects", "open posts", "open home", "open contact"] },
-  { label: "Live Data",   icon: Activity,   iconColor: "text-emerald-400", cmds: ["fetch github", "gh activity", "fetch visits"] },
-  { label: "Easter Eggs", icon: Sparkles,   iconColor: "text-pink-400",    cmds: ["achievements", "matrix", "sudo", "vim", "git", "coffee", "exit"] },
-  { label: "Help",        icon: HelpCircle, iconColor: "text-accent",      cmds: ["help", "alias", "tips", "clear"] },
+  { label: "Info",        icon: User,       iconColor: "text-[#F59E0B]",   cmds: ["whoami", "hire", "resume", "about", "skills", "experience", "projects", "posts", "icpc", "contact"] },
+  { label: "System",      icon: Cpu,        iconColor: "text-[#F59E0B]",   cmds: ["neofetch", "date", "uptime", "ls", "pwd", "history", "ascii"] },
+  { label: "Live Data",   icon: Activity,   iconColor: "text-[#22C55E]", cmds: ["fetch github", "gh activity", "fetch visits"] },
+  { label: "Easter Eggs", icon: Sparkles,   iconColor: "text-[#F59E0B]",   cmds: ["achievements", "matrix", "sudo", "vim", "git", "coffee", "exit"] },
 ]
 
 /* ─── Command functions ───────────────────────────── */
@@ -139,6 +137,8 @@ const CMD_HELP = (): Line[] => [
   o("  tips         keyboard shortcuts"),
   o("  echo <text>  print text"),
   o("  man <cmd>    command manual page"),
+  o("  ascii        encoded ASCII profile"),
+  o("  transcribe   decode the ASCII profile"),
   o("  banner       ASCII name art"),
   blank(),
   o("  open <section>    navigate the site"),
@@ -404,12 +404,63 @@ const CMD_BANNER = (): Line[] => [
   o("╚══════════════════════════════════════════╝", "accent"),
 ]
 
+const asciiNumbers = (text: string) =>
+  Array.from(text).map((char) => char.charCodeAt(0).toString().padStart(3, "0")).join(" ")
+
+const ASCII_PROFILE_LINES = [
+  "Bereket Lemma",
+  "Software Engineer",
+  "Whitworth University",
+  "Computer Science + Applied Mathematics",
+  "Backend systems, ML infrastructure, developer tooling",
+  "C++ C Python TypeScript SQL",
+  "LLVM Linux CMake lock-free data structures",
+  "GCP BigQuery Pub/Sub Cloud Run Azure",
+  "PyTorch vLLM NumPy scikit-learn pybind11",
+  "Next.js TypeScript Tailwind Framer Motion",
+  "I build software that makes systems feel fast, reliable, and useful.",
+  "My work sits around backend engineering, infrastructure, performance, and applied ML.",
+  "I study Computer Science and Applied Mathematics at Whitworth University.",
+  "Open to new grad software engineering roles.",
+  "Strongest fit: backend, cloud, ML infrastructure, developer tools.",
+  "bereketlemma.com",
+]
+
 const CMD_ASCII_BANNER = (): Line[] => [
   blank(),
-  imageLine("/assets/ascii-art-text.png", "Bereket Lemma"),
-  sep(),
-  o("  software engineer  ·  backend systems  ·  ML infrastructure", "dim"),
-  o("  bereketlemma.com", "accent"),
+  ...ASCII_PROFILE_LINES.map((line, index) => o(
+    asciiNumbers(line),
+    index === 0 ? "accent" : index === 1 || index === 4 || index === 8 || index === 13 || index === 14 ? "success" : index === 2 || index === 5 || index === 15 ? "amber" : index === 6 ? "sky" : index === 7 ? "violet" : "output"
+  )),
+  blank(),
+  o("want to know what it means?", "dim"),
+  o("> transcribe", "accent"),
+  blank(),
+]
+
+const CMD_TRANSCRIBE_ASCII = (ready: boolean): Line[] => [
+  ...(ready ? [] : [o("ascii buffer empty - run `ascii` first", "dim"), blank()]),
+  o("+--------------------------------------------------------------------------+", "accent"),
+  o("| BEREKET LEMMA                                                            |", "accent"),
+  o("| Software Engineer                                                        |", "success"),
+  o("+--------------------------------------------------------------------------+", "accent"),
+  o("| School    Whitworth University                                           |"),
+  o("| Studying  Computer Science + Applied Mathematics                         |"),
+  o("| Focus     Backend systems, ML infrastructure, developer tooling          |"),
+  o("| Status    Open to new grad software engineering roles                    |", "success"),
+  o("+--------------------------------------------------------------------------+", "accent"),
+  o("| Stack     C++ / C / Python / TypeScript / SQL                            |", "amber"),
+  o("| Systems   LLVM / Linux / CMake / lock-free data structures               |", "sky"),
+  o("| Cloud     GCP / BigQuery / Pub/Sub / Cloud Run / Azure                   |", "violet"),
+  o("| ML        PyTorch / vLLM / NumPy / scikit-learn / pybind11               |", "success"),
+  o("+--------------------------------------------------------------------------+", "accent"),
+  o("| I build software that makes systems feel fast, reliable, and useful.     |"),
+  o("| My work sits around backend engineering, infrastructure, performance,    |"),
+  o("| and applied ML. At Whitworth, I study CS and Applied Mathematics,        |"),
+  o("| blending practical engineering instincts with algorithmic thinking.      |"),
+  o("+--------------------------------------------------------------------------+", "accent"),
+  o("| bereketlemma.com                                                         |", "amber"),
+  o("+--------------------------------------------------------------------------+", "accent"),
   blank(),
 ]
 
@@ -446,6 +497,8 @@ const CMD_MAN = (args: string): Line[] => {
     pwd:        { desc: "print current section path",                         usage: "pwd" },
     history:    { desc: "show session command history",                       usage: "history" },
     echo:       { desc: "print text to the terminal",                         usage: "echo <text>" },
+    ascii:      { desc: "show encoded ASCII numbers for the profile",         usage: "ascii" },
+    transcribe: { desc: "decode the ASCII profile into readable text",        usage: "transcribe" },
     banner:     { desc: "show name banner",                                   usage: "banner" },
     open:       { desc: "navigate to a section of the site",                  usage: "open <section>" },
     fetch:      { desc: "fetch live data from the portfolio APIs",            usage: "fetch <github|activity|visits>" },
@@ -939,7 +992,7 @@ const QUESTIONS: Question[] = [
 ]
 
 const DIFF_COLOR: Record<string, string> = {
-  easy:   "text-emerald-400/70 border-emerald-400/30",
+  easy:   "text-[#22C55E]/70 border-[#22C55E]/30",
   medium: "text-amber-400/70 border-amber-400/30",
   hard:   "text-red-400/70 border-red-400/30",
 }
@@ -988,17 +1041,17 @@ function tokenize(code: string, lang: string): Token[] {
   while ((m = regex.exec(code)) !== null) {
     const t = m[0]
     if (t[0] === '"' || t[0] === "'" || t[0] === "`")
-      tokens.push({ text: t, cls: "text-emerald-400/80" })
+      tokens.push({ text: t, cls: "text-[#22C55E]/80" })
     else if (t.startsWith("//") || t.startsWith("#"))
-      tokens.push({ text: t, cls: "text-muted-foreground/40" })
+      tokens.push({ text: t, cls: "text-[#9CA3AF]/70" })
     else if (/^\d/.test(t))
       tokens.push({ text: t, cls: "text-amber-400/80" })
     else if (keywords.has(t))
       tokens.push({ text: t, cls: "text-sky-400/80" })
     else if (/^[<>!=+\-*/&|^~%]+$/.test(t))
-      tokens.push({ text: t, cls: "text-accent/70" })
+      tokens.push({ text: t, cls: "text-[#22C55E]/70" })
     else
-      tokens.push({ text: t, cls: "text-foreground/80" })
+      tokens.push({ text: t, cls: "text-[#E5E7EB]" })
   }
   return tokens
 }
@@ -1055,7 +1108,7 @@ function GuessTheOutput() {
   }
 
   const timerPct = (timeLeft / TIMER_SECS) * 100
-  const timerColor = timeLeft > 8 ? "bg-emerald-400/60" : timeLeft > 4 ? "bg-amber-400/60" : "bg-red-400/70"
+  const timerColor = timeLeft > 8 ? "bg-[#22C55E]/60" : timeLeft > 4 ? "bg-amber-400/60" : "bg-red-400/70"
 
   const titleBar = (
     <div className="flex shrink-0 flex-col border-b border-border/40">
@@ -1063,19 +1116,19 @@ function GuessTheOutput() {
         <div className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
         <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
         <div className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
-        <span className="ml-3 font-mono text-[11px] text-muted-foreground/60">guess the output</span>
+        <span className="ml-3 font-mono text-[11px] text-[#9CA3AF]">guess the output</span>
         {!done && <>
           <span className={`ml-2 rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider ${DIFF_COLOR[q.difficulty]}`}>
             {q.difficulty}
           </span>
-          <span className="ml-1 rounded border border-border/30 px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground/40">
+          <span className="ml-1 rounded border border-border/30 px-1.5 py-0.5 font-mono text-[9px] text-[#9CA3AF]/70">
             {q.lang}
           </span>
         </>}
-        <span className="ml-auto font-mono text-[10px] text-muted-foreground/40">
+        <span className="ml-auto font-mono text-[10px] text-[#9CA3AF]/70">
           {done ? `${score}/${ROUND}` : `${roundIdx + 1}/${ROUND}`}
           {!done && !answered && timerActive && (
-            <span className={`ml-2 ${timeLeft <= 4 ? "text-red-400/80 animate-pulse" : "text-muted-foreground/30"}`}>
+            <span className={`ml-2 ${timeLeft <= 4 ? "text-red-400/80 animate-pulse" : "text-[#9CA3AF]/60"}`}>
               {timeLeft}s
             </span>
           )}
@@ -1098,19 +1151,19 @@ function GuessTheOutput() {
       {titleBar}
       <div className="flex flex-1 flex-col items-center justify-center gap-5 p-6">
         <p className="font-syne text-4xl font-bold text-foreground">
-          {score} <span className="text-2xl text-muted-foreground/30">/ {ROUND}</span>
+          {score} <span className="text-2xl text-[#9CA3AF]/60">/ {ROUND}</span>
         </p>
-        <p className="font-mono text-sm text-muted-foreground/55">
+        <p className="font-mono text-sm text-[#9CA3AF]">
           {score === ROUND ? "perfect round!" : score >= 4 ? "strong work" : score >= 3 ? "not bad" : "keep at it"}
         </p>
         <div className="h-1.5 w-40 overflow-hidden rounded-full bg-border/30">
-          <div className="h-full rounded-full bg-accent transition-all duration-700" style={{ width: `${(score / ROUND) * 100}%` }} />
+          <div className="h-full rounded-full bg-[#22C55E] transition-all duration-700" style={{ width: `${(score / ROUND) * 100}%` }} />
         </div>
         <button onClick={handleTryAgain}
-          className="mt-1 rounded-xl border border-accent/40 bg-accent/10 px-6 py-2.5 font-mono text-xs text-accent transition-all hover:bg-accent hover:text-accent-foreground">
+          className="mt-1 rounded-xl border border-[#22C55E]/40 bg-[#22C55E]/10 px-6 py-2.5 font-mono text-xs text-[#22C55E] transition-all hover:bg-[#22C55E] hover:text-black">
           try again →
         </button>
-        <p className="font-mono text-[10px] text-muted-foreground/30">new set of {ROUND} questions each time</p>
+        <p className="font-mono text-[10px] text-[#9CA3AF]/60">new set of {ROUND} questions each time</p>
       </div>
     </div>
   )
@@ -1131,11 +1184,11 @@ function GuessTheOutput() {
       {/* Options */}
       <div className="grid flex-1 grid-cols-2 gap-2 p-3">
         {q.options.map((opt, i) => {
-          let cls = "border-border/40 bg-muted/20 text-muted-foreground/70 hover:border-accent/50 hover:text-accent"
+          let cls = "border-border/40 bg-muted/20 text-[#9CA3AF] hover:border-[#22C55E]/50 hover:text-[#22C55E]"
           if (answered) {
-            if (i === q.answer)  cls = "border-emerald-400/60 bg-emerald-400/10 text-emerald-400"
+            if (i === q.answer)  cls = "border-[#22C55E]/60 bg-[#22C55E]/10 text-[#22C55E]"
             else if (i === selected && !timedOut) cls = "border-red-400/50 bg-red-400/10 text-red-400/70"
-            else cls = "border-border/20 bg-muted/10 text-muted-foreground/30"
+            else cls = "border-border/20 bg-muted/10 text-[#9CA3AF]/60"
           }
           return (
             <button key={i} onClick={() => handleSelect(i)} disabled={answered}
@@ -1152,13 +1205,13 @@ function GuessTheOutput() {
         <div className="shrink-0 border-t border-border/30 bg-muted/10 px-4 py-2.5">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className={`font-mono text-[10px] font-medium ${timedOut ? "text-amber-400/80" : correct ? "text-emerald-400" : "text-red-400/80"}`}>
+              <p className={`font-mono text-[10px] font-medium ${timedOut ? "text-amber-400/80" : correct ? "text-[#22C55E]" : "text-red-400/80"}`}>
                 {timedOut ? `⏱ time's up · answer: ${q.options[q.answer]}` : correct ? "✓ correct" : `✗ answer: ${q.options[q.answer]}`}
               </p>
-              <p className="mt-0.5 font-mono text-[10px] leading-relaxed text-muted-foreground/50">{q.explanation}</p>
+              <p className="mt-0.5 font-mono text-[10px] leading-relaxed text-[#9CA3AF]/80">{q.explanation}</p>
             </div>
             <button onClick={handleNext}
-              className="shrink-0 rounded-lg border border-accent/40 bg-accent/10 px-3 py-1.5 font-mono text-[10px] text-accent transition-all hover:bg-accent hover:text-accent-foreground">
+              className="shrink-0 rounded-lg border border-[#22C55E]/40 bg-[#22C55E]/10 px-3 py-1.5 font-mono text-[10px] text-[#22C55E] transition-all hover:bg-[#22C55E] hover:text-black">
               {isLast ? "results →" : "next →"}
             </button>
           </div>
@@ -1167,7 +1220,7 @@ function GuessTheOutput() {
 
       {/* Round progress bar */}
       <div className="h-0.5 w-full shrink-0 bg-border/20">
-        <div className="h-full bg-accent/40 transition-all duration-500"
+        <div className="h-full bg-[#22C55E]/40 transition-all duration-500"
           style={{ width: `${((roundIdx + (answered ? 1 : 0)) / ROUND) * 100}%` }} />
       </div>
     </div>
@@ -1190,8 +1243,8 @@ function MiniTerminal() {
   const makeBootLines = (continued = false): Line[] => [
     o("bereketlemma@portfolio ~ interactive terminal", "accent"),
     sep(),
-    o("← browse commands in the sidebar  ·  or type one below", "dim"),
-    o("  [tab] autocomplete  ·  [↑↓] history  ·  [ctrl+r] search  ·  [ctrl+l] clear", "dim"),
+    o("Use the Command Center on the right, or type a command below."),
+    o("Shortcuts: Tab autocomplete  ·  Up/Down history  ·  Ctrl+R search  ·  Ctrl+L clear", "dim"),
     ...(continued ? [o("-- session continued --", "dim")] : []),
     blank(),
   ]
@@ -1204,6 +1257,7 @@ function MiniTerminal() {
   const [unlockedEggs, setUnlockedEggs] = useState<string[]>([])
   const [searchMode, setSearchMode] = useState(false)
   const [searchOffset, setSearchOffset] = useState(0)
+  const [asciiReady, setAsciiReady] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const outputRef = useRef<HTMLDivElement>(null)
 
@@ -1243,6 +1297,15 @@ function MiniTerminal() {
     }, 1000)
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    const handleCommandCenterRun = (event: Event) => {
+      const cmd = (event as CustomEvent<{ cmd?: string }>).detail?.cmd
+      if (cmd) run(cmd, true)
+    }
+    window.addEventListener("portfolio:terminal-run", handleCommandCenterRun)
+    return () => window.removeEventListener("portfolio:terminal-run", handleCommandCenterRun)
+  })
 
   function navigate(section: string | null) { setActive(section as any) }
 
@@ -1363,8 +1426,9 @@ function MiniTerminal() {
       case "uptime":     result = CMD_UPTIME(mountTime.current); break
       case "ls":         result = CMD_LS(); break
       case "pwd":        result = CMD_PWD(); break
-      case "ascii":
-      case "banner":     result = CMD_ASCII_BANNER(); break
+      case "ascii":      setAsciiReady(true); result = CMD_ASCII_BANNER(); break
+      case "transcribe": result = CMD_TRANSCRIBE_ASCII(asciiReady); break
+      case "banner":     result = CMD_BANNER(); break
       case "echo":       result = CMD_ECHO(finalArgs); break
       case "history":    result = CMD_HISTORY([...cmdHistory]); break
       case "man":        result = CMD_MAN(finalArgs); break
@@ -1495,10 +1559,10 @@ function MiniTerminal() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden" onClick={() => inputRef.current?.focus()}>
+    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden bg-[#111111] text-[#F8FAFC]" onClick={() => inputRef.current?.focus()}>
 
       {/* Title bar — macOS style */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-border/40 bg-muted/35 px-3 py-2">
+      <div className="flex min-w-0 shrink-0 items-center gap-1.5 border-b border-[#F59E0B]/15 bg-[#151515] px-2 py-2 sm:gap-2 sm:px-3">
         {/* Traffic lights */}
         <div className="flex items-center gap-1.5">
           <div className="group relative h-3 w-3 cursor-default rounded-full bg-red-500/90 transition-colors hover:bg-red-500">
@@ -1513,33 +1577,33 @@ function MiniTerminal() {
         </div>
 
         {/* Divider */}
-        <div className="h-3.5 w-px bg-border/30" />
+        <div className="h-3.5 w-px bg-[#F59E0B]/15" />
 
         {/* Folder path */}
-        <div className="flex items-center gap-1">
-          <Folder size={11} className="shrink-0 text-accent/50" />
-          <span className="font-mono text-[10px] text-muted-foreground/55">~/terminal</span>
+        <div className="hidden min-w-0 items-center gap-1 min-[360px]:flex">
+          <Folder size={11} className="shrink-0 text-[#22C55E]/80" />
+          <span className="truncate font-mono text-[10px] text-[#E5E7EB]">~/terminal</span>
         </div>
 
         {/* Shell badge */}
-        <span className="rounded border border-border/25 px-1 py-0.5 font-mono text-[8px] text-muted-foreground/30">zsh</span>
+        <span className="hidden rounded border border-[#F59E0B]/15 bg-[#0F1115] px-1 py-0.5 font-mono text-[8px] text-[#9CA3AF] sm:inline">zsh</span>
 
         {/* Right */}
-        <div className="ml-auto flex items-center gap-2">
-          <span className="rounded border border-accent/30 bg-accent/8 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-accent/60">interactive</span>
+        <div className="ml-auto flex min-w-0 items-center gap-1.5 sm:gap-2">
+          <span className="hidden rounded border border-[#22C55E]/30 bg-[#22C55E]/10 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-[#22C55E]/80 min-[430px]:inline">interactive</span>
           <button
             onClick={(e) => { e.stopPropagation(); setSidebarOpen(v => !v) }}
-            className="font-mono text-[9px] text-muted-foreground/35 transition-colors hover:text-accent lg:hidden"
+            className="font-mono text-[9px] text-[#9CA3AF]/70 transition-colors hover:text-[#22C55E] lg:hidden"
           >
             {sidebarOpen ? "✕" : "⌘"}
           </button>
           <motion.div animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
-            className="h-1.5 w-1.5 rounded-full bg-green-400/80" />
+            className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
         </div>
       </div>
 
       {/* Body: sidebar + output */}
-      <div className="relative flex flex-1 overflow-hidden">
+      <div className="relative flex min-w-0 flex-1 overflow-hidden bg-[#111111]">
 
         {/* Sidebar content shared between desktop + mobile */}
         {(() => {
@@ -1551,7 +1615,7 @@ function MiniTerminal() {
                   <div key={cat.label} className="flex flex-col">
                     <div className="flex items-center gap-1.5 px-3 pb-0.5 pt-1">
                       <Icon size={12} className={`shrink-0 ${cat.iconColor}`} />
-                      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-foreground/80">
+                      <p className="font-mono text-[10px] font-bold uppercase tracking-[0.1em] text-[#F59E0B]">
                         {cat.label}
                       </p>
                     </div>
@@ -1561,10 +1625,10 @@ function MiniTerminal() {
                         <button
                           key={cmd}
                           onClick={(e) => { e.stopPropagation(); run(cmd, true); setSidebarOpen(false) }}
-                          className="group flex w-full items-center gap-1.5 pl-5 pr-3 py-[3px] text-left transition-all hover:bg-accent/10"
+                          className="group flex w-full items-center gap-1.5 pl-5 pr-3 py-[3px] text-left transition-all hover:bg-[#22C55E]/10"
                         >
-                          <CmdIcon size={11} className="shrink-0 text-muted-foreground/60 transition-colors group-hover:text-accent" />
-                          <span className="font-mono text-[11px] font-semibold text-foreground/85 transition-colors group-hover:text-foreground">
+                          <CmdIcon size={11} className="shrink-0 text-[#9CA3AF] transition-colors group-hover:text-[#22C55E]" />
+                          <span className="font-mono text-[11px] font-semibold text-[#E5E7EB] transition-colors group-hover:text-[#22C55E]">
                             {cmd}
                           </span>
                         </button>
@@ -1578,7 +1642,7 @@ function MiniTerminal() {
           return (
             <>
               {/* Desktop sidebar — always visible, no animation */}
-              <div className="hidden lg:flex w-44 shrink-0 flex-col border-r border-border/40 bg-muted/25 overflow-hidden">
+              <div className="hidden w-44 shrink-0 flex-col overflow-hidden border-r border-[#F59E0B]/15 bg-[#0F1115] lg:flex">
                 {content}
               </div>
 
@@ -1591,7 +1655,7 @@ function MiniTerminal() {
                       animate={{ x: 0 }}
                       exit={{ x: -176 }}
                       transition={{ duration: 0.22, ease: "easeInOut" }}
-                      className="absolute bottom-0 left-0 top-0 z-20 flex w-44 flex-col border-r border-border/40 bg-background/95 backdrop-blur-sm lg:hidden"
+                      className="absolute bottom-0 left-0 top-0 z-20 flex w-44 flex-col border-r border-[#F59E0B]/15 bg-[#0F1115]/95 backdrop-blur-sm lg:hidden"
                     >
                       {content}
                     </motion.div>
@@ -1611,14 +1675,14 @@ function MiniTerminal() {
         })()}
 
         {/* Terminal output */}
-        <div ref={outputRef} className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-4 py-3">
+        <div ref={outputRef} className="flex min-w-0 flex-1 flex-col gap-0.5 overflow-y-auto bg-[#111111] px-3 py-3 sm:px-4">
           {lines.map((line) => (
             <motion.div
               key={line.id}
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.16, delay: line.delay ?? 0 }}
-              className={`group relative font-mono text-[11px] leading-relaxed ${colorClass(line.type)}`}
+              className={`group relative min-w-0 break-words pr-5 font-mono text-[11px] leading-relaxed [overflow-wrap:anywhere] ${colorClass(line.type)}`}
             >
               {line.type === "separator" ? (
                 <div className="w-full border-t border-border/30" />
@@ -1643,7 +1707,7 @@ function MiniTerminal() {
                 </a>
               ) : (
                 <>
-                  {line.type === "input" && <span className="mr-2 text-muted-foreground/35">$</span>}
+                  {line.type === "input" && <span className="mr-2 text-[#22C55E]">$</span>}
                   {line.text || " "}
                 </>
               )}
@@ -1656,10 +1720,10 @@ function MiniTerminal() {
                     setCopiedId(line.id)
                     setTimeout(() => setCopiedId(id => id === line.id ? null : id), 1500)
                   }}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 text-muted-foreground/30 hover:text-muted-foreground/70"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 text-[#9CA3AF]/55 hover:text-[#E5E7EB]"
                 >
                   {copiedId === line.id
-                    ? <Check size={9} className="text-emerald-400/70" />
+                    ? <Check size={9} className="text-[#22C55E]" />
                     : <Copy size={9} />
                   }
                 </button>
@@ -1671,33 +1735,33 @@ function MiniTerminal() {
       </div>
 
       {/* Status bar */}
-      <div className="flex shrink-0 items-center justify-between border-t border-border/20 bg-muted/5 px-4 py-1">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-[9px] text-muted-foreground/30">session {sessionTime}</span>
-          <span className="font-mono text-[9px] text-muted-foreground/20">{cmdHistory.length} cmd{cmdHistory.length !== 1 ? "s" : ""}</span>
-          <span className="font-mono text-[9px] text-muted-foreground/20">{unlockedEggs.length}/{EASTER_EGGS.length} eggs</span>
+      <div className="flex shrink-0 items-center justify-between gap-2 border-t border-[#F59E0B]/15 bg-[#0F1115] px-3 py-1 sm:px-4">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-0.5">
+          <span className="font-mono text-[9px] text-[#9CA3AF]/70">session {sessionTime}</span>
+          <span className="font-mono text-[9px] text-[#9CA3AF]/55">{cmdHistory.length} cmd{cmdHistory.length !== 1 ? "s" : ""}</span>
+          <span className="font-mono text-[9px] text-[#9CA3AF]/55">{unlockedEggs.length}/{EASTER_EGGS.length} eggs</span>
         </div>
         <div className="hidden items-center gap-3 sm:flex">
-          <span className="font-mono text-[9px] text-muted-foreground/20">[tab] complete</span>
-          <span className="font-mono text-[9px] text-muted-foreground/20">[ctrl+r] search</span>
-          <span className="font-mono text-[9px] text-muted-foreground/20">[ctrl+l] clear</span>
-          <span className="font-mono text-[9px] text-muted-foreground/20">[esc] cancel</span>
+          <span className="font-mono text-[9px] text-[#9CA3AF]/55">[tab] complete</span>
+          <span className="font-mono text-[9px] text-[#9CA3AF]/55">[ctrl+r] search</span>
+          <span className="font-mono text-[9px] text-[#9CA3AF]/55">[ctrl+l] clear</span>
+          <span className="font-mono text-[9px] text-[#9CA3AF]/55">[esc] cancel</span>
         </div>
       </div>
 
       {/* Input */}
       <div
-        className={`flex shrink-0 items-center gap-2 border-t px-4 py-3.5 transition-all duration-200 ${
+        className={`flex min-w-0 shrink-0 items-center gap-2 border-t px-3 py-3.5 transition-all duration-200 sm:px-4 sm:py-5 ${
           isFocused
-            ? "border-accent/50 bg-accent/5 shadow-[inset_0_1px_0_0_hsl(var(--accent)/0.08)]"
-            : "border-border/30 bg-muted/20"
+            ? "border-[#22C55E]/40 bg-[#22C55E]/5 shadow-[inset_0_1px_0_0_rgb(34_197_94_/_0.08)]"
+            : "border-[#F59E0B]/15 bg-[#0F1115]"
         }`}
         onClick={() => inputRef.current?.focus()}
       >
         {/* zsh-style prompt */}
         <div className="mr-1.5 hidden shrink-0 items-center font-mono text-xs sm:flex">
           {matrixMode ? (
-            <span className="text-emerald-400/80">matrix</span>
+            <span className="text-[#22C55E]/80">matrix</span>
           ) : vimMode ? (
             <span className={vimMode === "insert" ? "text-amber-400/80" : "text-violet-400/80"}>
               vim:{vimMode}
@@ -1706,22 +1770,22 @@ function MiniTerminal() {
             <span className="text-sky-400/70">search</span>
           ) : (
             <>
-              <span className="text-emerald-400/80">bereketlemma</span>
-              <span className="text-muted-foreground/30">@portfolio</span>
-              <span className="mx-1.5 text-amber-400/65">~/terminal</span>
+              <span className="text-[#22C55E]">bereketlemma</span>
+              <span className="text-[#9CA3AF]/75">@portfolio</span>
+              <span className="mx-1.5 text-[#22C55E]/85">~/terminal</span>
             </>
           )}
-          <span className={`ml-0.5 font-bold transition-colors duration-200 ${isFocused ? "text-accent" : "text-accent/50"}`}>
+          <span className={`ml-0.5 font-bold transition-colors duration-200 ${isFocused ? "text-[#22C55E]" : "text-[#22C55E]/50"}`}>
             ❯
             {!input && (
-              <span className="ml-0.5 inline-block h-[13px] w-[7px] translate-y-[1px] animate-[blink_1s_step-end_infinite] rounded-[1px] bg-accent/70 align-middle" />
+              <span className="ml-0.5 inline-block h-[13px] w-[7px] translate-y-[1px] animate-[blink_1s_step-end_infinite] rounded-[1px] bg-[#22C55E]/80 align-middle" />
             )}
           </span>
         </div>
-        <span className={`mr-1.5 shrink-0 font-mono text-sm font-bold transition-colors duration-200 sm:hidden ${isFocused ? "text-accent" : "text-accent/50"}`}>
+        <span className={`mr-1.5 shrink-0 font-mono text-sm font-bold transition-colors duration-200 sm:hidden ${isFocused ? "text-[#22C55E]" : "text-[#22C55E]/50"}`}>
           ❯
           {!input && (
-            <span className="ml-0.5 inline-block h-[13px] w-[7px] translate-y-[1px] animate-[blink_1s_step-end_infinite] rounded-[1px] bg-accent/70 align-middle" />
+            <span className="ml-0.5 inline-block h-[13px] w-[7px] translate-y-[1px] animate-[blink_1s_step-end_infinite] rounded-[1px] bg-[#22C55E]/80 align-middle" />
           )}
         </span>
         <div className="relative flex min-w-0 flex-1 items-center">
@@ -1732,7 +1796,7 @@ function MiniTerminal() {
             onKeyDown={onKey}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className="w-full bg-transparent font-mono text-sm text-foreground/90 outline-none placeholder:text-muted-foreground/20 [caret-color:hsl(var(--accent))]"
+            className="w-full bg-transparent font-mono text-sm text-[#F59E0B] outline-none placeholder:text-[#9CA3AF]/60 [caret-color:#22c55e]"
             placeholder={
               matrixMode
                 ? "the system is listening... enter your name"
@@ -1754,7 +1818,7 @@ function MiniTerminal() {
           if (searchMode) {
             const match = historySearchMatch()
             return (
-              <span className="shrink-0 font-mono text-[10px] text-muted-foreground/25 transition-opacity">
+              <span className="shrink-0 font-mono text-[10px] text-[#9CA3AF]/60 transition-opacity">
                 {match || "no match"}
               </span>
             )
@@ -1763,7 +1827,7 @@ function MiniTerminal() {
           const prefix = (input.startsWith("/") ? input.slice(1) : input).toLowerCase().trim()
           const match = prefix ? ALL_CMDS.find(c => c.startsWith(prefix) && c !== prefix) : null
           return match ? (
-            <span className="shrink-0 font-mono text-[10px] text-muted-foreground/25 transition-opacity">
+            <span className="shrink-0 font-mono text-[10px] text-[#9CA3AF]/60 transition-opacity">
               tab → {match}
             </span>
           ) : null
@@ -1777,47 +1841,139 @@ function MiniTerminal() {
 /* ─── Section ─────────────────────────────────────── */
 export default function RecentActivity() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.08 })
-  const [activeTab, setActiveTab] = useState<"terminal" | "quiz">("terminal")
+
+  const keyboardShortcuts = [
+    { key: "Tab",     desc: "Autocomplete" },
+    { key: "↑ / ↓",  desc: "Browse history" },
+    { key: "Ctrl+L", desc: "Clear terminal" },
+    { key: "Ctrl+R", desc: "Search history" },
+    { key: "/cmd",   desc: "Quick run" },
+  ]
+
+  const commandCenterCommands = [
+    { cmd: "help",         run: "help",          desc: "Show command menu" },
+    { cmd: "whoami",       run: "whoami",        desc: "Identity + focus" },
+    { cmd: "skills",       run: "skills",        desc: "Tech stack" },
+    { cmd: "experience",   run: "experience",    desc: "Work history" },
+    { cmd: "projects",     run: "projects",      desc: "Featured builds" },
+    { cmd: "posts",        run: "posts",         desc: "Blog links" },
+    { cmd: "icpc",         run: "icpc",          desc: "Competition result" },
+    { cmd: "contact",      run: "contact",       desc: "Contact links" },
+    { cmd: "hire",         run: "hire",          desc: "Hiring signal" },
+    { cmd: "resume",       run: "resume",        desc: "Open resume PDF" },
+    { cmd: "about",        run: "about",         desc: "Personal notes" },
+    { cmd: "neofetch",     run: "neofetch",      desc: "System card" },
+    { cmd: "date",         run: "date",          desc: "Seattle time" },
+    { cmd: "uptime",       run: "uptime",        desc: "Session uptime" },
+    { cmd: "ls",           run: "ls",            desc: "List sections" },
+    { cmd: "pwd",          run: "pwd",           desc: "Current path" },
+    { cmd: "history",      run: "history",       desc: "Command history" },
+    { cmd: "echo",         run: "echo hello",    desc: "Print text" },
+    { cmd: "man",          run: "man projects",  desc: "Command manual" },
+    { cmd: "ascii",        run: "ascii",         desc: "Encoded profile" },
+    { cmd: "transcribe",   run: "transcribe",    desc: "Decode profile" },
+    { cmd: "banner",       run: "banner",        desc: "Name banner" },
+    { cmd: "open",         run: "open projects", desc: "Navigate site" },
+    { cmd: "fetch",        run: "fetch github",  desc: "Live API data" },
+    { cmd: "gh",           run: "gh activity",   desc: "GitHub activity" },
+    { cmd: "achievements", run: "achievements",  desc: "Hidden progress" },
+    { cmd: "alias",        run: "alias",         desc: "Shortcut list" },
+    { cmd: "tips",         run: "tips",          desc: "Keyboard tips" },
+    { cmd: "clear",        run: "clear",         desc: "Reset terminal" },
+    { cmd: "leaderboard",  run: "leaderboard",   desc: "Command stats" },
+    { cmd: "share",        run: "share whoami",  desc: "Share command URL" },
+    { cmd: "sudo",         run: "sudo",          desc: "Easter egg" },
+    { cmd: "vim",          run: "vim",           desc: "Mini editor" },
+    { cmd: "git",          run: "git",           desc: "Git joke" },
+    { cmd: "matrix",       run: "matrix",        desc: "Name prompt" },
+    { cmd: "coffee",       run: "coffee",        desc: "Coffee ritual" },
+    { cmd: "exit",         run: "exit",          desc: "Exit gag" },
+    { cmd: "?",            run: "?",             desc: "Alias for help" },
+    { cmd: "stack",        run: "stack",         desc: "Alias for skills" },
+    { cmd: "exp",          run: "exp",           desc: "Alias for experience" },
+    { cmd: "blog",         run: "blog",          desc: "Alias for posts" },
+    { cmd: "cls",          run: "cls",           desc: "Alias for clear" },
+    { cmd: "goto",         run: "goto projects", desc: "Alias for open" },
+    { cmd: "cd",           run: "cd",            desc: "Open home" },
+    { cmd: "curl",         run: "curl",          desc: "API easter egg" },
+    { cmd: "quit",         run: "quit",          desc: "Alias for exit" },
+  ]
+
+  const runTerminalCommand = (cmd: string) => {
+    window.dispatchEvent(new CustomEvent("portfolio:terminal-run", { detail: { cmd } }))
+  }
 
   return (
-    <section ref={ref} id="activity" className="py-8 lg:py-16">
+    <section ref={ref} id="activity" className="flex min-h-0 flex-col py-6 lg:h-[calc(100vh-128px)] lg:overflow-hidden">
 
       <motion.div
         initial={{ opacity: 0, x: -16 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5 }}
-        className="mb-6 flex items-center gap-4"
+        className="mb-4 flex items-center gap-4"
       >
         <span className="font-mono text-sm text-accent">05.</span>
         <h2 className="font-syne text-2xl font-bold text-foreground">Terminal</h2>
         <div className="h-px flex-1 bg-border" />
       </motion.div>
 
-      {/* Mobile tab switcher */}
-      <div className="mb-3 flex overflow-hidden rounded-xl border border-border/40 lg:hidden">
-        {(["terminal", "quiz"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-2 font-mono text-xs transition-all ${
-              activeTab === tab
-                ? "bg-accent/10 text-accent"
-                : "text-muted-foreground/50 hover:text-accent"
-            }`}
-          >
-            {tab === "terminal" ? "⌘ terminal" : "? guess the output"}
-          </button>
-        ))}
-      </div>
-
       <motion.div
         initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.45, delay: 0.1 }}
-        className="grid grid-cols-1 gap-4 lg:grid-cols-2"
-        style={{ height: "min(520px, 68vh)" }}
+        className="flex min-h-0 flex-1 flex-col gap-4 lg:flex-row"
       >
-        <div className={`${activeTab === "terminal" ? "flex" : "hidden"} lg:flex w-full overflow-hidden rounded-2xl border border-border/40 bg-muted/10`}>
+        {/* Terminal */}
+        <div className="flex h-[72dvh] min-h-[430px] min-w-0 flex-1 overflow-hidden rounded-2xl border border-[#F59E0B]/15 bg-[#111111] shadow-[0_0_0_1px_rgba(245,158,11,0.04),0_22px_60px_rgba(0,0,0,0.38)] lg:h-auto lg:min-h-0">
           <MiniTerminal />
         </div>
-        <div className={`${activeTab === "quiz" ? "flex" : "hidden"} lg:flex`}>
-          <GuessTheOutput />
+
+        {/* Guide panel — desktop only */}
+        <div className="lg:hidden">
+          <div className="flex max-h-[280px] flex-col overflow-hidden rounded-2xl border border-[#F59E0B]/15 bg-[#111111] p-2">
+            <div className="shrink-0 border-b border-[#F59E0B]/15 px-1 pb-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#F59E0B]">Command Center</p>
+              <p className="mt-1 font-mono text-[9px] text-[#9CA3AF]">{commandCenterCommands.length} commands + aliases</p>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto rounded-lg bg-[#0F1115] p-2 [scrollbar-width:thin] [scrollbar-color:#22C55E_#0F1115]">
+              <div className="grid gap-1 min-[520px]:grid-cols-2">
+                {commandCenterCommands.map(({ cmd, run, desc }) => (
+                  <button
+                    key={cmd}
+                    type="button"
+                    onClick={() => runTerminalCommand(run)}
+                    className="group grid min-h-[32px] grid-cols-[76px_minmax(0,1fr)] items-center gap-2 rounded border border-transparent px-2 py-1 text-left transition-colors hover:border-[#22C55E]/25 hover:bg-[#22C55E]/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/70"
+                  >
+                    <span className="truncate font-mono text-[10px] text-[#22C55E]">{cmd}</span>
+                    <span className="truncate text-right font-mono text-[9px] text-[#9CA3AF] group-hover:text-[#E5E7EB]">{desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden lg:flex lg:w-[280px] lg:shrink-0 lg:flex-col lg:overflow-hidden">
+          <div className="flex h-full flex-col gap-2 overflow-hidden rounded-2xl border border-[#F59E0B]/15 bg-[#111111] p-2">
+
+            <div className="shrink-0 border-b border-[#F59E0B]/15 px-1 pb-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#F59E0B]">Command Center</p>
+              <p className="mt-1 font-mono text-[9px] text-[#9CA3AF]">{commandCenterCommands.length} commands + aliases</p>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-hidden rounded-lg border border-[#F59E0B]/15 bg-[#0F1115]">
+              <div className="flex h-full flex-col gap-1 overflow-y-auto p-2 [scrollbar-width:thin] [scrollbar-color:#22C55E_#0F1115]">
+                {commandCenterCommands.map(({ cmd, run, desc }) => (
+                  <button
+                    key={cmd}
+                    type="button"
+                    onClick={() => runTerminalCommand(run)}
+                    className="group grid min-h-[30px] grid-cols-[76px_minmax(0,1fr)] items-center gap-2 rounded border border-transparent px-2 py-1 text-left transition-colors hover:border-[#22C55E]/25 hover:bg-[#22C55E]/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]/70"
+                  >
+                    <span className="truncate font-mono text-[10px] text-[#22C55E]">{cmd}</span>
+                    <span className="truncate text-right font-mono text-[9px] text-[#9CA3AF] group-hover:text-[#E5E7EB]">{desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+          </div>
         </div>
       </motion.div>
 

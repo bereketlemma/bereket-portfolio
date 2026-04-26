@@ -98,13 +98,13 @@ function useScramble(text: string, delayMs = 200, durationMs = 1300): [string, b
   return [output, done]
 }
 
-function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Card({ children, className = "", noHover = false }: { children: React.ReactNode; className?: string; noHover?: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" as const }}
-      className={`group relative overflow-hidden rounded-2xl border border-border/40 bg-muted/10 transition-all duration-300 hover:border-border/70 hover:shadow-[0_8px_32px_rgba(0,0,0,0.25)] ${className}`}
+      className={`group relative overflow-hidden rounded-2xl border border-border/40 bg-muted/10 transition-all duration-300 ${noHover ? "" : "hover:border-border/70 hover:shadow-[0_8px_32px_rgba(0,0,0,0.25)]"} ${className}`}
     >
       {children}
     </motion.div>
@@ -223,8 +223,8 @@ export default function Hero() {
           className="h-full lg:col-span-2 lg:row-span-1"
           style={{ rotateX: heroRotateX, rotateY: heroRotateY, transformStyle: "preserve-3d" }}
         >
-        <Card className="flex h-full flex-col justify-between p-6 sm:p-8">
-          <div className="flex w-full max-w-[38rem] flex-1 flex-col justify-center pl-4 pt-6 sm:pl-6 lg:pl-8" style={{ transform: "translateZ(22px)" }}>
+        <Card className="flex h-full min-h-[220px] flex-col justify-between p-5 sm:p-8">
+          <div className="flex w-full flex-1 flex-col justify-center" style={{ transform: "translateZ(22px)" }}>
             <motion.p
               initial={{ opacity: 0, y: 6, filter: "blur(8px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -236,7 +236,7 @@ export default function Hero() {
             <div className="flex items-center gap-3">
               <h1
                 aria-label="Bereket Lemma"
-                className={`whitespace-nowrap font-syne text-[3.2rem] font-bold leading-[0.92] sm:text-[4.1rem] lg:text-[3.6rem] xl:text-[4.15rem] ${
+                className={`font-syne text-[2.4rem] font-bold leading-[0.92] sm:text-[3.6rem] lg:text-[3.2rem] xl:text-[4rem] ${
                   nameDone ? "name-shimmer" : "text-foreground"
                 }`}
               >
@@ -282,20 +282,16 @@ export default function Hero() {
                   _
                 </motion.span>
               </div>
-              <div className="flex w-full flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs">
-                <span className="font-medium text-accent">Backend Systems</span>
-                <span className="text-muted-foreground/30">·</span>
-                <span className="font-medium text-accent">ML Infrastructure</span>
-                <span className="text-muted-foreground/30">·</span>
-                <span className="font-medium text-accent">Cloud</span>
-              </div>
+              <p className="font-mono text-xs font-medium text-accent">
+                Backend Systems · ML Infrastructure
+              </p>
             </motion.div>
           </div>
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.9, duration: 0.45 }}
-            className="mt-8 flex items-center justify-end gap-2"
+            className="flex items-center gap-2"
             style={{ transform: "translateZ(16px)" }}
           >
             {socialLinks.map(({ href, label, icon: Icon, text }) => (
@@ -306,12 +302,10 @@ export default function Hero() {
                 rel={href.startsWith("mailto") ? undefined : "noopener noreferrer"}
                 aria-label={label}
                 title={label}
-                className={`group/social flex h-7 items-center justify-center gap-1.5 rounded border border-border/65 bg-background/35 text-foreground/75 shadow-[0_4px_14px_rgba(0,0,0,0.12)] transition-all hover:border-accent/60 hover:bg-accent/10 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 ${
-                  text ? "px-2" : "w-7"
-                }`}
+                className="group/social flex h-8 w-8 items-center justify-center gap-1.5 rounded border border-border/65 bg-background/35 text-foreground/75 transition-all hover:border-accent/60 hover:bg-accent/10 hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/70 sm:w-auto sm:px-2.5"
               >
                 <Icon size={12} />
-                {text ? <span className="font-mono text-[10px] uppercase tracking-[0.12em]">{text}</span> : null}
+                <span className="hidden font-mono text-[10px] uppercase tracking-[0.12em] sm:inline">{text}</span>
               </a>
             ))}
           </motion.div>
@@ -324,7 +318,7 @@ export default function Hero() {
   className="h-full lg:col-span-1 lg:row-span-1"
   style={{ rotateX: heroRotateX, rotateY: heroRotateY, transformStyle: "preserve-3d" }}
 >
-<Card className="relative flex h-full flex-col gap-3 overflow-hidden p-5">
+<Card className="relative flex h-full min-h-[260px] flex-col gap-3 overflow-hidden p-5">
   <motion.div
     aria-hidden="true"
     className="pointer-events-none absolute -right-8 top-8 h-28 w-28 rounded-full bg-accent/10 blur-2xl"
@@ -336,29 +330,29 @@ export default function Hero() {
     <div className="h-px flex-1 bg-border/40" />
   </div>
 
-  <div className="relative flex flex-1 flex-col justify-center gap-5">
+  <div className="relative flex flex-1 flex-col justify-center gap-4">
     <motion.p
-      initial={{ opacity: 0, x: 8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.1, duration: 0.4 }}
+      initial={{ opacity: 0, filter: "blur(6px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{ delay: 0.15, duration: 0.55, ease: "easeOut" }}
       className="text-pretty font-sans text-[14px] leading-relaxed text-muted-foreground/85"
     >
       I build backend and infrastructure systems that are secure, maintainable, and performance-focused, from APIs and databases to cloud services and ML inference pipelines.
     </motion.p>
     <motion.div
-      initial={{ opacity: 0, x: 8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.16, duration: 0.4 }}
+      initial={{ opacity: 0, filter: "blur(6px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{ delay: 0.3, duration: 0.55, ease: "easeOut" }}
       className="flex flex-col gap-2"
     >
-      <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-accent/60" style={{ transform: "translateZ(18px)" }}>Core Focus</span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-accent/60">Core Focus</span>
       <div className="flex flex-wrap gap-1.5">
         {["Backend APIs", "Databases", "Auth & Security", "Cloud Infrastructure", "ML Inference"].map((focus, i) => (
           <motion.span
             key={focus}
-            initial={{ opacity: 0, y: 6, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.22 + i * 0.055, duration: 0.28, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.38 + i * 0.06, duration: 0.3, ease: "easeOut" }}
             whileHover={{
               y: -2,
               scale: 1.05,
@@ -380,7 +374,7 @@ export default function Hero() {
           className="h-full lg:col-span-1 lg:row-span-1"
           style={{ rotateX: heroRotateX, rotateY: heroRotateY, transformStyle: "preserve-3d" }}
         >
-        <Card className="relative flex h-full flex-col gap-3 overflow-hidden p-5">
+        <Card noHover className="relative flex h-full min-h-[260px] flex-col gap-3 overflow-hidden p-5">
           <motion.div
             aria-hidden="true"
             className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-accent/10 blur-2xl"
@@ -522,7 +516,7 @@ export default function Hero() {
             </div>
           </Card>
 
-          <Card className="relative flex min-h-0 flex-col gap-3 overflow-hidden p-5">
+          <Card className="relative flex min-h-[260px] flex-col gap-3 overflow-hidden p-5">
             <motion.div
               aria-hidden="true"
               className="pointer-events-none absolute -left-6 -top-6 h-24 w-24 rounded-full bg-accent/10 blur-2xl"

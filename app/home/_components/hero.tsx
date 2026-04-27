@@ -529,10 +529,8 @@ export default function Hero() {
             </div>
             <div className="relative flex flex-1 flex-col gap-2">
               <motion.a
-                href="https://www.youtube.com/watch?v=CvY1y46ypYw"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Watch Celeri.io pitch video"
+                href="/experience?tab=competitions"
+                aria-label="View Celeri.io in experience"
                 variants={tileFadeUp}
                 initial="hidden"
                 animate="visible"
@@ -543,9 +541,6 @@ export default function Hero() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-syne text-sm font-bold text-foreground">Celeri.io</span>
-                  <span className="shrink-0 font-mono text-[10px] text-accent/70 transition-colors group-hover/achievement:text-accent">
-                    watch pitch ↗
-                  </span>
                 </div>
                 <span className="w-fit rounded border border-accent/25 bg-background/35 px-1.5 py-0.5 font-mono text-[10px] text-accent">$50K seed · Spark Weekend</span>
                 <p className="font-sans text-[12px] leading-snug text-muted-foreground/80">
@@ -553,10 +548,8 @@ export default function Hero() {
                 </p>
               </motion.a>
               <motion.a
-                href="https://icpc.global/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Open ICPC website"
+                href="/experience?tab=competitions"
+                aria-label="View ICPC in experience"
                 variants={tileFadeUp}
                 initial="hidden"
                 animate="visible"
@@ -567,9 +560,6 @@ export default function Hero() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-syne text-sm font-bold text-foreground">ICPC</span>
-                  <span className="shrink-0 font-mono text-[10px] text-accent/70 transition-colors group-hover/achievement:text-accent">
-                    icpc.global ↗
-                  </span>
                 </div>
                 <span className="w-fit rounded border border-border/45 bg-background/35 px-1.5 py-0.5 font-mono text-[10px] text-accent">3rd Place · Pacific Northwest Regional</span>
                 <p className="font-sans text-[12px] leading-snug text-muted-foreground/80">

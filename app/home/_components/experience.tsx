@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
 
@@ -100,7 +100,7 @@ const competitions: Entry[] = [
     date: "Nov 2024 — Jan 2025",
     role: "Startup Engineer, Founding Team",
     company: "Celeri.io",
-    companyUrl: "https://www.youtube.com/watch?v=CvY1y46ypYw",
+    companyUrl: "/experience?tab=competitions",
     location: "Spokane, WA",
     featured: true,
     bullets: [
@@ -112,14 +112,14 @@ const competitions: Entry[] = [
       "Targeting 3,143 counties nationwide with a subscription model scaled by county population; survey validation showed 78% believe cloud-based scheduling improves collaboration and 74% agree less manual administration leads to a fairer system",
     ],
     tags: ["Legal-Tech", "Database Design", "Product Development", "System Architecture", "Go-To-Market", "SaaS"],
-    link: "https://www.youtube.com/watch?v=CvY1y46ypYw",
-    linkLabel: "Watch the pitch",
+    link: "/experience?tab=competitions",
+    linkLabel: "View in experience →",
   },
   {
     date: "Nov 2024",
     role: "3rd Place, Pacific Northwest Regional",
     company: "ICPC",
-    companyUrl: "https://icpc.global/",
+    companyUrl: "/experience?tab=competitions",
     location: "Pacific Northwest",
     featured: true,
     bullets: [
@@ -227,8 +227,7 @@ function EntryCard({ entry }: { entry: Entry }) {
           {entry.companyUrl && (
             <a
               href={entry.companyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...(!entry.companyUrl.startsWith("/") && { target: "_blank", rel: "noopener noreferrer" })}
               className="flex shrink-0 items-center gap-1 rounded border border-border/60 bg-muted/40 px-2 py-1 font-mono text-[11px] text-muted-foreground transition-all hover:border-accent hover:bg-accent hover:text-accent-foreground"
             >
               <ArrowUpRight size={11} />
@@ -275,8 +274,7 @@ function EntryCard({ entry }: { entry: Entry }) {
         {entry.link && (
           <a
             href={entry.link}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...(!entry.link.startsWith("/") && { target: "_blank", rel: "noopener noreferrer" })}
             className="mt-2 inline-flex items-center gap-1 font-mono text-[11px] text-accent hover:underline"
           >
             {entry.linkLabel}
@@ -339,6 +337,13 @@ function EntryGroup({ entries }: { entries: Entry[] }) {
 
 export default function Experience() {
   const [active, setActive] = useState<Tab>("work")
+
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab") as Tab | null
+    if (tab === "work" || tab === "competitions" || tab === "research") {
+      setActive(tab)
+    }
+  }, [])
 
   return (
     <section

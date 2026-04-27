@@ -11,7 +11,6 @@ type NavSection = Exclude<Section, "home" | null>
 const sectionLinks: ReadonlyArray<{ key: NavSection; label: string }> = [
   { key: "experience", label: "Experience" },
   { key: "projects", label: "Projects" },
-  { key: "posts", label: "Posts" },
   { key: "terminal", label: "Terminal" },
 ]
 
@@ -101,6 +100,22 @@ export default function Navbar() {
             </button>
           ))}
 
+          <Link
+            href="/forge"
+            className={`
+              relative hidden md:block font-mono text-xs transition-colors
+              ${pathname === "/forge" ? "text-accent" : "text-muted-foreground hover:text-accent"}
+            `}
+          >
+            Forge
+            {pathname === "/forge" && (
+              <span
+                className="absolute -bottom-1 h-px w-4 bg-accent"
+                style={{ left: "50%", transform: "translateX(-50%)" }}
+              />
+            )}
+          </Link>
+
           {/* Resume */}
           <div className="group relative">
             <a
@@ -159,6 +174,15 @@ export default function Navbar() {
                 {link.label}
               </button>
             ))}
+            <Link
+              href="/forge"
+              onClick={() => setMenuOpen(false)}
+              className={`font-mono text-xs transition-colors py-1 ${
+                pathname === "/forge" ? "text-accent" : "text-muted-foreground hover:text-accent"
+              }`}
+            >
+              Forge
+            </Link>
             <a
               href="/assets/Bereket_Lemma_Resume.pdf"
               target="_blank"

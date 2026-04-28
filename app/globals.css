@@ -1,3 +1,5 @@
+/* reaflow canvas edge styling */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -45,6 +47,10 @@
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 @keyframes dsPulse {
@@ -273,6 +279,161 @@
 
 .timeline-panel:hover {
   filter: drop-shadow(0 6px 16px hsl(var(--accent) / 0.11));
+}
+
+.forge-flow .react-flow__controls {
+  border: 1px solid rgb(245 158 11 / 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0F1115;
+  box-shadow:
+    0 10px 24px rgb(0 0 0 / 0.28),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+.forge-flow .react-flow__controls-button {
+  width: 32px;
+  height: 32px;
+  background: #0F1115;
+  border-bottom: 1px solid rgb(245 158 11 / 0.15);
+  color: #E5E7EB;
+  fill: #E5E7EB;
+  stroke: #E5E7EB;
+}
+
+.forge-flow .react-flow__controls-button:hover {
+  background: #11100E;
+  color: #22C55E;
+  fill: #22C55E;
+  stroke: #22C55E;
+}
+
+.forge-flow .react-flow__controls-button svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.forge-canvas-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 44%, rgb(255 255 255 / 0.07), transparent 34%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), transparent 30%, rgb(0 0 0 / 0.2));
+}
+
+.forge-canvas-shell .react-flow {
+  position: relative;
+  z-index: 1;
+}
+
+.forge-stage-node {
+  transform-style: preserve-3d;
+}
+
+.forge-stage-node.is-active {
+  animation: forgeStagePulse 2.8s ease-in-out infinite;
+}
+
+.forge-flow .react-flow__edge.animated .react-flow__edge-path {
+  stroke-dasharray: 8 10;
+  animation: forgeEdgeFlow 1.6s linear infinite;
+}
+
+.forge-review-dot {
+  box-shadow: 0 0 0 0 rgb(34 197 94 / 0.35);
+  animation: forgeReviewPulse 1.8s ease-in-out infinite;
+}
+
+.forge-flow .react-flow__attribution {
+  display: none;
+}
+
+@keyframes forgeStagePulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.06),
+      0 18px 36px rgb(0 0 0 / 0.28),
+      0 0 0 1px rgb(34 197 94 / 0.22),
+      0 0 22px rgb(34 197 94 / 0.16);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 22px 44px rgb(0 0 0 / 0.34),
+      0 0 0 1px rgb(34 197 94 / 0.38),
+      0 0 34px rgb(34 197 94 / 0.26);
+  }
+}
+
+@keyframes forgeEdgeFlow {
+  to { stroke-dashoffset: -18; }
+}
+
+@keyframes forgeReviewPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(201 123 42 / 0.35); }
+  50% { box-shadow: 0 0 0 6px rgb(201 123 42 / 0); }
+}
+
+/* ─── Reaflow Canvas ───────────────────────────────────────────────────────── */
+
+/* Fill container, transparent background */
+.reaflow-canvas,
+.reaflow-canvas > div,
+.reaflow-canvas > div > div {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+
+/* Nuke the default blue/dark reaflow node rect — we render via foreignObject */
+.reaflow-canvas svg rect {
+  fill: transparent !important;
+  stroke: transparent !important;
+  stroke-width: 0 !important;
+}
+
+/* Default edge: all paths inside an edge group */
+.reaflow-canvas svg g path {
+  stroke: rgba(255,255,255,0.1);
+  stroke-width: 1.5px;
+  fill: transparent;
+}
+
+/* Active edge override (set via EdgeData.className) */
+.edge-active path {
+  stroke: #C97B2A !important;
+  stroke-width: 2px !important;
+  filter: drop-shadow(0 0 5px rgba(201,123,42,0.35)) !important;
+}
+
+/* Inactive edge override */
+.edge-inactive path {
+  stroke: rgba(255,255,255,0.09) !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Arrowhead / marker (reaflow uses fill="#485a74" as default) */
+.reaflow-canvas svg marker path,
+.reaflow-canvas svg marker polygon {
+  fill: rgba(255,255,255,0.12) !important;
+}
+.edge-active marker path,
+.edge-active marker polygon {
+  fill: #C97B2A !important;
+}
+
+/* SVG root overflow so nodes aren't clipped */
+.reaflow-canvas svg {
+  overflow: visible !important;
+}
+
+/* Remove outline on node focus */
+.reaflow-canvas g:focus,
+.reaflow-canvas g:focus-visible {
+  outline: none !important;
 }
 
 @media (max-width: 768px) {

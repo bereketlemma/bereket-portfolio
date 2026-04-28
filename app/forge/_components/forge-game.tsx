@@ -25,7 +25,9 @@ import {
 import {
   CHALLENGES,
   COMPONENTS,
+  CONS,
   CONSTRAINTS,
+  PROS,
   SCORE_LABELS,
   ZONES,
   classifyMatchQuality,
@@ -103,12 +105,12 @@ const ZONE_PROMPT: Record<string, string> = {
 }
 
 const MATCH_STYLE: Record<MatchQuality, { border:string; bg:string; text:string }> = {
-  "exact-match":     { border:"rgba(52,211,153,.28)",  bg:"rgba(52,211,153,.05)",  text:"#34D399" },
-  "good-alternative":{ border:"rgba(56,189,248,.28)",  bg:"rgba(56,189,248,.05)",  text:"#38BDF8" },
-  "partial-match":   { border:"rgba(245,158,11,.28)",  bg:"rgba(245,158,11,.05)",  text:"#F59E0B" },
-  missing:           { border:"rgba(248,113,113,.28)", bg:"rgba(248,113,113,.05)", text:"#F87171" },
-  overbuilt:         { border:"rgba(167,139,250,.28)", bg:"rgba(167,139,250,.05)", text:"#A78BFA" },
-  "risky-mismatch":  { border:"rgba(251,113,133,.28)", bg:"rgba(251,113,133,.05)", text:"#FB7185" },
+  "exact-match":     { border:"rgba(52,211,153,.35)",  bg:"rgba(52,211,153,.08)",  text:"#34D399" },
+  "good-alternative":{ border:"rgba(56,189,248,.35)",  bg:"rgba(56,189,248,.08)",  text:"#38BDF8" },
+  "partial-match":   { border:"rgba(245,199,107,.35)", bg:"rgba(245,199,107,.07)", text:"#F5C76B" },
+  missing:           { border:"rgba(248,113,113,.48)", bg:"rgba(248,113,113,.11)", text:"#F87171" },
+  overbuilt:         { border:"rgba(167,139,250,.35)", bg:"rgba(167,139,250,.08)", text:"#A78BFA" },
+  "risky-mismatch":  { border:"rgba(251,113,133,.48)", bg:"rgba(251,113,133,.11)", text:"#FB7185" },
 }
 
 const MATCH_LABEL: Record<MatchQuality, string> = {
@@ -117,80 +119,19 @@ const MATCH_LABEL: Record<MatchQuality, string> = {
 }
 
 const FORGE_SURFACE = {
-  page: "radial-gradient(circle at 50% 0%, rgba(201,123,42,.08), transparent 32%), linear-gradient(135deg,#111214 0%,#17130E 48%,#0D0F12 100%)",
-  sidebar: "#11100E",
-  sidebarHeader: "#15130F",
-  canvas: "#15120E",
-  canvasHeader: "#11100C",
-  card: "#1D1A16",
-  stage: "#24201A",
-  stageActive: "#2A2118",
-  chip: "#27221C",
-  overlay: "#151310",
-  overlayPanel: "#171411",
+  page: "radial-gradient(ellipse at 50% -15%, rgba(201,123,42,.07) 0%, transparent 55%), hsl(60,7%,4%)",
+  sidebar: "#111110",
+  sidebarHeader: "#0D0D0B",
+  canvas: "#111110",
+  canvasHeader: "#0D0D0B",
+  card: "#1A1815",
+  stage: "#1E1B16",
+  stageActive: "#252019",
+  chip: "#201D18",
+  overlay: "#111110",
+  overlayPanel: "#0F0E0C",
 } as const
 
-// ─── Pros and cons (honest, conversational) ───────────────────────────────────
-
-const PROS: Record<string, string[]> = {
-  "api-gateway":        ["One place to enforce auth and rate limiting","Clean routing logic stays out of your app code","Handles TLS termination so your services don't have to"],
-  "load-balancer":      ["Traffic spreads evenly across instances","Failed instances get automatically removed","Sticky sessions supported when you need them"],
-  "cdn":                ["Cached assets load in under 10ms at the edge","Offloads most of your origin traffic automatically","Built-in DDoS absorption with no extra config"],
-  "rate-limiter":       ["Stops brute-force before it reaches your app servers","Configurable per client, per route, per method","Sliding window with Redis means consistent enforcement"],
-  "waf":                ["Blocks SQL injection, XSS, and bot traffic","Satisfies PCI-DSS network control requirements","Works in front of everything, no app changes needed"],
-  "workers":            ["Dead simple to scale horizontally","No shared local state, easy to reason about","Low ops burden once deployed"],
-  "kubernetes":         ["Self-healing restarts broken pods automatically","Resource guarantees mean no noisy-neighbour problems","HPA scales pods based on real metrics"],
-  "serverless":         ["No infrastructure to manage at all","Scales to zero when idle, so you pay nothing","Matches naturally to event-driven and async patterns"],
-  "microservices":      ["Each service deploys and scales on its own","One service crashing stays contained","Teams can move independently without stepping on each other"],
-  "postgres":           ["Full ACID compliance means partial writes are impossible","Rich query engine with joins, window functions, and CTEs","25+ years of production battle-testing behind it"],
-  "mongodb":            ["Schema flexibility means you don't need migrations to evolve","Write and aggregation performance is genuinely fast","Horizontal sharding is built in from the start"],
-  "cassandra":          ["Handles millions of writes per second with linear scaling","Multi-region replication baked into the data model","TTL expiry handles old data cleanup automatically"],
-  "redis":              ["Sub-millisecond reads directly from memory","Atomic counters make rate limiting trivially correct","Works as a pub/sub broker when you need lightweight messaging"],
-  "object-storage":     ["Effectively unlimited storage at predictable per-byte cost","Native CDN integration makes media delivery easy","No provisioning needed, just write and read"],
-  "mysql":              ["Widely understood by every engineer you'll hire","Strong InnoDB transactions for moderate workloads","Ecosystem is huge, tooling is mature"],
-  "kafka":              ["Durable, replayable log that survives consumer crashes","Consumer groups scale naturally with Kubernetes HPA","Handles 100k+ events per second on commodity hardware"],
-  "sqs":                ["Fully managed, nothing to operate","Built-in deduplication IDs prevent double-processing","FIFO mode gives strict ordering when you need it"],
-  "rabbitmq":           ["Flexible routing with fanout, topic, and direct exchanges","Dead-letter queues catch failed messages automatically","Good fit for complex multi-step workflows"],
-  "polling":            ["No infrastructure dependency at all","Dead simple to understand and debug","Works everywhere without any broker setup"],
-  "jwt":                ["No database lookup on every request","Self-contained tokens work across services without shared session storage","Small, cheap to verify, fits stateless horizontal scaling"],
-  "session-auth":       ["Kill any session immediately server-side","Full audit trail of logins and logouts","Simpler mental model for traditional web applications"],
-  "oauth":              ["SSO, MFA, and refresh token rotation come for free","PKCE makes public clients safe without a client secret","Industry standard, so auditors and security reviewers understand it"],
-  "secrets-manager":    ["Rotate secrets without redeploying services","Every access is logged for audit purposes","Secrets never touch application code or environment variables"],
-  "prometheus-grafana": ["No cost at any scale, you own the infrastructure","Native Kubernetes service discovery with zero config","Dashboards are fully customisable to your exact SLIs"],
-  "datadog":            ["Full-stack APM in one platform from day one","Logs, metrics, and traces are correlated automatically","Fastest path to real observability, minutes not hours"],
-  "opentelemetry":      ["Vendor-neutral, switch backends without changing instrumentation","End-to-end trace correlation across every service","One SDK covers metrics, traces, and structured logs"],
-  "no-monitoring":      ["Zero infrastructure cost","Nothing to configure or maintain at all"],
-}
-
-const CONS: Record<string, string[]> = {
-  "api-gateway":        ["Adds 1-5ms to every single request","Without HA config it becomes a single point of failure"],
-  "load-balancer":      ["Stateful apps need sticky session config or it breaks","Adds another thing to monitor and keep healthy"],
-  "rate-limiter":       ["Requires a Redis cluster for distributed state across instances","Rule tuning takes time to avoid blocking legitimate traffic"],
-  "cdn":                ["Cache invalidation gets painful with frequently-changing data","Transfer costs grow fast when content is popular"],
-  "waf":                ["Adds around 10ms latency per request","False positives block real users until you tune the rules","Costs $50-200/month on top of everything else"],
-  "workers":            ["All session and state must live externally, not in the process","No local caching means every read goes to the database"],
-  "kubernetes":         ["Realistically takes 3-6 months for a team to get comfortable","You need someone who owns the platform full-time","Complete overkill for a small stateless service"],
-  "serverless":         ["Cold starts add 50-500ms and violate strict latency requirements","Vendor lock-in is real once your codebase expects the runtime"],
-  "microservices":      ["Network partitions and cascading failures are now your problem","Debugging requires distributed tracing or you're guessing"],
-  "postgres":           ["Vertical scaling hits a ceiling, read replicas add complexity","Schema migrations at large scale need careful coordination"],
-  "mongodb":            ["No multi-document ACID by default, partial writes can happen under failure","Flexibility becomes a liability when data consistency matters"],
-  "cassandra":          ["Eventual consistency means reads may lag writes by milliseconds","Data modelling expertise required, no joins allowed"],
-  "redis":              ["Data loss on restart unless you configure persistence explicitly","Cache invalidation logic must be designed deliberately or you get stale data"],
-  "object-storage":     ["Higher latency than a cache for reads","List operations are eventually consistent"],
-  "mysql":              ["Replication lag causes stale reads at scale","Limited for analytical or time-series queries"],
-  "kafka":              ["Cluster ops require dedicated expertise to do well","At-least-once delivery means consumers must be idempotent"],
-  "sqs":                ["256KB message size limit means large payloads need a workaround","No replay once messages expire from the retention window"],
-  "rabbitmq":           ["Manual clustering required for high availability","Underperforms Kafka at very high throughput"],
-  "polling":            ["N times the request frequency as wasted load regardless of changes","Creates thundering herd problems when many clients poll at once"],
-  "jwt":                ["Individual tokens cannot be revoked without a blocklist","Logout doesn't actually invalidate the session server-side"],
-  "session-auth":       ["Session store becomes the bottleneck as you scale globally","Requires sticky sessions or a distributed Redis-backed store"],
-  "oauth":              ["Complex token lifecycle, PKCE, rotation, and discovery all add surface area","Implementation is easy to get subtly wrong in ways that hurt security"],
-  "secrets-manager":    ["Adds latency to secret retrieval at startup","Requires IAM role wiring for every service that needs secrets"],
-  "prometheus-grafana": ["You own the storage and availability of your metrics","Long-term retention needs Thanos or Cortex on top"],
-  "datadog":            ["$30-50 per host per month adds up quickly at scale","Once your instrumentation is widespread, switching is painful"],
-  "opentelemetry":      ["High integration complexity upfront","Needs a separate backend like Jaeger or Tempo to store data"],
-  "no-monitoring":      ["Your first incident will take hours to diagnose","You learn about failures from users, not alerts"],
-}
 
 // ─── Stages (all unlocked) ────────────────────────────────────────────────────
 
@@ -570,20 +511,20 @@ function ComponentCard({component,isPlaced,isSelected,onSelect,onDragStart}:{
       className="group w-full text-left"
       style={{
         display:"flex",gap:7,alignItems:"flex-start",padding:"8px 9px",borderRadius:9,cursor:"grab",
-        border:`1px solid ${isSelected?"rgba(201,123,42,.6)":component.tags.includes("risky")?"rgba(248,113,113,.22)":"rgba(255,255,255,.1)"}`,
-        background:isSelected?"rgba(201,123,42,.07)":component.tags.includes("risky")?"rgba(248,113,113,.04)":component.tags.includes("complex")?"rgba(167,139,250,.03)":FORGE_SURFACE.card,
-        boxShadow:isSelected?"inset 3px 0 0 #C97B2A":undefined,
+        border:`1px solid ${isSelected?"rgba(230,162,60,.6)":component.tags.includes("risky")?"rgba(248,113,113,.22)":"rgba(255,255,255,.1)"}`,
+        background:isSelected?"rgba(230,162,60,.07)":component.tags.includes("risky")?"rgba(248,113,113,.04)":component.tags.includes("complex")?"rgba(167,139,250,.03)":FORGE_SURFACE.card,
+        boxShadow:isSelected?"inset 3px 0 0 #E6A23C":undefined,
         opacity:isPlaced?.35:1,transition:"border-color .12s,background .12s",
       }}
     >
       <GripVertical size={13} style={{color:"rgba(255,255,255,.22)",marginTop:3,flexShrink:0}}/>
       <div style={{flex:1,minWidth:0}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:6,marginBottom:3}}>
-          <p style={{fontSize:12,fontWeight:700,color:"#F5F0E8",margin:0,lineHeight:1.2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{component.name}</p>
-          {isPlaced&&<span style={{fontSize:9,color:"#C97B2A",background:"rgba(201,123,42,.14)",border:"1px solid rgba(201,123,42,.3)",borderRadius:4,padding:"1px 6px",fontWeight:700,flexShrink:0}}>Placed</span>}
+          <p style={{fontSize:13,fontWeight:700,color:"#F0EBE3",margin:0,lineHeight:1.2,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{component.name}</p>
+          {isPlaced&&<span style={{fontSize:10,color:"#E6A23C",background:"rgba(230,162,60,.14)",border:"1px solid rgba(230,162,60,.35)",borderRadius:4,padding:"1px 7px",fontWeight:700,flexShrink:0}}>Placed</span>}
         </div>
-        <p style={{fontSize:10,color:"rgba(255,255,255,.42)",margin:"0 0 4px",lineHeight:1.35,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{component.useCase}</p>
-        <p style={{fontSize:8,color:"rgba(255,255,255,.24)",fontWeight:700,margin:0,textAlign:"right"}}>Drag or click</p>
+        <p style={{fontSize:12,color:"#B5A99B",margin:"0 0 4px",lineHeight:1.45,display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{component.useCase}</p>
+        <p style={{fontSize:10,color:"#8A8078",fontWeight:600,margin:0,textAlign:"right"}}>Drag or click</p>
       </div>
     </button>
   )
@@ -599,19 +540,19 @@ function ComponentLibrary({placed,selectedId,onSelect,onDragStart}:{
   return(
     <aside style={{display:"flex",flexDirection:"column",height:"100%",background:FORGE_SURFACE.sidebar,borderRight:"1px solid rgba(255,255,255,.08)"}}>
       <div style={{padding:"18px 16px 14px",borderBottom:"1px solid rgba(255,255,255,.08)",background:FORGE_SURFACE.sidebarHeader,flexShrink:0}}>
-        <p style={{fontSize:9,fontWeight:700,letterSpacing:"0.26em",color:"rgba(255,255,255,.3)",textTransform:"uppercase",margin:"0 0 10px"}}>Components</p>
+        <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.26em",color:"#8A8078",textTransform:"uppercase",margin:"0 0 10px"}}>Components</p>
         <div style={{display:"flex",gap:3,marginBottom:10}}>
           {BUILD_STAGES.map((s)=>{
             const done=hasAny(placed,s.id),color=ZONE_COLOR[s.id]??"#888"
             return <div key={s.id} title={s.label} style={{flex:1,height:3,borderRadius:99,background:done?color:"rgba(255,255,255,.08)",transition:"background .3s"}}/>
           })}
         </div>
-        <p style={{fontSize:11,color:"rgba(255,255,255,.32)",margin:0,lineHeight:1.5}}>
+        <p style={{fontSize:12,color:"#B5A99B",margin:0,lineHeight:1.5}}>
           {doneCount===0?"All stages are open. Drag or click to place.":doneCount===6?"All stages filled. Ready to submit.": `${doneCount} of 6 stages filled.`}
         </p>
       </div>
 
-      <div style={{flex:1,overflowY:"hidden",overflowX:"hidden",padding:"7px 8px"}}>
+      <div style={{flex:1,overflowY:"auto",overflowX:"hidden",padding:"7px 8px"}}>
         {BUILD_STAGES.map((stage)=>{
           const components=COMPONENTS.filter((c)=>(stage.categories as readonly string[]).includes(c.category))
           if(!components.length)return null
@@ -634,8 +575,8 @@ function ComponentLibrary({placed,selectedId,onSelect,onDragStart}:{
                   <Icon size={11}/>
                 </span>
                 <div style={{flex:1,textAlign:"left",minWidth:0}}>
-                  <p style={{fontSize:11,fontWeight:600,color:"#E0D8CE",margin:0}}>{stage.label}</p>
-                  <p style={{fontSize:9,color:"rgba(255,255,255,.32)",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{stage.short}</p>
+                  <p style={{fontSize:12,fontWeight:600,color:"#E0D8CE",margin:0}}>{stage.label}</p>
+                  <p style={{fontSize:11,color:"#B5A99B",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{stage.short}</p>
                 </div>
                 {filled&&<div style={{width:6,height:6,borderRadius:99,background:color,flexShrink:0}}/>}
                 {isOpen?<ChevronDown size={13} style={{color:"rgba(255,255,255,.3)",flexShrink:0}}/>:<ChevronRight size={12} style={{color:"rgba(255,255,255,.2)",flexShrink:0}}/>}
@@ -661,7 +602,7 @@ function ComponentLibrary({placed,selectedId,onSelect,onDragStart}:{
 // ─── Canvas: 2-row grid ───────────────────────────────────────────────────────
 
 function HArrow({active}:{active:boolean}){
-  const col=active?"#C97B2A":"rgba(255,255,255,.12)"
+  const col=active?"#E6A23C":"rgba(255,255,255,.12)"
   return(
     <div style={{display:"flex",alignItems:"center",flexShrink:0,width:32,paddingBottom:4}}>
       <div style={{flex:1,height:1.5,background:col,transition:"background .3s"}}/>
@@ -673,7 +614,7 @@ function HArrow({active}:{active:boolean}){
 }
 
 function RowConnector({active}:{active:boolean}){
-  const col=active?"#C97B2A":"rgba(255,255,255,.1)"
+  const col=active?"#E6A23C":"rgba(255,255,255,.1)"
   return(
     <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",paddingRight:8,height:28}}>
       <svg width={64} height={28} viewBox="0 0 64 28" style={{overflow:"visible"}}>
@@ -692,7 +633,7 @@ function PlacedChip({id,onRemove}:{id:string;onRemove:(id:string)=>void}){
       transition={{type:"spring",stiffness:400,damping:30}} className="group"
       style={{display:"flex",alignItems:"center",gap:6,padding:"6px 8px 6px 10px",background:risky?"rgba(248,113,113,.1)":FORGE_SURFACE.chip,border:`1px solid ${risky?"rgba(248,113,113,.25)":"rgba(255,255,255,.12)"}`,borderRadius:8}}
     >
-      <p style={{flex:1,fontSize:12,fontWeight:600,color:"#E8E0D4",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.name}</p>
+      <p style={{flex:1,fontSize:13,fontWeight:600,color:"#E0D8CE",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{c.name}</p>
       <button onClick={(e)=>{e.stopPropagation();onRemove(id)}}
         style={{padding:2,background:"transparent",border:"none",cursor:"pointer",color:"rgba(255,255,255,.25)",borderRadius:4,display:"flex",transition:"all .1s"}}
         onMouseEnter={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.color="#F87171";b.style.background="rgba(248,113,113,.14)"}}
@@ -722,25 +663,25 @@ function StageBox({stage,placed,selectedId,isCurrent,onPlace,onRemove}:{
 
   return(
     <div onDragOver={onDragOver} onDrop={onDrop} onClick={onClick}
-      style={{flex:1,minHeight:260,display:"flex",flexDirection:"column",borderRadius:14,background:boxBg,border:`1.5px solid ${boxBorder}`,boxShadow,cursor:selectedId?"pointer":"default",transition:"all .2s",overflow:"hidden"}}
+      style={{flex:1,minHeight:0,display:"flex",flexDirection:"column",borderRadius:14,background:boxBg,border:`1.5px solid ${boxBorder}`,boxShadow,cursor:selectedId?"pointer":"default",transition:"all .2s",overflow:"hidden"}}
     >
       <div style={{height:3,background:`linear-gradient(90deg,${color} 0%,${color}00 100%)`,flexShrink:0}}/>
-      <div style={{padding:"12px 14px 10px",borderBottom:"1px solid rgba(255,255,255,.08)",flexShrink:0}}>
-        <div style={{display:"flex",alignItems:"center",gap:9}}>
-          <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:26,height:26,borderRadius:8,background:`${color}18`,color,flexShrink:0}}><Icon size={13}/></span>
+      <div style={{padding:"8px 12px",borderBottom:"1px solid rgba(255,255,255,.08)",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:24,height:24,borderRadius:7,background:`${color}18`,color,flexShrink:0}}><Icon size={12}/></span>
           <div style={{flex:1,minWidth:0}}>
             <p style={{fontSize:13,fontWeight:700,color:"#F0EBE3",margin:0,lineHeight:1.2}}>{stage.label}</p>
-            <p style={{fontSize:10,color:"rgba(255,255,255,.35)",margin:"2px 0 0"}}>{stage.short}</p>
+            <p style={{fontSize:11,color:"#B5A99B",margin:"1px 0 0"}}>{stage.short}</p>
           </div>
-          {isCurrent&&<span style={{fontSize:8,fontWeight:800,color,background:`${color}18`,border:`1px solid ${color}30`,borderRadius:5,padding:"2px 7px",flexShrink:0,letterSpacing:"0.06em"}}>ACTIVE</span>}
+          {isCurrent&&<span style={{fontSize:8,fontWeight:800,color,background:`${color}18`,border:`1px solid ${color}30`,borderRadius:5,padding:"2px 6px",flexShrink:0,letterSpacing:"0.06em"}}>ACTIVE</span>}
         </div>
       </div>
-      <div style={{flex:1,padding:"10px 12px 12px",display:"flex",flexDirection:"column",gap:6}}>
+      <div style={{flex:1,padding:"8px 10px 10px",display:"flex",flexDirection:"column",gap:5,minHeight:0}}>
         {placed.length===0?(
-          <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",borderRadius:9,border:`1px dashed ${color}25`,padding:16,textAlign:"center"}}>
-            <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:32,height:32,borderRadius:10,background:`${color}12`,marginBottom:10}}><Icon size={15} style={{color:`${color}50`}}/></span>
-            <p style={{fontSize:11,color:"rgba(255,255,255,.35)",margin:0,lineHeight:1.6}}>{ZONE_PROMPT[stage.id]}</p>
-            {canReceive&&<p style={{fontSize:10,color:`${color}90`,margin:"8px 0 0",fontWeight:600}}>Click to place {selComp?.name}</p>}
+          <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",borderRadius:9,border:`1px dashed ${color}25`,padding:"10px 12px",textAlign:"center"}}>
+            <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:28,height:28,borderRadius:9,background:`${color}12`,marginBottom:8}}><Icon size={13} style={{color:`${color}50`}}/></span>
+            <p style={{fontSize:12,color:"#B5A99B",margin:0,lineHeight:1.5}}>{ZONE_PROMPT[stage.id]}</p>
+            {canReceive&&<p style={{fontSize:12,color:`${color}`,margin:"8px 0 0",fontWeight:600}}>Click to place {selComp?.name}</p>}
           </div>
         ):(
           <AnimatePresence initial={false}>
@@ -753,9 +694,10 @@ function StageBox({stage,placed,selectedId,isCurrent,onPlace,onRemove}:{
   )
 }
 
-function WorkflowCanvas({run,selectedId,onPlace,onRemove,onDeploy}:{
+function WorkflowCanvas({run,selectedId,onPlace,onRemove,onDeploy,onChangeChallenge}:{
   run:RunState;selectedId:string|null
   onPlace:(id:string,z:string)=>boolean;onRemove:(id:string)=>void;onDeploy:()=>void
+  onChangeChallenge:(id:string)=>void
 }){
   const active=BUILD_STAGES[STAGE_ORDER.findIndex((z)=>!hasAny(run.placed,z))]??BUILD_STAGES[BUILD_STAGES.length-1]
   const selComp=selectedId?getComponentById(selectedId):null
@@ -777,83 +719,91 @@ function WorkflowCanvas({run,selectedId,onPlace,onRemove,onDeploy}:{
   return(
     <section style={{display:"flex",flexDirection:"column",height:"100%",background:FORGE_SURFACE.canvas}}>
       {/* Header */}
-      <div style={{padding:"14px 20px",borderBottom:"1px solid rgba(255,255,255,.08)",background:FORGE_SURFACE.canvasHeader,flexShrink:0}}>
+      <div style={{padding:"10px 18px",borderBottom:"1px solid rgba(255,255,255,.08)",background:FORGE_SURFACE.canvasHeader,flexShrink:0}}>
         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:16,flexWrap:"wrap"}}>
           <div style={{flex:1,minWidth:0}}>
-            <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:6,flexWrap:"wrap"}}>
-              <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",color:"rgba(201,123,42,.65)",textTransform:"uppercase"}}>Challenge</span>
-              <h1 style={{fontSize:18,fontWeight:700,color:"#F5F0E8",margin:0,lineHeight:1.2}}>{run.challenge.title}</h1>
+            <div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:4,flexWrap:"wrap"}}>
+              <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.22em",color:"#E6A23C",textTransform:"uppercase",flexShrink:0}}>Challenge</span>
+              <h1 style={{fontSize:16,fontWeight:700,color:"#F0EBE3",margin:0,lineHeight:1.2}}>{run.challenge.title}</h1>
             </div>
-            <p style={{fontSize:12,color:"rgba(255,255,255,.42)",margin:0,lineHeight:1.7,maxWidth:640}}>{run.challenge.description}</p>
+            <p style={{fontSize:13,color:"#D5CEC5",margin:0,lineHeight:1.7,maxWidth:640}}>{run.challenge.description}</p>
             {selComp&&(
-              <div style={{marginTop:10,display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:8,maxWidth:760}}>
-                <div style={{background:"rgba(52,211,153,.055)",border:"1px solid rgba(52,211,153,.18)",borderRadius:10,padding:"9px 11px"}}>
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:5}}>
-                    <p style={{fontSize:9,fontWeight:800,letterSpacing:"0.16em",color:"#34D399",textTransform:"uppercase",margin:0}}>Good</p>
-                    <span style={{fontSize:9,color:"rgba(255,255,255,.38)",whiteSpace:"nowrap"}}>{selComp.name}</span>
+              <div style={{marginTop:7,display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:7,maxWidth:760}}>
+                <div style={{background:"rgba(52,211,153,.07)",border:"1px solid rgba(52,211,153,.25)",borderRadius:10,padding:"10px 12px"}}>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:6}}>
+                    <p style={{fontSize:10,fontWeight:800,letterSpacing:"0.16em",color:"#34D399",textTransform:"uppercase",margin:0}}>Good</p>
+                    <span style={{fontSize:10,color:"#B5A99B",whiteSpace:"nowrap"}}>{selComp.name}</span>
                   </div>
                   {selectedGoods.map((good,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginTop:i===0?0:4}}>
-                      <Check size={10} style={{color:"#34D399",flexShrink:0,marginTop:2}}/>
-                      <p style={{fontSize:11,color:"rgba(185,245,210,.82)",margin:0,lineHeight:1.35}}>{good}</p>
+                    <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginTop:i===0?0:5}}>
+                      <Check size={11} style={{color:"#34D399",flexShrink:0,marginTop:2}}/>
+                      <p style={{fontSize:13,color:"#C8BFBA",margin:0,lineHeight:1.5}}>{good}</p>
                     </div>
                   ))}
                 </div>
-                <div style={{background:"rgba(245,158,11,.06)",border:"1px solid rgba(245,158,11,.18)",borderRadius:10,padding:"9px 11px"}}>
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:5}}>
-                    <p style={{fontSize:9,fontWeight:800,letterSpacing:"0.16em",color:"#FBBF24",textTransform:"uppercase",margin:0}}>Trade-off</p>
-                    <span style={{fontSize:9,color:"rgba(255,255,255,.38)",whiteSpace:"nowrap"}}>{selStage?.label??""}</span>
+                <div style={{background:"rgba(245,158,11,.07)",border:"1px solid rgba(245,158,11,.28)",borderRadius:10,padding:"10px 12px"}}>
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:6}}>
+                    <p style={{fontSize:10,fontWeight:800,letterSpacing:"0.16em",color:"#F5C76B",textTransform:"uppercase",margin:0}}>Trade-off</p>
+                    <span style={{fontSize:10,color:"#B5A99B",whiteSpace:"nowrap"}}>{selStage?.label??""}</span>
                   </div>
                   {selectedTradeoffs.length>0?selectedTradeoffs.map((tradeoff,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginTop:i===0?0:4}}>
-                      <AlertTriangle size={10} style={{color:"#FBBF24",flexShrink:0,marginTop:2}}/>
-                      <p style={{fontSize:11,color:"rgba(255,225,165,.82)",margin:0,lineHeight:1.35}}>{tradeoff}</p>
+                    <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginTop:i===0?0:5}}>
+                      <AlertTriangle size={11} style={{color:"#F5C76B",flexShrink:0,marginTop:2}}/>
+                      <p style={{fontSize:13,color:"#C8BFBA",margin:0,lineHeight:1.5}}>{tradeoff}</p>
                     </div>
-                  )):<p style={{fontSize:11,color:"rgba(255,225,165,.82)",margin:0,lineHeight:1.35}}>No major trade-off called out for this component.</p>}
+                  )):<p style={{fontSize:13,color:"#C8BFBA",margin:0,lineHeight:1.5}}>No major trade-off called out for this component.</p>}
                 </div>
               </div>
             )}
           </div>
-          <div style={{display:"flex",gap:6,flexWrap:"wrap",alignItems:"flex-start"}}>
-            {run.constraints.map((c)=>(
-              <span key={c.id} style={{fontSize:10,fontWeight:600,color:"rgba(255,255,255,.58)",background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.12)",borderRadius:8,padding:"5px 12px"}}>{c.label}</span>
-            ))}
+          <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:8,flexShrink:0}}>
+            <div style={{display:"flex",gap:6,flexWrap:"wrap",justifyContent:"flex-end"}}>
+              {run.constraints.map((c)=>(
+                <span key={c.id} style={{fontSize:11,fontWeight:600,color:"#C8BFBA",background:"rgba(255,255,255,.09)",border:"1px solid rgba(255,255,255,.18)",borderRadius:8,padding:"5px 12px"}}>{c.label}</span>
+              ))}
+            </div>
+            <button
+              onClick={()=>onChangeChallenge(randomRun(run.challenge.id).challenge.id)}
+              style={{display:"flex",alignItems:"center",gap:6,padding:"5px 12px",borderRadius:7,background:"rgba(230,162,60,.12)",border:"1px solid rgba(230,162,60,.35)",cursor:"pointer",fontSize:11,fontWeight:700,color:"#E6A23C",letterSpacing:"0.03em",transition:"all .12s",whiteSpace:"nowrap"}}
+              onMouseEnter={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(230,162,60,.22)";b.style.borderColor="rgba(230,162,60,.6)"}}
+              onMouseLeave={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(230,162,60,.12)";b.style.borderColor="rgba(230,162,60,.35)"}}
+            ><RotateCcw size={12}/>Change Problem</button>
           </div>
         </div>
       </div>
 
       {/* Canvas */}
-      <div style={{flex:1,minHeight:0,padding:"14px 16px",display:"flex",flexDirection:"column",gap:10,overflowY:"auto"}}
+      <div style={{flex:1,minHeight:0,padding:"10px 14px",display:"flex",flexDirection:"column",gap:8,overflow:"hidden"}}
         onDrop={handleCanvasDrop} onDragOver={(e)=>{e.preventDefault();e.dataTransfer.dropEffect="copy"}}
       >
         {/* Status row */}
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div style={{width:8,height:8,borderRadius:99,background:activeColor,boxShadow:`0 0 8px ${activeColor}80`}}/>
-            <span style={{fontSize:12,fontWeight:600,color:"rgba(255,255,255,.68)"}}>{active.label}</span>
-            <span style={{fontSize:11,color:"rgba(255,255,255,.28)"}}>{doneCount} / 6 stages</span>
+            <span style={{fontSize:13,fontWeight:600,color:"#E0D8CE"}}>{active.label}</span>
+            <span style={{fontSize:12,color:"#8A8078"}}>{doneCount} / 6 stages</span>
           </div>
           <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
             <button onClick={minMet?onDeploy:undefined}
               style={{
                 display:"flex",alignItems:"center",gap:8,
-                background:minMet?"linear-gradient(135deg,#D4873A 0%,#A85F18 100%)":"rgba(255,255,255,.07)",
-                border:`1px solid ${minMet?"rgba(201,123,42,.45)":"rgba(255,255,255,.1)"}`,
+                background:minMet?"linear-gradient(135deg,#E6A23C 0%,#C07A1E 100%)":"rgba(255,255,255,.07)",
+                border:`1px solid ${minMet?"rgba(230,162,60,.45)":"rgba(255,255,255,.1)"}`,
                 borderRadius:10,padding:"9px 22px",cursor:minMet?"pointer":"not-allowed",
                 fontFamily:"monospace",fontSize:11,fontWeight:800,letterSpacing:"0.18em",textTransform:"uppercase",
                 color:minMet?"#0A0806":"rgba(255,255,255,.22)",
-                boxShadow:minMet?"0 12px 32px rgba(201,123,42,.25),inset 0 1px 0 rgba(255,255,255,.18)":undefined,
+                boxShadow:minMet?"0 12px 32px rgba(230,162,60,.25),inset 0 1px 0 rgba(255,255,255,.18)":undefined,
                 transition:"all .15s",
               }}
-              onMouseEnter={(e)=>{if(minMet){const b=e.currentTarget as HTMLButtonElement;b.style.transform="translateY(-1px)";b.style.boxShadow="0 16px 40px rgba(201,123,42,.35),inset 0 1px 0 rgba(255,255,255,.2)"}}}
-              onMouseLeave={(e)=>{if(minMet){const b=e.currentTarget as HTMLButtonElement;b.style.transform="";b.style.boxShadow="0 12px 32px rgba(201,123,42,.25),inset 0 1px 0 rgba(255,255,255,.18)"}}}
+              onMouseEnter={(e)=>{if(minMet){const b=e.currentTarget as HTMLButtonElement;b.style.transform="translateY(-1px)";b.style.boxShadow="0 16px 40px rgba(230,162,60,.35),inset 0 1px 0 rgba(255,255,255,.2)"}}}
+              onMouseLeave={(e)=>{if(minMet){const b=e.currentTarget as HTMLButtonElement;b.style.transform="";b.style.boxShadow="0 12px 32px rgba(230,162,60,.25),inset 0 1px 0 rgba(255,255,255,.18)"}}}
             >SUBMIT SYSTEM</button>
-            {!minMet&&needsList.length>0&&<p style={{fontSize:10,color:"rgba(255,255,255,.28)",margin:0}}>Still needs: {needsList.join(", ")}</p>}
+            {!minMet&&needsList.length>0&&<p style={{fontSize:11,color:"#8A8078",margin:0}}>Still needs: {needsList.join(", ")}</p>}
           </div>
         </div>
 
         {/* Row 1 */}
-        <div style={{display:"flex",alignItems:"stretch",gap:0,flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"stretch",gap:0,flex:1,minHeight:0}}>
           {row1.map((stage,idx)=>(
             <div key={stage.id} style={{display:"flex",alignItems:"stretch",flex:1,minWidth:0}}>
               {idx>0&&<HArrow active={hasAny(run.placed,row1[idx-1]!.id)}/>}
@@ -863,7 +813,7 @@ function WorkflowCanvas({run,selectedId,onPlace,onRemove,onDeploy}:{
         </div>
         <RowConnector active={hasAny(run.placed,"data")}/>
         {/* Row 2 */}
-        <div style={{display:"flex",alignItems:"stretch",gap:0,flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"stretch",gap:0,flex:1,minHeight:0}}>
           {row2.map((stage,idx)=>(
             <div key={stage.id} style={{display:"flex",alignItems:"stretch",flex:1,minWidth:0}}>
               {idx>0&&<HArrow active={hasAny(run.placed,row2[idx-1]!.id)}/>}
@@ -894,9 +844,9 @@ function FeedbackPanel({placed,constraints}:{placed:PlacedState;constraints:Cons
   const count=allIds(placed).length
 
   const sev=(s:"critical"|"warning"|"info")=>({
-    critical:{bg:"rgba(248,113,113,.06)",border:"rgba(248,113,113,.22)",icon:"#F87171",text:"rgba(255,195,195,.88)",I:AlertTriangle},
-    warning: {bg:"rgba(245,158,11,.06)", border:"rgba(245,158,11,.22)", icon:"#FBBF24",text:"rgba(255,225,145,.88)",I:AlertTriangle},
-    info:    {bg:"rgba(56,189,248,.05)", border:"rgba(56,189,248,.16)", icon:"#38BDF8",text:"rgba(185,228,250,.82)",I:Info},
+    critical:{bg:"rgba(248,113,113,.1)", border:"rgba(248,113,113,.32)",icon:"#F87171",text:"rgba(255,205,205,.95)",I:AlertTriangle},
+    warning: {bg:"rgba(245,199,107,.09)",border:"rgba(245,199,107,.32)",icon:"#F5C76B",text:"rgba(255,230,160,.95)",I:AlertTriangle},
+    info:    {bg:"rgba(56,189,248,.07)", border:"rgba(56,189,248,.25)", icon:"#38BDF8",text:"rgba(195,233,255,.9)", I:Info},
   })[s]
 
   return(
@@ -904,33 +854,33 @@ function FeedbackPanel({placed,constraints}:{placed:PlacedState;constraints:Cons
       <div style={{padding:"18px 16px 14px",borderBottom:"1px solid rgba(255,255,255,.08)",background:FORGE_SURFACE.sidebarHeader,flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10}}>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <div style={{width:6,height:6,borderRadius:99,background:"#C97B2A",boxShadow:"0 0 8px rgba(201,123,42,.7)"}}/>
-            <p style={{fontSize:9,fontWeight:700,letterSpacing:"0.26em",color:"rgba(255,255,255,.3)",margin:0,textTransform:"uppercase"}}>Feedback</p>
+            <div style={{width:6,height:6,borderRadius:99,background:"#E6A23C",boxShadow:"0 0 8px rgba(230,162,60,.7)"}}/>
+            <p style={{fontSize:10,fontWeight:700,letterSpacing:"0.26em",color:"#8A8078",margin:0,textTransform:"uppercase"}}>Feedback</p>
           </div>
           <Sparkles size={13} style={{color:"rgba(255,255,255,.18)"}}/>
         </div>
-        <p style={{fontSize:11,color:"rgba(255,255,255,.32)",margin:0,lineHeight:1.55}}>Real-time engineering review. Score stays hidden until you submit.</p>
+        <p style={{fontSize:13,color:"#B5A99B",margin:0,lineHeight:1.6}}>Real-time engineering review. Score stays hidden until you submit.</p>
       </div>
 
       <div style={{flex:1,overflowY:"auto",overflowX:"hidden",padding:12,display:"flex",flexDirection:"column",gap:8}}>
         {count===0?(
           <div>
             <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,padding:16,marginBottom:10}}>
-              <p style={{fontSize:12,fontWeight:600,color:"rgba(255,255,255,.55)",margin:"0 0 14px"}}>Your design gets scored on 6 things:</p>
-              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+              <p style={{fontSize:13,fontWeight:600,color:"#E0D8CE",margin:"0 0 14px"}}>Your design gets scored on 6 things:</p>
+              <div style={{display:"flex",flexDirection:"column",gap:11}}>
                 {SCORE_DIM_INFO.map((d)=>(
-                  <div key={d.label} style={{display:"flex",alignItems:"flex-start",gap:8}}>
-                    <span style={{width:3,height:3,borderRadius:99,background:"rgba(201,123,42,.6)",flexShrink:0,marginTop:7}}/>
+                  <div key={d.label} style={{display:"flex",alignItems:"flex-start",gap:9}}>
+                    <span style={{width:4,height:4,borderRadius:99,background:"#E6A23C",flexShrink:0,marginTop:7}}/>
                     <div>
-                      <p style={{fontSize:12,fontWeight:600,color:"rgba(255,255,255,.55)",margin:0}}>{d.label}</p>
-                      <p style={{fontSize:11,color:"rgba(255,255,255,.3)",margin:0,lineHeight:1.4}}>{d.desc}</p>
+                      <p style={{fontSize:13,fontWeight:600,color:"#E0D8CE",margin:0}}>{d.label}</p>
+                      <p style={{fontSize:12,color:"#B5A99B",margin:0,lineHeight:1.5}}>{d.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
             <div style={{background:"rgba(248,113,113,.04)",border:"1px solid rgba(248,113,113,.14)",borderRadius:10,padding:"10px 12px"}}>
-              <p style={{fontSize:11,color:"rgba(255,180,180,.7)",margin:0,lineHeight:1.55}}>Skip key layers and the score will show it. Over-engineer and it will too.</p>
+              <p style={{fontSize:13,color:"rgba(255,185,185,.85)",margin:0,lineHeight:1.6}}>Skip key layers and the score will show it. Over-engineer and it will too.</p>
             </div>
           </div>
         ):messages.map((msg,i)=>{
@@ -940,7 +890,7 @@ function FeedbackPanel({placed,constraints}:{placed:PlacedState;constraints:Cons
               style={{background:bg,border:`1px solid ${border}`,borderRadius:10,padding:"10px 12px",display:"flex",gap:9}}
             >
               <I size={13} style={{color:icon,flexShrink:0,marginTop:2}}/>
-              <p style={{fontSize:12,color:text,margin:0,lineHeight:1.65}}>{msg.message}</p>
+              <p style={{fontSize:13,color:text,margin:0,lineHeight:1.7}}>{msg.message}</p>
             </motion.div>
           )
         })}
@@ -955,11 +905,11 @@ function ScoreMeter({label,value,of100}:{label:string;value:number;of100?:boolea
   const pct=of100?value:Math.round(value*10)
   const color=pct>=75?"#34D399":pct>=50?"#FBBF24":"#F87171"
   return(
-    <div style={{marginBottom:7}}>
-      <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-        <span style={{fontSize:11,color:"rgba(255,255,255,.48)",fontWeight:500}}>{label}</span>
-        <span style={{fontSize:11,color:"rgba(255,255,255,.68)",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>
-          {of100?value:value.toFixed(1)}<span style={{color:"rgba(255,255,255,.22)",fontWeight:400}}>{of100?" / 100":" / 10"}</span>
+    <div style={{marginBottom:5}}>
+      <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
+        <span style={{fontSize:11,color:"#B5A99B",fontWeight:500}}>{label}</span>
+        <span style={{fontSize:11,color:"#D8D0C4",fontWeight:600,fontVariantNumeric:"tabular-nums"}}>
+          {of100?value:value.toFixed(1)}<span style={{color:"#8A8078",fontWeight:400}}>{of100?" / 100":" / 10"}</span>
         </span>
       </div>
       <div style={{height:3,background:"rgba(255,255,255,.07)",borderRadius:99,overflow:"hidden"}}>
@@ -973,13 +923,13 @@ function ScoreMeter({label,value,of100}:{label:string;value:number;of100?:boolea
 function Accordion({title,icon,defaultOpen=false,children}:{title:string;icon:React.ReactNode;defaultOpen?:boolean;children:React.ReactNode}){
   const [open,setOpen]=useState(defaultOpen)
   return(
-    <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden"}}>
-      <button onClick={()=>setOpen(!open)} style={{width:"100%",display:"flex",alignItems:"center",gap:8,padding:"12px 16px",background:"transparent",border:"none",cursor:"pointer"}}>
+    <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:9,overflow:"hidden",flexShrink:0}}>
+      <button onClick={()=>setOpen(!open)} style={{width:"100%",display:"flex",alignItems:"center",gap:7,padding:"8px 12px",background:"transparent",border:"none",cursor:"pointer"}}>
         {icon}
-        <p style={{flex:1,fontSize:12,fontWeight:600,color:"rgba(255,255,255,.65)",margin:0,textAlign:"left"}}>{title}</p>
+        <p style={{flex:1,fontSize:12,fontWeight:600,color:"#E0D8CE",margin:0,textAlign:"left"}}>{title}</p>
         {open?<ChevronDown size={14} style={{color:"rgba(255,255,255,.3)"}}/>:<ChevronRight size={14} style={{color:"rgba(255,255,255,.22)"}}/>}
       </button>
-      {open&&<div style={{padding:"0 16px 16px"}}>{children}</div>}
+      {open&&<div style={{padding:"0 12px 10px"}}>{children}</div>}
     </div>
   )
 }
@@ -999,15 +949,15 @@ function DesignComparisonZone({zone,run,cidArr}:{zone:(typeof ZONES)[number];run
         <span style={{display:"flex",alignItems:"center",justifyContent:"center",width:17,height:17,borderRadius:5,background:`${color}18`,color,flexShrink:0}}>
           <Icon size={9}/>
         </span>
-        <p style={{flex:1,fontSize:10,fontWeight:700,color:"rgba(255,255,255,.55)",margin:0,textTransform:"uppercase",letterSpacing:"0.1em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",textAlign:"left"}}>{zone.label}</p>
+        <p style={{flex:1,fontSize:11,fontWeight:700,color:"#C8BFBA",margin:0,textTransform:"uppercase",letterSpacing:"0.1em",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",textAlign:"left"}}>{zone.label}</p>
         {zoneExact&&<Check size={12} style={{color:"#34D399",flexShrink:0}}/>}
       </div>
 
-      <div style={{flex:1,minHeight:0,padding:"5px 7px 7px",display:"flex",flexDirection:"column",gap:3,overflow:"hidden"}}>
+      <div style={{flex:1,minHeight:0,padding:"5px 7px 7px",display:"flex",flexDirection:"column",gap:3,overflowY:"auto"}}>
           {allC.length===0?(
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,paddingTop:2}}>
-              <div><p style={{fontSize:8,color:"rgba(255,255,255,.22)",margin:"0 0 2px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>You</p><p style={{fontSize:10,fontWeight:600,color:"rgba(255,255,255,.22)",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>Nothing placed</p></div>
-              <div><p style={{fontSize:8,color:"rgba(255,255,255,.22)",margin:"0 0 2px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>Me</p><p style={{fontSize:10,fontWeight:600,color:"rgba(255,255,255,.22)",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{mine.map((id)=>getComponentById(id)?.name).filter(Boolean).join(", ")||"Nothing"}</p></div>
+              <div><p style={{fontSize:9,color:"#8A8078",margin:"0 0 2px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>You</p><p style={{fontSize:11,fontWeight:600,color:"#8A8078",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>Nothing placed</p></div>
+              <div><p style={{fontSize:9,color:"#8A8078",margin:"0 0 2px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>Me</p><p style={{fontSize:11,fontWeight:600,color:"#8A8078",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{mine.map((id)=>getComponentById(id)?.name).filter(Boolean).join(", ")||"Nothing"}</p></div>
             </div>
           ):allC.map((id)=>{
             const yc=yours.includes(id)?getComponentById(id):undefined
@@ -1018,12 +968,12 @@ function DesignComparisonZone({zone,run,cidArr}:{zone:(typeof ZONES)[number];run
               <div key={id} style={{borderRadius:7,border:`1px solid ${qs.border}`,background:qs.bg,padding:"4px 6px"}}>
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
                   <div>
-                    <p style={{fontSize:8,color:"rgba(255,255,255,.22)",margin:"0 0 1px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>You</p>
-                    <p style={{fontSize:10,fontWeight:600,color:yc?"#E8E0D4":"rgba(255,255,255,.22)",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{yc?.name??"Nothing placed"}</p>
+                    <p style={{fontSize:9,color:"#8A8078",margin:"0 0 2px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>You</p>
+                    <p style={{fontSize:11,fontWeight:600,color:yc?"#E0D8CE":"#8A8078",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{yc?.name??"Nothing placed"}</p>
                   </div>
                   <div>
-                    <p style={{fontSize:8,color:"rgba(255,255,255,.22)",margin:"0 0 1px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>Me</p>
-                    <p style={{fontSize:10,fontWeight:600,color:mc?"#E8E0D4":"rgba(255,255,255,.22)",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{mc?.name ?? (mine.map((i2)=>getComponentById(i2)?.name).filter(Boolean).join(" + ") || "Nothing")}</p>
+                    <p style={{fontSize:9,color:"#8A8078",margin:"0 0 2px",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.1em"}}>Me</p>
+                    <p style={{fontSize:11,fontWeight:600,color:mc?"#E0D8CE":"#8A8078",margin:0,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{mc?.name ?? (mine.map((i2)=>getComponentById(i2)?.name).filter(Boolean).join(" + ") || "Nothing")}</p>
                   </div>
                 </div>
                 <span style={{display:"inline-block",fontSize:7,fontWeight:800,color:qs.text,border:`1px solid ${qs.border}`,borderRadius:4,padding:"1px 4px",marginTop:3}}>{MATCH_LABEL[q]}</span>
@@ -1061,31 +1011,31 @@ function DesignFeedbackOverlay({run,onRetry,onClose}:{run:RunState;onRetry:()=>v
       <motion.div initial={{opacity:0,y:32,scale:.97}} animate={{opacity:1,y:0,scale:1}} transition={{type:"spring",stiffness:300,damping:30}}
         style={{width:"calc(100vw - 12px)",height:"calc(100dvh - 12px)",margin:"0 auto",borderRadius:16,overflow:"hidden",background:FORGE_SURFACE.overlayPanel,border:"1px solid rgba(255,255,255,.1)",boxShadow:"0 48px 120px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06)"}}
       >
-        <div style={{display:"grid",gridTemplateColumns:"minmax(360px,.7fr) minmax(820px,1.7fr) minmax(320px,.7fr)",height:"100%",background:"rgba(255,255,255,.06)",gap:1}}>
+        <div style={{display:"grid",gridTemplateColumns:"300px minmax(0,1fr) 280px",height:"100%",background:"rgba(255,255,255,.05)",gap:1}}>
           {/* Result */}
-          <section style={{background:"linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0)), #11100E",padding:18,display:"flex",flexDirection:"column",minWidth:0}}>
-            <p style={{fontSize:9,fontWeight:800,letterSpacing:"0.28em",color:"rgba(255,255,255,.28)",textTransform:"uppercase",margin:"0 0 14px"}}>Design Feedback</p>
-            <div style={{display:"flex",alignItems:"flex-end",gap:8,marginBottom:12}}>
-              <p style={{fontSize:66,fontWeight:900,color:"#F5F0E8",margin:0,lineHeight:.9,letterSpacing:"-0.04em"}}>{fs}</p>
+          <section style={{background:`linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0)), ${FORGE_SURFACE.overlay}`,padding:"12px 14px",display:"flex",flexDirection:"column",gap:8,minWidth:0,overflowY:"auto"}}>
+            <p style={{fontSize:9,fontWeight:800,letterSpacing:"0.28em",color:"#8A8078",textTransform:"uppercase",margin:"0 0 8px"}}>Design Feedback</p>
+            <div style={{display:"flex",alignItems:"flex-end",gap:8,marginBottom:8}}>
+              <p style={{fontSize:66,fontWeight:900,color:"#F0EBE3",margin:0,lineHeight:.9,letterSpacing:"-0.04em"}}>{fs}</p>
               <div style={{paddingBottom:5}}>
-                <p style={{fontSize:12,color:"rgba(255,255,255,.25)",margin:"0 0 4px"}}>/ 100</p>
+                <p style={{fontSize:12,color:"#8A8078",margin:"0 0 4px"}}>/ 100</p>
                 <p style={{fontSize:18,fontWeight:800,color:tc,margin:0,lineHeight:1.15}}>{t}</p>
               </div>
             </div>
 
-            <div style={{background:"rgba(245,158,11,.055)",border:"1px solid rgba(245,158,11,.22)",borderRadius:10,padding:"11px 13px",marginBottom:14}}>
-              <p style={{fontSize:9,fontWeight:800,letterSpacing:"0.18em",color:"#FBBF24",textTransform:"uppercase",margin:"0 0 6px"}}>Senior verdict</p>
-              <p style={{fontSize:12,color:"rgba(255,235,190,.82)",margin:0,lineHeight:1.5}}>{verdict}</p>
+            <div style={{background:"rgba(245,158,11,.05)",border:"1px solid rgba(245,158,11,.2)",borderRadius:9,padding:"8px 11px",flexShrink:0}}>
+              <p style={{fontSize:9,fontWeight:800,letterSpacing:"0.18em",color:"#F5C76B",textTransform:"uppercase",margin:"0 0 5px"}}>Senior verdict</p>
+              <p style={{fontSize:12,color:"rgba(255,235,190,.92)",margin:0,lineHeight:1.55}}>{verdict}</p>
             </div>
 
-            <p style={{fontSize:11,color:"rgba(255,255,255,.42)",margin:"0 0 12px",lineHeight:1.55}}>{expl}</p>
+            <p style={{fontSize:11,color:"#C8BFBA",margin:0,lineHeight:1.6,flexShrink:0}}>{expl}</p>
 
-            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:"1 1 auto",minHeight:0}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
-                <Sparkles size={14} style={{color:"rgba(255,255,255,.4)"}}/>
-                <p style={{flex:1,fontSize:12,fontWeight:600,color:"rgba(255,255,255,.65)",margin:0}}>Score Breakdown</p>
+            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:10,overflow:"hidden",flexShrink:0}}>
+              <div style={{display:"flex",alignItems:"center",gap:7,padding:"8px 12px",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
+                <Sparkles size={12} style={{color:"rgba(255,255,255,.35)"}}/>
+                <p style={{flex:1,fontSize:12,fontWeight:600,color:"#E0D8CE",margin:0}}>Score Breakdown</p>
               </div>
-              <div style={{padding:"12px 16px 14px"}}>
+              <div style={{padding:"8px 12px 10px"}}>
                 <ScoreMeter label="Architecture Quality" value={as} of100/>
                 <ScoreMeter label="Solution Match" value={sm} of100/>
                 <ScoreMeter label="Coverage" value={cv} of100/>
@@ -1100,13 +1050,13 @@ function DesignFeedbackOverlay({run,onRetry,onClose}:{run:RunState;onRetry:()=>v
               <Accordion title={`Improve Score: +${maxGain} pts possible`} icon={<TrendingUp size={14} style={{color:"#FBBF24"}}/>} defaultOpen>
                 <div style={{paddingTop:4,display:"flex",flexDirection:"column",gap:8}}>
                   {suggestions.map((s,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,background:"rgba(245,158,11,.05)",border:"1px solid rgba(245,158,11,.14)",borderRadius:9,padding:"9px 12px"}}>
-                      <div style={{background:"rgba(245,158,11,.15)",borderRadius:6,padding:"2px 7px",flexShrink:0}}>
+                    <div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,background:"rgba(245,158,11,.04)",border:"1px solid rgba(245,158,11,.14)",borderRadius:7,padding:"6px 9px"}}>
+                      <div style={{background:"rgba(245,158,11,.14)",borderRadius:5,padding:"1px 6px",flexShrink:0}}>
                         <p style={{fontSize:10,fontWeight:800,color:"#FBBF24",margin:0}}>+{s.gain}</p>
                       </div>
                       <div>
-                        <p style={{fontSize:12,fontWeight:600,color:"rgba(255,225,150,.9)",margin:"0 0 2px"}}>{s.component}</p>
-                        <p style={{fontSize:11,color:"rgba(255,255,255,.38)",margin:0}}>{s.why}</p>
+                        <p style={{fontSize:11,fontWeight:600,color:"rgba(255,225,150,.92)",margin:"0 0 2px"}}>{s.component}</p>
+                        <p style={{fontSize:10,color:"#B5A99B",margin:0}}>{s.why}</p>
                       </div>
                     </div>
                   ))}
@@ -1120,88 +1070,88 @@ function DesignFeedbackOverlay({run,onRetry,onClose}:{run:RunState;onRetry:()=>v
                 {decisions.length?decisions.map((d,i)=>(
                   <div key={i} style={{display:"flex",alignItems:"flex-start",gap:7}}>
                     <span style={{width:3,height:3,borderRadius:99,background:"#FBBF24",flexShrink:0,marginTop:7}}/>
-                    <p style={{fontSize:11,color:"rgba(255,225,150,.8)",margin:0,lineHeight:1.45}}>{d}</p>
+                    <p style={{fontSize:13,color:"rgba(255,225,150,.9)",margin:0,lineHeight:1.5}}>{d}</p>
                   </div>
-                )):<p style={{fontSize:11,color:"rgba(200,180,100,.4)",margin:"4px 0 0"}}>Add more components to see strong decisions.</p>}
+                )):<p style={{fontSize:12,color:"rgba(200,180,100,.55)",margin:"4px 0 0"}}>Add more components to see strong decisions.</p>}
               </div>
             </Accordion>
           </section>
 
           {/* Architecture */}
-          <section style={{background:FORGE_SURFACE.overlay,padding:"12px 14px",display:"flex",flexDirection:"column",gap:9,minHeight:0,overflow:"hidden"}}>
+          <section style={{background:FORGE_SURFACE.overlay,padding:"12px 14px",display:"flex",flexDirection:"column",gap:9,minHeight:0,overflowY:"auto"}}>
             <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
               <div style={{display:"flex",alignItems:"center",gap:8,padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
                 <Check size={14} style={{color:"rgba(255,255,255,.4)"}}/>
-                <p style={{flex:1,fontSize:12,fontWeight:600,color:"rgba(255,255,255,.65)",margin:0}}>My Design vs Recommended Architecture</p>
+                <p style={{flex:1,fontSize:13,fontWeight:600,color:"#E0D8CE",margin:0}}>My Design vs Recommended Architecture</p>
               </div>
-              <div style={{flex:1,minHeight:0,padding:12,display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gridTemplateRows:"repeat(3,minmax(0,1fr))",gap:7,alignItems:"stretch"}}>
+              <div style={{flex:1,minHeight:0,padding:10,display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gridAutoRows:"minmax(100px,1fr)",gap:6,alignContent:"start",overflowY:"auto"}}>
                 {ZONES.map((zone)=><DesignComparisonZone key={zone.id} zone={zone} run={run} cidArr={cidArr}/>)}
               </div>
             </div>
           </section>
 
           {/* Insights */}
-          <section style={{background:FORGE_SURFACE.overlay,padding:"12px 14px",display:"flex",flexDirection:"column",gap:9,minHeight:0,overflow:"hidden"}}>
-            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:"1.05 1 0",minHeight:0,display:"flex",flexDirection:"column"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
-                <AlertTriangle size={15} style={{color:"#F87171"}}/>
-                <p style={{flex:1,fontSize:13,fontWeight:700,color:"rgba(255,255,255,.68)",margin:0}}>Biggest Risks</p>
+          <section style={{background:FORGE_SURFACE.overlay,padding:"12px 14px",display:"flex",flexDirection:"column",gap:9,minHeight:0,overflowY:"auto"}}>
+            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:"1 1 0",minHeight:0,display:"flex",flexDirection:"column"}}>
+              <div style={{display:"flex",alignItems:"center",gap:7,padding:"8px 12px",borderBottom:"1px solid rgba(255,255,255,.07)",flexShrink:0}}>
+                <AlertTriangle size={13} style={{color:"#F87171"}}/>
+                <p style={{flex:1,fontSize:12,fontWeight:700,color:"#E0D8CE",margin:0}}>Biggest Risks</p>
               </div>
-              <div style={{flex:1,padding:"12px 16px",display:"flex",flexDirection:"column",gap:9}}>
-                {risks.map((r,i)=>(
-                  <div key={i} style={{display:"flex",alignItems:"flex-start",gap:9,background:"rgba(248,113,113,.035)",border:"1px solid rgba(248,113,113,.12)",borderRadius:9,padding:"9px 10px"}}>
-                    <span style={{width:5,height:5,borderRadius:99,background:"#F87171",flexShrink:0,marginTop:7}}/>
-                    <p style={{fontSize:13,color:"rgba(255,195,195,.86)",margin:0,lineHeight:1.55}}>{r}</p>
+              <div style={{flex:1,padding:"8px 10px",display:"flex",flexDirection:"column",gap:5,overflowY:"auto"}}>
+                {risks.slice(0,4).map((r,i)=>(
+                  <div key={i} style={{display:"flex",alignItems:"flex-start",gap:7,background:"rgba(248,113,113,.07)",border:"1px solid rgba(248,113,113,.22)",borderRadius:7,padding:"6px 9px",flexShrink:0}}>
+                    <span style={{width:4,height:4,borderRadius:99,background:"#F87171",flexShrink:0,marginTop:6}}/>
+                    <p style={{fontSize:11,color:"rgba(255,205,200,.92)",margin:0,lineHeight:1.5}}>{r}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:"1.45 1 0",minHeight:0,display:"flex",flexDirection:"column"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
-                <AlertTriangle size={15} style={{color:"#F87171"}}/>
-                <p style={{flex:1,fontSize:13,fontWeight:700,color:"rgba(255,255,255,.68)",margin:0}}>Under 10x Traffic Load</p>
+            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:"1.3 1 0",minHeight:0,display:"flex",flexDirection:"column"}}>
+              <div style={{display:"flex",alignItems:"center",gap:7,padding:"8px 12px",borderBottom:"1px solid rgba(255,255,255,.07)",flexShrink:0}}>
+                <AlertTriangle size={13} style={{color:"#F87171"}}/>
+                <p style={{flex:1,fontSize:12,fontWeight:700,color:"#E0D8CE",margin:0}}>Under 10x Traffic Load</p>
               </div>
-              <div style={{flex:1,padding:"12px 16px",display:"flex",flexDirection:"column",gap:10}}>
+              <div style={{flex:1,padding:"8px 10px",display:"flex",flexDirection:"column",gap:7,overflowY:"auto"}}>
                 {failures.slice(0,2).map((f,i)=>(
-                  <div key={i} style={{background:"rgba(248,113,113,.045)",border:"1px solid rgba(248,113,113,.16)",borderRadius:10,padding:"12px 13px",flex:1}}>
-                    <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:7,flexWrap:"wrap"}}>
-                      <span style={{fontSize:9,fontWeight:800,color:"#F87171",background:"rgba(248,113,113,.12)",border:"1px solid rgba(248,113,113,.25)",borderRadius:4,padding:"2px 6px",letterSpacing:"0.04em"}}>{f.trigger}</span>
-                      <p style={{fontSize:10,color:"rgba(255,255,255,.42)",margin:0}}>Bottleneck: {f.bottleneck}</p>
+                  <div key={i} style={{background:"rgba(248,113,113,.07)",border:"1px solid rgba(248,113,113,.22)",borderRadius:8,padding:"8px 10px",flexShrink:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:5,flexWrap:"wrap"}}>
+                      <span style={{fontSize:9,fontWeight:800,color:"#F87171",background:"rgba(248,113,113,.14)",border:"1px solid rgba(248,113,113,.28)",borderRadius:4,padding:"1px 6px",letterSpacing:"0.04em"}}>{f.trigger}</span>
+                      <p style={{fontSize:10,color:"#B5A99B",margin:0}}>Bottleneck: {f.bottleneck}</p>
                     </div>
-                    <p style={{fontSize:13,color:"rgba(255,195,195,.84)",margin:"0 0 9px",lineHeight:1.5}}>{f.what}</p>
-                    <div style={{display:"flex",alignItems:"flex-start",gap:7}}>
-                      <Check size={12} style={{color:"#34D399",flexShrink:0,marginTop:2}}/>
-                      <p style={{fontSize:12,color:"rgba(150,230,190,.78)",margin:0,lineHeight:1.45}}>Fix: {f.fix}</p>
+                    <p style={{fontSize:11,color:"rgba(255,205,200,.92)",margin:"0 0 6px",lineHeight:1.5}}>{f.what}</p>
+                    <div style={{display:"flex",alignItems:"flex-start",gap:6}}>
+                      <Check size={11} style={{color:"#34D399",flexShrink:0,marginTop:2}}/>
+                      <p style={{fontSize:11,color:"rgba(160,235,200,.88)",margin:0,lineHeight:1.45}}>Fix: {f.fix}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:".72 1 0",minHeight:0,display:"flex",flexDirection:"column"}}>
-              <div style={{display:"flex",alignItems:"center",gap:8,padding:"12px 16px",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
-                <Zap size={15} style={{color:"#FBBF24"}}/>
-                <p style={{flex:1,fontSize:13,fontWeight:700,color:"rgba(255,255,255,.68)",margin:0}}>What Breaks First?</p>
+            <div style={{background:FORGE_SURFACE.card,border:"1px solid rgba(255,255,255,.1)",borderRadius:12,overflow:"hidden",flex:"0 0 auto",minHeight:0}}>
+              <div style={{display:"flex",alignItems:"center",gap:7,padding:"8px 12px",borderBottom:"1px solid rgba(255,255,255,.07)"}}>
+                <Zap size={12} style={{color:"#FBBF24"}}/>
+                <p style={{flex:1,fontSize:12,fontWeight:700,color:"#E0D8CE",margin:0}}>What Breaks First?</p>
               </div>
-              <div style={{flex:1,padding:"12px 16px",display:"flex",alignItems:"center"}}>
-                <p style={{fontSize:13,color:"rgba(255,255,255,.54)",margin:0,lineHeight:1.6}}>{bp}</p>
+              <div style={{padding:"8px 12px"}}>
+                <p style={{fontSize:11,color:"#C8BFBA",margin:0,lineHeight:1.6}}>{bp}</p>
               </div>
             </div>
 
-            <div style={{display:"flex",flexDirection:"column",gap:8,alignSelf:"stretch"}}>
+            <div style={{display:"flex",flexDirection:"column",gap:6,alignSelf:"stretch",flexShrink:0}}>
               <button onClick={()=>downloadReport(run,ev)}
-                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,background:"linear-gradient(135deg,#D4873A 0%,#A85F18 100%)",border:"1px solid rgba(201,123,42,.45)",borderRadius:8,padding:"11px 14px",cursor:"pointer",fontFamily:"monospace",fontSize:10,fontWeight:800,letterSpacing:"0.14em",textTransform:"uppercase",color:"#0A0806",boxShadow:"0 12px 32px rgba(201,123,42,.25),inset 0 1px 0 rgba(255,255,255,.18)",transition:"all .15s"}}
-                onMouseEnter={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.transform="translateY(-1px)";b.style.boxShadow="0 16px 40px rgba(201,123,42,.35),inset 0 1px 0 rgba(255,255,255,.2)"}}
-                onMouseLeave={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.transform="";b.style.boxShadow="0 12px 32px rgba(201,123,42,.25),inset 0 1px 0 rgba(255,255,255,.18)"}}
+                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:7,background:"linear-gradient(135deg,#E6A23C 0%,#C07A1E 100%)",border:"1px solid rgba(230,162,60,.45)",borderRadius:7,padding:"8px 12px",cursor:"pointer",fontFamily:"monospace",fontSize:10,fontWeight:800,letterSpacing:"0.14em",textTransform:"uppercase",color:"#0A0806",boxShadow:"0 8px 24px rgba(230,162,60,.2),inset 0 1px 0 rgba(255,255,255,.18)",transition:"all .15s"}}
+                onMouseEnter={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.transform="translateY(-1px)";b.style.boxShadow="0 16px 40px rgba(230,162,60,.35),inset 0 1px 0 rgba(255,255,255,.2)"}}
+                onMouseLeave={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.transform="";b.style.boxShadow="0 12px 32px rgba(230,162,60,.25),inset 0 1px 0 rgba(255,255,255,.18)"}}
               ><Download size={14}/> Download Report</button>
               <button onClick={onRetry}
-                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:7,padding:"10px 14px",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,cursor:"pointer",fontSize:11,fontWeight:600,color:"rgba(255,255,255,.55)",transition:"all .15s"}}
+                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:7,padding:"7px 12px",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:7,cursor:"pointer",fontSize:11,fontWeight:600,color:"rgba(240,235,227,.5)",transition:"all .15s"}}
                 onMouseEnter={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(255,255,255,.1)";b.style.color="rgba(255,255,255,.85)"}}
                 onMouseLeave={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.background="rgba(255,255,255,.06)";b.style.color="rgba(255,255,255,.55)"}}
               ><RotateCcw size={13}/> New Run</button>
               <button onClick={onClose}
-                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:7,padding:"10px 14px",background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:8,cursor:"pointer",color:"rgba(255,255,255,.42)",fontSize:11,fontWeight:600,transition:"all .15s"}}
+                style={{display:"flex",alignItems:"center",justifyContent:"center",gap:7,padding:"7px 12px",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:7,cursor:"pointer",color:"rgba(240,235,227,.38)",fontSize:11,fontWeight:600,transition:"all .15s"}}
                 onMouseEnter={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.color="rgba(255,255,255,.8)";b.style.background="rgba(255,255,255,.08)"}}
                 onMouseLeave={(e)=>{const b=e.currentTarget as HTMLButtonElement;b.style.color="rgba(255,255,255,.42)";b.style.background="rgba(255,255,255,.04)"}}
               ><X size={13}/> Cancel</button>
@@ -1243,19 +1193,23 @@ export default function ForgeGame(){
     setRun(randomRun(run.challenge.id));setSelId(null);setDragId(null);setPhase("building")
   },[run.challenge.id])
 
+  const handleChangeChallenge=useCallback((id:string)=>{
+    setRun(createRun(id));setSelId(null);setDragId(null);setPhase("building")
+  },[])
+
   return(
-    <div style={{margin:"-24px -32px -48px",background:FORGE_SURFACE.page,color:"#D8D0C3"}}
+    <div style={{margin:"-24px -32px -48px",background:FORGE_SURFACE.page,color:"#E0D8CE"}}
       className="min-h-[calc(100vh-56px)] lg:-mx-16 lg:h-[calc(100vh-3.5rem)] lg:overflow-hidden"
     >
       <div className="hidden h-full min-h-0 lg:grid" style={{gridTemplateColumns:"308px minmax(0,1fr) 308px"}}>
         <div className="min-h-0"><ComponentLibrary placed={run.placed} selectedId={selId} onSelect={setSelId} onDragStart={setDragId}/></div>
-        <div className="min-h-0"><WorkflowCanvas run={run} selectedId={selId} onPlace={handlePlace} onRemove={handleRemove} onDeploy={()=>setPhase("complete")}/></div>
+        <div className="min-h-0"><WorkflowCanvas run={run} selectedId={selId} onPlace={handlePlace} onRemove={handleRemove} onDeploy={()=>setPhase("complete")} onChangeChallenge={handleChangeChallenge}/></div>
         <div className="min-h-0"><FeedbackPanel placed={run.placed} constraints={run.constraints}/></div>
       </div>
 
       <div className="space-y-3 p-3 pb-10 lg:hidden">
         <div style={{minHeight:520,borderRadius:16,border:"1px solid rgba(255,255,255,.08)",overflow:"hidden"}}>
-          <WorkflowCanvas run={run} selectedId={selId} onPlace={handlePlace} onRemove={handleRemove} onDeploy={()=>setPhase("complete")}/>
+          <WorkflowCanvas run={run} selectedId={selId} onPlace={handlePlace} onRemove={handleRemove} onDeploy={()=>setPhase("complete")} onChangeChallenge={handleChangeChallenge}/>
         </div>
         <div style={{height:"60vh",overflow:"hidden",borderRadius:16,border:"1px solid rgba(255,255,255,.08)"}}>
           <ComponentLibrary placed={run.placed} selectedId={selId} onSelect={setSelId} onDragStart={setDragId}/>

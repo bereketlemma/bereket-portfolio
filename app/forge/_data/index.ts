@@ -451,7 +451,7 @@ export const CHALLENGES: Challenge[] = [
     id: "trading-engine",
     title: "Low-Latency Trading Engine",
     description:
-      "Design a system processing 100K+ orders per second with sub-millisecond execution and a tamper-proof audit trail.",
+      "A trading desk is onboarding institutional clients tomorrow. Order volume is spiking, latency budgets are measured in microseconds, and every fill needs a tamper-proof audit trail. Build the system you would trust during market open.",
     difficulty: "EXPERT",
     constraintPool: ["low-latency", "high-throughput", "strong-consistency", "high-availability"],
     solution: {
@@ -483,7 +483,7 @@ export const CHALLENGES: Challenge[] = [
     id: "auth-system",
     title: "Scalable Authentication System",
     description:
-      "Build auth infrastructure for 10M+ users with MFA, session management, and zero-downtime token rotation.",
+      "Your startup just crossed 2 million users. Login latency is rising, fraud attempts are increasing, and the team must support global traffic without creating operational chaos. Build the architecture you believe should ship.",
     difficulty: "MEDIUM",
     constraintPool: ["security-first", "high-availability", "low-latency", "global-scale"],
     solution: {
@@ -515,7 +515,7 @@ export const CHALLENGES: Challenge[] = [
     id: "github-analytics",
     title: "Real-Time GitHub Analytics",
     description:
-      "Process webhook events from thousands of repos and serve live dashboards with sub-second data freshness.",
+      "A launch partner is wiring thousands of repositories into your analytics product. Webhooks arrive in bursts, dashboards must feel live, and missed events will break trust. Design the pipeline before launch day traffic hits.",
     difficulty: "HARD",
     constraintPool: ["real-time", "high-throughput", "low-cost", "low-ops"],
     solution: {
@@ -547,7 +547,7 @@ export const CHALLENGES: Challenge[] = [
     id: "notification-system",
     title: "Notification Platform at Scale",
     description:
-      "Fan-out push, SMS, and email notifications to 50M users with per-channel delivery guarantees and retry logic.",
+      "Marketing wants to message 50 million users during a product drop. Push, SMS, and email each have different failure modes, and retries can accidentally become a flood. Build the fan-out system without melting the stack.",
     difficulty: "HARD",
     constraintPool: ["high-throughput", "burst-traffic", "low-cost", "high-availability"],
     solution: {
@@ -579,7 +579,7 @@ export const CHALLENGES: Challenge[] = [
     id: "payment-backend",
     title: "Secure Payment Processing Backend",
     description:
-      "Process PCI-DSS compliant transactions with full audit trails, idempotency guarantees, and real-time fraud hooks.",
+      "Your payments product is about to enter PCI review. A duplicate charge would be catastrophic, fraud checks must run in real time, and auditors need a complete trail. Design the backend you would defend in review.",
     difficulty: "EXPERT",
     constraintPool: ["security-first", "strong-consistency", "high-availability", "compliance-heavy"],
     solution: {
@@ -611,7 +611,7 @@ export const CHALLENGES: Challenge[] = [
     id: "fraud-detection",
     title: "Real-Time Fraud Detection Pipeline",
     description:
-      "Analyze transaction streams in real-time, enrich with behavioral features, and return risk scores in <100ms.",
+      "Fraud attempts are climbing during checkout peaks. Every transaction needs enrichment, scoring, and a decision in under 100ms, but false positives cost revenue. Build the real-time detection path.",
     difficulty: "EXPERT",
     constraintPool: ["real-time", "high-throughput", "low-latency", "security-first"],
     solution: {
@@ -643,7 +643,7 @@ export const CHALLENGES: Challenge[] = [
     id: "api-platform",
     title: "Multi-Tenant API Platform",
     description:
-      "Build a developer API platform with per-tenant rate limiting, usage quotas, billing hooks, and analytics.",
+      "A developer platform just signed its first enterprise tenants. One noisy customer can exhaust shared capacity, billing needs accurate usage events, and public APIs are abuse magnets. Ship the control plane.",
     difficulty: "MEDIUM",
     constraintPool: ["high-throughput", "low-latency", "security-first", "low-cost"],
     solution: {
@@ -675,7 +675,7 @@ export const CHALLENGES: Challenge[] = [
     id: "task-processing",
     title: "Distributed Task Processing System",
     description:
-      "Build a background job system for CPU-intensive ML inference with retry logic, priority queues, and job tracking.",
+      "Your ML product has a backlog of expensive inference jobs and customers are asking where their results are. Priority work must jump the line, failures need retries, and workers must scale with bursts. Design the job system.",
     difficulty: "HARD",
     constraintPool: ["high-throughput", "high-availability", "low-ops", "burst-traffic"],
     solution: {
@@ -707,7 +707,7 @@ export const CHALLENGES: Challenge[] = [
     id: "video-pipeline",
     title: "Video Processing Pipeline",
     description:
-      "Ingest raw video uploads, transcode to multiple formats and resolutions, and serve via CDN globally at low cost.",
+      "A creator app is about to run a launch campaign. Uploads arrive in waves, transcoding is expensive, and playback must stay fast worldwide without runaway cloud bills. Build the video pipeline.",
     difficulty: "HARD",
     constraintPool: ["high-throughput", "low-cost", "burst-traffic", "low-ops"],
     solution: {
@@ -739,7 +739,7 @@ export const CHALLENGES: Challenge[] = [
     id: "multi-tenant-saas",
     title: "Multi-Tenant SaaS Backend",
     description:
-      "Build data isolation, per-tenant rate limiting, SSO, and usage-based billing for a B2B SaaS platform.",
+      "A B2B SaaS team is moving upmarket. Enterprise customers require SSO, tenant isolation, auditability, and reliable billing, while the product team still needs to move fast. Design the backend foundation.",
     difficulty: "MEDIUM",
     constraintPool: ["security-first", "strong-consistency", "low-latency", "high-availability"],
     solution: {
@@ -1011,4 +1011,142 @@ export function getRandomRun(): { challenge: Challenge; constraints: Constraint[
     .filter(Boolean) as Constraint[]
   const shuffled = [...pool].sort(() => Math.random() - 0.5)
   return { challenge, constraints: shuffled.slice(0, 3) }
+}
+
+// ─── Match Quality ────────────────────────────────────────────────────────────
+
+export type MatchQuality =
+  | "exact-match"
+  | "good-alternative"
+  | "partial-match"
+  | "missing"
+  | "overbuilt"
+  | "risky-mismatch"
+
+export function classifyMatchQuality(
+  yourId: string | undefined,
+  myId: string | undefined,
+  cids: string[]
+): MatchQuality {
+  if (!myId && !yourId) return "exact-match"
+  if (!myId && yourId) return "overbuilt"
+  if (myId && !yourId) return "missing"
+  if (myId === yourId) return "exact-match"
+
+  const mine = COMPONENTS.find((c) => c.id === myId)
+  const yours = COMPONENTS.find((c) => c.id === yourId)
+  if (!mine || !yours) return "partial-match"
+
+  if (yours.tags.includes("risky") && cids.some((id) => ["strong-consistency", "security-first", "high-availability"].includes(id))) {
+    return "risky-mismatch"
+  }
+  if (mine.category === yours.category) {
+    const myTotal = mine.scores.reliability + mine.scores.security + mine.scores.scalability
+    const yourTotal = yours.scores.reliability + yours.scores.security + yours.scores.scalability
+    return yourTotal >= myTotal * 0.85 ? "good-alternative" : "partial-match"
+  }
+  return "risky-mismatch"
+}
+
+// ─── Solution Match Score ─────────────────────────────────────────────────────
+
+export function computeSolutionMatchScore(
+  placed: Record<string, string[]>,
+  challenge: Challenge
+): number {
+  const solution = challenge.solution.placed
+  const zoneIds = ZONES.map((z) => z.id)
+  let earned = 0
+  let possible = 0
+
+  for (const zoneId of zoneIds) {
+    const myIds = solution[zoneId] ?? []
+    const yourIds = placed[zoneId] ?? []
+
+    for (const myId of myIds) {
+      possible += 10
+      if (yourIds.includes(myId)) {
+        earned += 10
+      } else {
+        const mine = COMPONENTS.find((c) => c.id === myId)
+        const sameCategory = yourIds
+          .map((id) => COMPONENTS.find((c) => c.id === id))
+          .find((c) => c && mine && c.category === mine.category)
+        if (sameCategory) {
+          earned += sameCategory.tags.includes("risky") ? 3 : 5
+        }
+      }
+    }
+
+    const extra = yourIds.filter((id) => !myIds.includes(id))
+    for (const extraId of extra) {
+      const comp = COMPONENTS.find((c) => c.id === extraId)
+      if (comp?.tags.includes("risky")) earned -= 3
+      else if (comp?.tags.includes("complex") || comp?.tags.includes("expensive")) earned -= 1
+    }
+  }
+
+  if (possible === 0) return 5
+  return Math.max(0, Math.min(10, (earned / possible) * 10))
+}
+
+// ─── Coverage Score ───────────────────────────────────────────────────────────
+
+export function computeCoverageScore(
+  placed: Record<string, string[]>,
+  cids: string[]
+): number {
+  let score = 10
+
+  if (!placed.security?.length) score -= 3
+  if (!placed.data?.length) score -= 2.5
+  if (!placed.observability?.length) score -= 1.5
+
+  const needsEdge = cids.some((id) => ["global-scale", "multi-region", "low-latency", "security-first"].includes(id))
+  if (needsEdge && !placed.traffic?.length) score -= 2
+
+  const needsAsync = cids.some((id) => ["burst-traffic", "high-throughput", "real-time"].includes(id))
+  if (needsAsync && !placed.async?.length) score -= 1.5
+
+  return Math.max(0, Math.min(10, score))
+}
+
+// ─── Constraint Fit Score ─────────────────────────────────────────────────────
+
+export function computeConstraintFitScore(
+  placed: Record<string, string[]>,
+  cids: string[]
+): number {
+  const all = new Set(Object.values(placed).flat())
+  let score = 5
+
+  if (cids.includes("low-latency")) {
+    if (all.has("cdn")) score += 1
+    if (all.has("redis")) score += 0.8
+    if (all.has("api-gateway")) score += 0.5
+  }
+  if (cids.includes("security-first")) {
+    if (all.has("oauth")) score += 1.5
+    if (all.has("waf")) score += 1
+    if (all.has("rate-limiter")) score += 0.8
+    if (all.has("secrets-manager")) score += 0.7
+    if (all.has("jwt") && !all.has("oauth")) score -= 0.5
+  }
+  if (cids.includes("high-availability")) {
+    if (all.has("load-balancer")) score += 1
+    if (all.has("kubernetes")) score += 0.8
+    if (all.has("postgres") && all.has("redis")) score += 0.5
+  }
+  if (cids.includes("strong-consistency")) {
+    if (all.has("postgres") || all.has("mysql")) score += 1.5
+    if (all.has("mongodb")) score -= 1.5
+    if (all.has("cassandra")) score -= 1
+  }
+  if (cids.includes("high-throughput")) {
+    if (all.has("kafka")) score += 1.5
+    if (all.has("sqs")) score += 0.8
+    if (all.has("polling")) score -= 2
+  }
+
+  return Math.max(0, Math.min(10, score))
 }

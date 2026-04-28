@@ -1000,18 +1000,6 @@ export function getComponentById(id: string): ForgeComponent | undefined {
   return COMPONENTS.find((c) => c.id === id)
 }
 
-export function getZoneById(id: string): Zone | undefined {
-  return ZONES.find((z) => z.id === id)
-}
-
-export function getRandomRun(): { challenge: Challenge; constraints: Constraint[] } {
-  const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)]
-  const pool = challenge.constraintPool
-    .map((id) => CONSTRAINTS.find((c) => c.id === id))
-    .filter(Boolean) as Constraint[]
-  const shuffled = [...pool].sort(() => Math.random() - 0.5)
-  return { challenge, constraints: shuffled.slice(0, 3) }
-}
 
 // ─── Match Quality ────────────────────────────────────────────────────────────
 
@@ -1149,4 +1137,66 @@ export function computeConstraintFitScore(
   }
 
   return Math.max(0, Math.min(10, score))
+}
+
+// ─── Component pros / cons ────────────────────────────────────────────────────
+
+export const PROS: Record<string, string[]> = {
+  "api-gateway":        ["One place to enforce auth and rate limiting","Clean routing logic stays out of your app code","Handles TLS termination so your services don't have to"],
+  "load-balancer":      ["Traffic spreads evenly across instances","Failed instances get automatically removed","Sticky sessions supported when you need them"],
+  "cdn":                ["Cached assets load in under 10ms at the edge","Offloads most of your origin traffic automatically","Built-in DDoS absorption with no extra config"],
+  "rate-limiter":       ["Stops brute-force before it reaches your app servers","Configurable per client, per route, per method","Sliding window with Redis means consistent enforcement"],
+  "waf":                ["Blocks SQL injection, XSS, and bot traffic","Satisfies PCI-DSS network control requirements","Works in front of everything, no app changes needed"],
+  "workers":            ["Dead simple to scale horizontally","No shared local state, easy to reason about","Low ops burden once deployed"],
+  "kubernetes":         ["Self-healing restarts broken pods automatically","Resource guarantees mean no noisy-neighbour problems","HPA scales pods based on real metrics"],
+  "serverless":         ["No infrastructure to manage at all","Scales to zero when idle, so you pay nothing","Matches naturally to event-driven and async patterns"],
+  "microservices":      ["Each service deploys and scales on its own","One service crashing stays contained","Teams can move independently without stepping on each other"],
+  "postgres":           ["Full ACID compliance means partial writes are impossible","Rich query engine with joins, window functions, and CTEs","25+ years of production battle-testing behind it"],
+  "mongodb":            ["Schema flexibility means you don't need migrations to evolve","Write and aggregation performance is genuinely fast","Horizontal sharding is built in from the start"],
+  "cassandra":          ["Handles millions of writes per second with linear scaling","Multi-region replication baked into the data model","TTL expiry handles old data cleanup automatically"],
+  "redis":              ["Sub-millisecond reads directly from memory","Atomic counters make rate limiting trivially correct","Works as a pub/sub broker when you need lightweight messaging"],
+  "object-storage":     ["Effectively unlimited storage at predictable per-byte cost","Native CDN integration makes media delivery easy","No provisioning needed, just write and read"],
+  "mysql":              ["Widely understood by every engineer you'll hire","Strong InnoDB transactions for moderate workloads","Ecosystem is huge, tooling is mature"],
+  "kafka":              ["Durable, replayable log that survives consumer crashes","Consumer groups scale naturally with Kubernetes HPA","Handles 100k+ events per second on commodity hardware"],
+  "sqs":                ["Fully managed, nothing to operate","Built-in deduplication IDs prevent double-processing","FIFO mode gives strict ordering when you need it"],
+  "rabbitmq":           ["Flexible routing with fanout, topic, and direct exchanges","Dead-letter queues catch failed messages automatically","Good fit for complex multi-step workflows"],
+  "polling":            ["No infrastructure dependency at all","Dead simple to understand and debug","Works everywhere without any broker setup"],
+  "jwt":                ["No database lookup on every request","Self-contained tokens work across services without shared session storage","Small, cheap to verify, fits stateless horizontal scaling"],
+  "session-auth":       ["Kill any session immediately server-side","Full audit trail of logins and logouts","Simpler mental model for traditional web applications"],
+  "oauth":              ["SSO, MFA, and refresh token rotation come for free","PKCE makes public clients safe without a client secret","Industry standard, so auditors and security reviewers understand it"],
+  "secrets-manager":    ["Rotate secrets without redeploying services","Every access is logged for audit purposes","Secrets never touch application code or environment variables"],
+  "prometheus-grafana": ["No cost at any scale, you own the infrastructure","Native Kubernetes service discovery with zero config","Dashboards are fully customisable to your exact SLIs"],
+  "datadog":            ["Full-stack APM in one platform from day one","Logs, metrics, and traces are correlated automatically","Fastest path to real observability, minutes not hours"],
+  "opentelemetry":      ["Vendor-neutral, switch backends without changing instrumentation","End-to-end trace correlation across every service","One SDK covers metrics, traces, and structured logs"],
+  "no-monitoring":      ["Zero infrastructure cost","Nothing to configure or maintain at all"],
+}
+
+export const CONS: Record<string, string[]> = {
+  "api-gateway":        ["Adds 1-5ms to every single request","Without HA config it becomes a single point of failure"],
+  "load-balancer":      ["Stateful apps need sticky session config or it breaks","Adds another thing to monitor and keep healthy"],
+  "rate-limiter":       ["Requires a Redis cluster for distributed state across instances","Rule tuning takes time to avoid blocking legitimate traffic"],
+  "cdn":                ["Cache invalidation gets painful with frequently-changing data","Transfer costs grow fast when content is popular"],
+  "waf":                ["Adds around 10ms latency per request","False positives block real users until you tune the rules","Costs $50-200/month on top of everything else"],
+  "workers":            ["All session and state must live externally, not in the process","No local caching means every read goes to the database"],
+  "kubernetes":         ["Realistically takes 3-6 months for a team to get comfortable","You need someone who owns the platform full-time","Complete overkill for a small stateless service"],
+  "serverless":         ["Cold starts add 50-500ms and violate strict latency requirements","Vendor lock-in is real once your codebase expects the runtime"],
+  "microservices":      ["Network partitions and cascading failures are now your problem","Debugging requires distributed tracing or you're guessing"],
+  "postgres":           ["Vertical scaling hits a ceiling, read replicas add complexity","Schema migrations at large scale need careful coordination"],
+  "mongodb":            ["No multi-document ACID by default, partial writes can happen under failure","Flexibility becomes a liability when data consistency matters"],
+  "cassandra":          ["Eventual consistency means reads may lag writes by milliseconds","Data modelling expertise required, no joins allowed"],
+  "redis":              ["Data loss on restart unless you configure persistence explicitly","Cache invalidation logic must be designed deliberately or you get stale data"],
+  "object-storage":     ["Higher latency than a cache for reads","List operations are eventually consistent"],
+  "mysql":              ["Replication lag causes stale reads at scale","Limited for analytical or time-series queries"],
+  "kafka":              ["Cluster ops require dedicated expertise to do well","At-least-once delivery means consumers must be idempotent"],
+  "sqs":                ["256KB message size limit means large payloads need a workaround","No replay once messages expire from the retention window"],
+  "rabbitmq":           ["Manual clustering required for high availability","Underperforms Kafka at very high throughput"],
+  "polling":            ["N times the request frequency as wasted load regardless of changes","Creates thundering herd problems when many clients poll at once"],
+  "jwt":                ["Individual tokens cannot be revoked without a blocklist","Logout doesn't actually invalidate the session server-side"],
+  "session-auth":       ["Session store becomes the bottleneck as you scale globally","Requires sticky sessions or a distributed Redis-backed store"],
+  "oauth":              ["Complex token lifecycle, PKCE, rotation, and discovery all add surface area","Implementation is easy to get subtly wrong in ways that hurt security"],
+  "secrets-manager":    ["Adds latency to secret retrieval at startup","Requires IAM role wiring for every service that needs secrets"],
+  "prometheus-grafana": ["You own the storage and availability of your metrics","Long-term retention needs Thanos or Cortex on top"],
+  "datadog":            ["$30-50 per host per month adds up quickly at scale","Once your instrumentation is widespread, switching is painful"],
+  "opentelemetry":      ["High integration complexity upfront","Needs a separate backend like Jaeger or Tempo to store data"],
+  "no-monitoring":      ["Your first incident will take hours to diagnose","You learn about failures from users, not alerts"],
 }

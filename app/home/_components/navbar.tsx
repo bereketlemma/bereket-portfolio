@@ -117,28 +117,23 @@ export default function Navbar() {
           </Link>
 
           {/* Resume */}
-          <div className="group relative">
-            <a
-              href="/assets/Bereket_Lemma_Resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View & Download Resume"
-              onClick={() => {
-                const link = document.createElement("a")
-                link.href = "/assets/Bereket_Lemma_Resume.pdf"
-                link.download = "Bereket_Lemma_Resume.pdf"
-                document.body.appendChild(link)
-                link.click()
-                document.body.removeChild(link)
-              }}
-              className="border border-border rounded px-3 py-1.5 font-mono text-xs md:text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center"
-            >
-              Resume
-            </a>
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 rounded bg-surface px-2 py-1 font-mono text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-border/40 hidden md:block pointer-events-none">
-              View & Download
-            </span>
-          </div>
+          <a
+            href="/assets/Bereket_Lemma_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View & Download Resume"
+            onClick={() => {
+              const link = document.createElement("a")
+              link.href = "/assets/Bereket_Lemma_Resume.pdf"
+              link.download = "Bereket_Lemma_Resume.pdf"
+              document.body.appendChild(link)
+              link.click()
+              document.body.removeChild(link)
+            }}
+            className="border border-border rounded px-3 py-1.5 font-mono text-xs md:text-sm text-muted-foreground hover:border-accent hover:text-accent transition-all flex items-center"
+          >
+            Resume
+          </a>
 
           {/* Mobile menu toggle */}
           <button

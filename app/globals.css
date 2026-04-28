@@ -1,5 +1,3 @@
-/* reaflow canvas edge styling */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -44,90 +42,10 @@
   }
 }
 
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes dsPulse {
-  0%, 100% { box-shadow: 0 0 0 0 hsla(var(--accent), 0.25); }
-  50% { box-shadow: 0 0 0 10px hsla(var(--accent), 0); }
-}
-
-@keyframes dsDropIn {
-  from {
-    opacity: 0;
-    transform: translateY(-14px);
-    filter: blur(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes dsType {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes dsFlipIn {
-  from {
-    opacity: 0;
-    transform: perspective(600px) rotateY(70deg) translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: perspective(600px) rotateY(0deg) translateY(0);
-  }
-}
-
-@keyframes dsDraw {
-  from { transform: scaleX(0); opacity: 0.3; }
-  to { transform: scaleX(1); opacity: 1; }
-}
-
-@keyframes dsOutcomePop {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes dsTicker {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
-}
-
-@keyframes dsScan {
-  from { transform: translateY(-120%); opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  to { transform: translateY(450%); opacity: 0; }
-}
-
-@keyframes dsGlitch {
-  0%, 94%, 100% { transform: translate(0, 0); text-shadow: none; }
-  95% { transform: translate(-1px, 0); text-shadow: 1px 0 hsl(var(--accent-blue) / 0.55), -1px 0 hsl(var(--accent) / 0.55); }
-  96% { transform: translate(1px, 0); text-shadow: -1px 0 hsl(var(--accent-blue) / 0.55), 1px 0 hsl(var(--accent) / 0.55); }
-}
-
-@keyframes dsQueryPop {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
+/* ─── Name shimmer (hero) ──────────────────────────────────────────────────── */
 
 @keyframes nameShimmer {
-  0% { background-position: 150% center; }
+  0%   { background-position: 150% center; }
   100% { background-position: -150% center; }
 }
 
@@ -147,115 +65,16 @@
   animation: nameShimmer 5s linear infinite;
 }
 
+/* ─── Timeline (components/timeline.tsx) ───────────────────────────────────── */
+
 @keyframes timelineFlow {
   from { background-position: 0 0; }
-  to { background-position: 0 24px; }
+  to   { background-position: 0 24px; }
 }
 
 @keyframes timelineNodePulse {
   0%, 100% { box-shadow: 0 0 0 0 hsl(var(--accent) / 0.16); }
-  50% { box-shadow: 0 0 0 6px hsl(var(--accent) / 0); }
-}
-
-.ds-pulse-badge {
-  animation: dsPulse 2.2s ease-in-out infinite;
-}
-
-.ds-fade-drop {
-  animation: dsDropIn 0.7s ease-out both;
-}
-
-.ds-type-line {
-  overflow: hidden;
-  white-space: nowrap;
-  width: 0;
-  animation: dsType 2.4s steps(90, end) 0.35s forwards;
-}
-
-.ds-tech-tile {
-  animation: dsFlipIn 0.55s ease-out both;
-  transform-origin: center;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-}
-
-.ds-tech-tile:hover {
-  transform: rotate(2deg) translateY(-2px);
-  border-color: hsl(var(--accent) / 0.6);
-  box-shadow:
-    0 8px 24px hsla(var(--accent), 0.14),
-    0 0 0 1px hsl(var(--accent-blue) / 0.35);
-}
-
-.ds-circuit {
-  background-image:
-    linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px),
-    radial-gradient(circle at 12% 20%, hsl(var(--accent) / 0.08), transparent 45%),
-    radial-gradient(circle at 85% 12%, hsl(var(--accent-blue) / 0.1), transparent 40%);
-  background-size: 22px 22px, 22px 22px, auto;
-}
-
-.ds-float-card {
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-}
-
-.ds-float-card:hover {
-  transform: translateY(-3px);
-  border-color: hsl(var(--accent) / 0.5);
-  box-shadow:
-    0 10px 24px hsla(var(--accent), 0.14),
-    0 0 22px hsl(var(--accent-blue) / 0.14);
-}
-
-.ds-draw-line {
-  transform-origin: left;
-  transform: scaleX(0);
-  animation: dsDraw 900ms ease-out forwards;
-}
-
-.ds-outcome-pop {
-  animation: dsOutcomePop 700ms ease-out both;
-}
-
-.ds-terminal-ticker {
-  mask-image: linear-gradient(to bottom, transparent, black 14%, black 86%, transparent);
-}
-
-.ds-ticker-track {
-  position: absolute;
-  inset: 0;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  animation: dsTicker 18s linear infinite;
-}
-
-.ds-scan-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(var(--accent)), hsl(var(--accent-blue)), transparent);
-  box-shadow: 0 0 18px hsl(var(--accent) / 0.55);
-  animation: dsScan 1.7s ease-out 200ms 1 both;
-}
-
-.ds-query-pop {
-  animation: dsQueryPop 220ms ease-out both;
-}
-
-.ds-bento-green:hover {
-  box-shadow: 0 12px 30px hsl(var(--accent) / 0.16);
-}
-
-.ds-bento-blue:hover {
-  box-shadow: 0 12px 30px hsl(var(--accent-blue) / 0.16);
-}
-
-.ds-outcome-glitch {
-  animation: dsGlitch 4s steps(2, end) infinite;
+  50%       { box-shadow: 0 0 0 6px hsl(var(--accent) / 0); }
 }
 
 .timeline-connector {
@@ -281,168 +100,7 @@
   filter: drop-shadow(0 6px 16px hsl(var(--accent) / 0.11));
 }
 
-.forge-flow .react-flow__controls {
-  border: 1px solid rgb(245 158 11 / 0.2);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #0F1115;
-  box-shadow:
-    0 10px 24px rgb(0 0 0 / 0.28),
-    inset 0 1px 0 rgb(255 255 255 / 0.06);
-}
-
-.forge-flow .react-flow__controls-button {
-  width: 32px;
-  height: 32px;
-  background: #0F1115;
-  border-bottom: 1px solid rgb(245 158 11 / 0.15);
-  color: #E5E7EB;
-  fill: #E5E7EB;
-  stroke: #E5E7EB;
-}
-
-.forge-flow .react-flow__controls-button:hover {
-  background: #11100E;
-  color: #22C55E;
-  fill: #22C55E;
-  stroke: #22C55E;
-}
-
-.forge-flow .react-flow__controls-button svg {
-  fill: currentColor;
-  stroke: currentColor;
-}
-
-.forge-canvas-shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 44%, rgb(255 255 255 / 0.07), transparent 34%),
-    linear-gradient(180deg, rgb(255 255 255 / 0.035), transparent 30%, rgb(0 0 0 / 0.2));
-}
-
-.forge-canvas-shell .react-flow {
-  position: relative;
-  z-index: 1;
-}
-
-.forge-stage-node {
-  transform-style: preserve-3d;
-}
-
-.forge-stage-node.is-active {
-  animation: forgeStagePulse 2.8s ease-in-out infinite;
-}
-
-.forge-flow .react-flow__edge.animated .react-flow__edge-path {
-  stroke-dasharray: 8 10;
-  animation: forgeEdgeFlow 1.6s linear infinite;
-}
-
-.forge-review-dot {
-  box-shadow: 0 0 0 0 rgb(34 197 94 / 0.35);
-  animation: forgeReviewPulse 1.8s ease-in-out infinite;
-}
-
-.forge-flow .react-flow__attribution {
-  display: none;
-}
-
-@keyframes forgeStagePulse {
-  0%, 100% {
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.06),
-      0 18px 36px rgb(0 0 0 / 0.28),
-      0 0 0 1px rgb(34 197 94 / 0.22),
-      0 0 22px rgb(34 197 94 / 0.16);
-  }
-  50% {
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.08),
-      0 22px 44px rgb(0 0 0 / 0.34),
-      0 0 0 1px rgb(34 197 94 / 0.38),
-      0 0 34px rgb(34 197 94 / 0.26);
-  }
-}
-
-@keyframes forgeEdgeFlow {
-  to { stroke-dashoffset: -18; }
-}
-
-@keyframes forgeReviewPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgb(201 123 42 / 0.35); }
-  50% { box-shadow: 0 0 0 6px rgb(201 123 42 / 0); }
-}
-
-/* ─── Reaflow Canvas ───────────────────────────────────────────────────────── */
-
-/* Fill container, transparent background */
-.reaflow-canvas,
-.reaflow-canvas > div,
-.reaflow-canvas > div > div {
-  width: 100% !important;
-  height: 100% !important;
-  background: transparent !important;
-}
-
-/* Nuke the default blue/dark reaflow node rect — we render via foreignObject */
-.reaflow-canvas svg rect {
-  fill: transparent !important;
-  stroke: transparent !important;
-  stroke-width: 0 !important;
-}
-
-/* Default edge: all paths inside an edge group */
-.reaflow-canvas svg g path {
-  stroke: rgba(255,255,255,0.1);
-  stroke-width: 1.5px;
-  fill: transparent;
-}
-
-/* Active edge override (set via EdgeData.className) */
-.edge-active path {
-  stroke: #C97B2A !important;
-  stroke-width: 2px !important;
-  filter: drop-shadow(0 0 5px rgba(201,123,42,0.35)) !important;
-}
-
-/* Inactive edge override */
-.edge-inactive path {
-  stroke: rgba(255,255,255,0.09) !important;
-  stroke-width: 1.5px !important;
-}
-
-/* Arrowhead / marker (reaflow uses fill="#485a74" as default) */
-.reaflow-canvas svg marker path,
-.reaflow-canvas svg marker polygon {
-  fill: rgba(255,255,255,0.12) !important;
-}
-.edge-active marker path,
-.edge-active marker polygon {
-  fill: #C97B2A !important;
-}
-
-/* SVG root overflow so nodes aren't clipped */
-.reaflow-canvas svg {
-  overflow: visible !important;
-}
-
-/* Remove outline on node focus */
-.reaflow-canvas g:focus,
-.reaflow-canvas g:focus-visible {
-  outline: none !important;
-}
-
-@media (max-width: 768px) {
-  .ds-type-line {
-    white-space: normal;
-    width: 100%;
-    animation: fadeSlideIn 0.55s ease-out both;
-  }
-}
+/* ─── Accessibility ────────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
